@@ -61,6 +61,7 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+
   deploy-staging:
     name: 'Deploy Staging'
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -82,6 +83,7 @@ jobs:
           slot-name: 'Staging'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
           package: .
+
   deploy-production:
     name: 'Deploy Production'
     runs-on: ubuntu-latest
