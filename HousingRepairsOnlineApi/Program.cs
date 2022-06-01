@@ -15,17 +15,17 @@ namespace HousingRepairsOnlineApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseSentry(o =>
-                    {
-                        o.Dsn = Environment.GetEnvironmentVariable("SENTRY_DNS");
-
-                        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                        if (environment == Environments.Development)
-                        {
-                            o.Debug = true;
-                            o.TracesSampleRate = 1.0;
-                        }
-                    });
+                    // webBuilder.UseSentry(o =>
+                    // {
+                    //     o.Dsn = Environment.GetEnvironmentVariable("SENTRY_DNS");
+                    //
+                    //     var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    //     if (environment == Environments.Development)
+                    //     {
+                    //         o.Debug = true;
+                    //         o.TracesSampleRate = 1.0;
+                    //     }
+                    // });
                     webBuilder.UseStartup<Startup>();
                 });
     }
