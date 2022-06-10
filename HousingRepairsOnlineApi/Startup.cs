@@ -38,9 +38,9 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
 
-            var addressesApiUrl = GetEnvironmentVariable("ADDRESSES_API_URL");
-            var schedulingApiUrl = GetEnvironmentVariable("SCHEDULING_API_URL");
-            var authenticationIdentifier = GetEnvironmentVariable("AUTHENTICATION_IDENTIFIER");
+            var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
+            var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
+            var authenticationIdentifier = EnvironmentVariableHelper.GetEnvironmentVariable("AUTHENTICATION_IDENTIFIER");
             services.AddHttpClient();
 
             services.AddTransient<IAddressGateway, AddressGateway>(s =>
@@ -57,7 +57,7 @@ namespace HousingRepairsOnlineApi
                 return new AppointmentsGateway(httpClient, authenticationIdentifier);
             });
 
-            var notifyApiKey = GetEnvironmentVariable("GOV_NOTIFY_KEY");
+            var notifyApiKey = EnvironmentVariableHelper.GetEnvironmentVariable("GOV_NOTIFY_KEY");
 
             services.AddTransient<INotifyGateway, NotifyGateway>(s =>
                 {
@@ -65,15 +65,15 @@ namespace HousingRepairsOnlineApi
                     return new NotifyGateway(notifyClient);
                 }
             );
-            var smsConfirmationTemplateId = GetEnvironmentVariable("CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID");
+            var smsConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID");
 
-            var emailConfirmationTemplateId = GetEnvironmentVariable("CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID");
+            var emailConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID");
 
-            var internalEmailConfirmationTemplateId = GetEnvironmentVariable("INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID");
+            var internalEmailConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID");
 
-            var internalEmail = GetEnvironmentVariable("INTERNAL_EMAIL");
+            var internalEmail = EnvironmentVariableHelper.GetEnvironmentVariable("INTERNAL_EMAIL");
 
-            var daysUntilImageExpiry = GetEnvironmentVariable("DAYS_UNTIL_IMAGE_EXPIRY");
+            var daysUntilImageExpiry = EnvironmentVariableHelper.GetEnvironmentVariable("DAYS_UNTIL_IMAGE_EXPIRY");
 
             services.AddTransient<ISendAppointmentConfirmationSmsUseCase, SendAppointmentConfirmationSmsUseCase>(s =>
             {
@@ -133,9 +133,9 @@ namespace HousingRepairsOnlineApi
                 c.AddJwtSecurityScheme();
             });
 
-            var cosmosEndpointUrl = GetEnvironmentVariable("COSMOS_ENDPOINT_URL");
-            var cosmosAuthorizationKey = GetEnvironmentVariable("COSMOS_AUTHORIZATION_KEY");
-            var cosmosDatabaseId = GetEnvironmentVariable("COSMOS_DATABASE_ID");
+            var cosmosEndpointUrl = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_ENDPOINT_URL");
+            var cosmosAuthorizationKey = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_AUTHORIZATION_KEY");
+            var cosmosDatabaseId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_DATABASE_ID");
             var storageConnectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
             var blobContainerName = Environment.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
 
@@ -158,10 +158,10 @@ namespace HousingRepairsOnlineApi
 
         private static ContainerResponse GetCosmosContainer()
         {
-            var endpointUrl = GetEnvironmentVariable("COSMOS_ENDPOINT_URL");
-            var authorizationKey = GetEnvironmentVariable("COSMOS_AUTHORIZATION_KEY");
-            var databaseId = GetEnvironmentVariable("COSMOS_DATABASE_ID");
-            var containerId = GetEnvironmentVariable("COSMOS_CONTAINER_ID");
+            var endpointUrl = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_ENDPOINT_URL");
+            var authorizationKey = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_AUTHORIZATION_KEY");
+            var databaseId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_DATABASE_ID");
+            var containerId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_CONTAINER_ID");
 
             CosmosClient cosmosClient = new CosmosClient(endpointUrl, authorizationKey);
 
@@ -200,12 +200,6 @@ namespace HousingRepairsOnlineApi
                 endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers().RequireAuthorization();
             });
-        }
-
-        private static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name) ??
-                   throw new InvalidOperationException($"Incorrect configuration: '{name}' environment variable must be set");
         }
     }
 }
