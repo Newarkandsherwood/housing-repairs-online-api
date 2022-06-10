@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Abstractions;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -10,22 +8,11 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddSoREngine(this IServiceCollection services, string sorConfigPath, IFileSystem fileSystem = null)
+        public static void AddSoREngine(this IServiceCollection services, ISorConfigurationProvider sorConfigurationProvider)
         {
-            fileSystem ??= new FileSystem();
+            Guard.Against.Null(sorConfigurationProvider, nameof(sorConfigurationProvider));
 
-            Guard.Against.NullOrWhiteSpace(sorConfigPath, nameof(sorConfigPath));
-
-            var SorConfigPath = sorConfigPath;
-            string json;
-            try
-            {
-                json = fileSystem.File.ReadAllText(SorConfigPath);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new InvalidOperationException($"Required configuration file '{SorConfigPath}' not found.", e);
-            }
+            var json = sorConfigurationProvider.ConfigurationValue();
 
             IDictionary<string, IDictionary<string, dynamic>> soRMapping;
             try
@@ -34,7 +21,7 @@ namespace HousingRepairsOnlineApi.Helpers
             }
             catch (JsonException e)
             {
-                throw new InvalidOperationException($"Contents of configuration file {SorConfigPath} is malformed.", e);
+                throw new InvalidOperationException($"Contents of SOR configuration value is malformed JSON.", e);
             }
 
             services.AddTransient<ISoREngine, SoREngine>(_ => new SoREngine(soRMapping));
