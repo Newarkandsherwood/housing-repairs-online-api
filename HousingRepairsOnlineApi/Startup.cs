@@ -32,7 +32,7 @@ namespace HousingRepairsOnlineApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSoREngine(new FileSorConfigurationProvider("SoRConfig.json"));
+            services.AddSoREngine(new EnvironmentVariableSorConfigurationProvider());
 
             services.AddTransient<IRetrieveAddressesUseCase, RetrieveAddressesUseCase>();
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
