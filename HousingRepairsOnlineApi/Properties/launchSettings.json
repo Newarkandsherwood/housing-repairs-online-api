@@ -41,7 +41,8 @@
         "INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID": "<REPLACE WITH GOV NOTIFY INTERNAL EMAIL TEMPLATE ID>",
         "INTERNAL_EMAIL": "<REPLACE WITH CSA INTERNAL EMAIL>",
         "DAYS_UNTIL_IMAGE_EXPIRY": "<REPLACE WITH NUMBER OF DAYS BEFORE IMAGE SAS URI EXPIRES>",
-        "SENTRY_DNS": "https://<REPLACE WITH SENTRY DSN>"
+        "SENTRY_DNS": "https://<REPLACE WITH SENTRY DSN>",
+        "SOR_CONFIGURATION": "{\"kitchen\":{\"cupboards\":{\"doorHangingOff\":\"<enter sor code>\",\"doorMissing\":\"<enter sor code>\"},\"worktop\":{\"damaged\":\"<enter sor code>\"},\"dampMould\":{\"dampMould\":\"<enter sor code>\"},\"electrical\":{\"extractorFan\":\"<enter sor code>\",\"sockets\":\"<enter sor code>\",\"lightFitting\":\"<enter sor code>\"},\"sink\":{\"taps\":\"<enter sor code>\",\"pipeworkLeak\":\"<enter sor code>\"},\"wallsFloorsCeiling\":{\"wallTiles\":\"<enter sor code>\",\"floorTiles\":\"<enter sor code>\",\"lightFitting\":\"<enter sor code>\",\"skirtingBoardArchitrave\":\"<enter sor code>\",\"plasteringCeiling\":\"<enter sor code>\",\"plasteringWalls\":\"<enter sor code>\"},\"window\":{\"stuckShut\":\"<enter sor code>\",\"condensation\":\"<enter sor code>\"},\"door\":{\"backDoorWooden\":\"<enter sor code>\",\"backDoorUPVC\":\"<enter sor code>\",\"backFrenchDoors\":\"<enter sor code>\",\"internal\":\"<enter sor code>\",\"sliding\":\"<enter sor code>\"}},\"bathroom\":{\"bath\":{\"bathTaps\":\"<enter sor code>\",\"sealAroundBath\":\"<enter sor code>\",\"bathPanel\":\"<enter sor code>\",\"bathBlockage\":\"<enter sor code>\"},\"shower\":{\"electricShower\":\"<enter sor code>\",\"showerTap\":\"<enter sor code>\",\"showerHose\":\"<enter sor code>\",\"showerHead\":\"<enter sor code>\"},\"sink\":{\"sinkTaps\":\"<enter sor code>\",\"damagedSink\":\"<enter sor code>\",\"leakBlockedSink\":\"<enter sor code>\"},\"toilet\":{\"notFlushing\":\"<enter sor code>\",\"overflowing\":\"<enter sor code>\",\"looseFromFloor\":\"<enter sor code>\"}}}"
       }
     }
   }
