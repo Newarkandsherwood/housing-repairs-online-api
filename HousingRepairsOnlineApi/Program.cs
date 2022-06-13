@@ -18,7 +18,7 @@ namespace HousingRepairsOnlineApi
                 {
                     webBuilder.UseSentry(o =>
                     {
-                        o.Dsn = EnvironmentVariableHelper.GetEnvironmentVariable("SENTRY_DNS");
+                        o.Dsn = EnvironmentVariableHelper.GetEnvironmentVariable("SENTRY_DSN");
 
                         var environment = EnvironmentVariableHelper.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                         if (environment == Environments.Development)
