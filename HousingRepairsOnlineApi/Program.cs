@@ -1,4 +1,5 @@
 ﻿using System;
+using HousingRepairsOnlineApi.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -17,9 +18,9 @@ namespace HousingRepairsOnlineApi
                 {
                     // webBuilder.UseSentry(o =>
                     // {
-                    //     o.Dsn = Environment.GetEnvironmentVariable("SENTRY_DNS");
+                    //     o.Dsn = EnvironmentVariableHelper.GetEnvironmentVariable("SENTRY_DNS");
                     //
-                    //     var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    //     var environment = EnvironmentVariableHelper.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
                     //     if (environment == Environments.Development)
                     //     {
                     //         o.Debug = true;

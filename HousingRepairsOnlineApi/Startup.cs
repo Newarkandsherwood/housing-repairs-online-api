@@ -136,8 +136,8 @@ namespace HousingRepairsOnlineApi
             var cosmosEndpointUrl = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_ENDPOINT_URL");
             var cosmosAuthorizationKey = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_AUTHORIZATION_KEY");
             var cosmosDatabaseId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_DATABASE_ID");
-            var storageConnectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
-            var blobContainerName = Environment.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
+            var storageConnectionString = EnvironmentVariableHelper.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+            var blobContainerName = EnvironmentVariableHelper.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
 
             services.AddHealthChecks()
                 .AddUrlGroup(new Uri(@$"{addressesApiUrl}/health"), "Addresses API")
@@ -148,8 +148,8 @@ namespace HousingRepairsOnlineApi
 
         private static BlobContainerClient GetBlobContainerClient()
         {
-            string storageConnectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
-            string blobContainerName = Environment.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
+            string storageConnectionString = EnvironmentVariableHelper.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+            string blobContainerName = EnvironmentVariableHelper.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
 
             BlobServiceClient blobServiceClient = new BlobServiceClient(storageConnectionString);
             BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
