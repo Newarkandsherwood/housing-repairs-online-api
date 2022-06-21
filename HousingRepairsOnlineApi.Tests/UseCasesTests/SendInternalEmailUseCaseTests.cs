@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.UseCases;
@@ -29,16 +28,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidBookingRefArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidBookingRef_WhenExecute_ThenExceptionIsThrown<T>(T exception, string bookingRef) where T : Exception
+        public void GivenAnInvalidBookingRef_WhenExecute_ThenExceptionIsThrown<T>(T exception, string bookingRef) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 bookingRef, "address", "sor", "uprn", "repair description", "contact no", "image"
                 );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidAddressArgumentTestData()
@@ -50,16 +49,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidAddressArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidAddress_WhenExecute_ThenExceptionIsThrown<T>(T exception, string address) where T : Exception
+        public void GivenAnInvalidAddress_WhenExecute_ThenExceptionIsThrown<T>(T exception, string address) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 "bookingRef", address, "sor", "uprn", "repair description", "contact no", "image"
                 );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidSorArgumentTestData()
@@ -71,16 +70,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidSorArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidSor_WhenExecute_ThenExceptionIsThrown<T>(T exception, string sor) where T : Exception
+        public void GivenAnInvalidSor_WhenExecute_ThenExceptionIsThrown<T>(T exception, string sor) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 "bookingRef", "address", sor, "uprn", "repair description", "contact no", "image"
             );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidUprnArgumentTestData()
@@ -92,16 +91,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidUprnArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidUprn_WhenExecute_ThenExceptionIsThrown<T>(T exception, string uprn) where T : Exception
+        public void GivenAnInvalidUprn_WhenExecute_ThenExceptionIsThrown<T>(T exception, string uprn) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 "bookingRef", "address", "sor", uprn, "repair description", "07465087654", "image"
             );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidRepairDescriptionArgumentTestData()
@@ -113,16 +112,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidRepairDescriptionArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidRepairDescription_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairDescription) where T : Exception
+        public void GivenAnInvalidRepairDescription_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairDescription) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 "bookingRef", "address", "sor", "uprn", repairDescription, "07465087654", "image"
             );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidContactNumberArgumentTestData()
@@ -134,16 +133,16 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidContactNumberArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidContactNumber_WhenExecute_ThenExceptionIsThrown<T>(T exception, string contactNumber) where T : Exception
+        public void GivenAnInvalidContactNumber_WhenExecute_ThenExceptionIsThrown<T>(T exception, string contactNumber) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(
+            Action act = () => systemUnderTest.Execute(
                 "bookingRef", "address", "sor", "uprn", "repair description", contactNumber, "image"
             );
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         public static IEnumerable<object[]> InvalidImageArgumentTestData()
@@ -153,7 +152,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenNoImage_WhenExecute_ThenGovNotifyGateWayIsCalled()
+        public void GivenNoImage_WhenExecute_ThenGovNotifyGateWayIsCalled()
         {
             //Act
             const string Base64Img = "";
@@ -165,7 +164,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenValidParameters_WhenExecute_ThenGovNotifyGateWayIsCalled()
+        public void GivenValidParameters_WhenExecute_ThenGovNotifyGateWayIsCalled()
         {
             //Act
             const string Base64Img = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpaJVB4uIOGSoThZERRy1CkWoEGqFVh1MXvojNGlIUlwcBdeCgz+LVQcXZ10dXAVB8AfE0clJ0UVKvC8ptIjxwuN9nHfP4b37AKFWYprVNgZoum2mEnExk10RQ68IIIQe9KNLZpYxK0lJ+NbXPXVT3cV4ln/fn9Wt5iwGBETiGWaYNvE68dSmbXDeJ46woqwSnxOPmnRB4keuKx6/cS64LPDMiJlOzRFHiMVCCystzIqmRjxJHFU1nfKFjMcq5y3OWqnCGvfkLwzn9OUlrtMaQgILWIQEEQoq2EAJNmK066RYSNF53Mc/6Polcink2gAjxzzK0CC7fvA/+D1bKz8x7iWF40D7i+N8DAOhXaBedZzvY8epnwDBZ+BKb/rLNWD6k/RqU4seAb3bwMV1U1P2gMsdYODJkE3ZlYK0hHweeD+jb8oCfbdA56o3t8Y5Th+ANM0qeQMcHAIjBcpe83l3R+vc/u1pzO8H+I9yds6VEEcAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfmAQcOFjXsyx/IAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAAxJREFUCNdj0HiTBAACtgF3wqeo5gAAAABJRU5ErkJggg==";
