@@ -17,7 +17,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenAPhotoUrl_WhenExecute_ThenGatewayIsCalled()
+        public void GivenAPhotoUrl_WhenExecute_ThenGatewayIsCalled()
         {
             const string BlobName = "//https://housingrepairsonline.blob.core.windows.net/housing-repairs-online/0f6780dd-ce73-44f9-b64c-b56c061560ea.png";
             mockAzureStorageGateway.Setup(x =>

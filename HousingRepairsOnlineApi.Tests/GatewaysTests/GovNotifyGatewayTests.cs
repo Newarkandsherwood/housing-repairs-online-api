@@ -19,7 +19,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async Task GivenNoException_WhenSendSms_ThenSendSmsIsCalledOnClient()
+        public void GivenNoException_WhenSendSms_ThenSendSmsIsCalledOnClient()
         {
             //Arrange
             var personalisation = new Dictionary<string, dynamic>
@@ -38,7 +38,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async Task GivenNoException_WhenSendSms_ThenSendSmsResponseIsReturned()
+        public void GivenNoException_WhenSendSms_ThenSendSmsResponseIsReturned()
         {
             //Arrange
             var personalisation = new Dictionary<string, dynamic>
@@ -59,7 +59,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async Task GivenNoException_WhenSendEmail_ThenSendEmailIsCalledOnClient()
+        public void GivenNoException_WhenSendEmail_ThenSendEmailIsCalledOnClient()
         {
             //Arrange
             var personalisation = new Dictionary<string, dynamic>
@@ -81,7 +81,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async Task GivenNoException_WhenSendEmail_ThenSendEmailResponseIsReturned()
+        public void GivenNoException_WhenSendEmail_ThenSendEmailResponseIsReturned()
         {
             //Arrange
             var personalisation = new Dictionary<string, dynamic>

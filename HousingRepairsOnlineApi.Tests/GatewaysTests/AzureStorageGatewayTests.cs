@@ -47,7 +47,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async void GivenABlob_WhenGetBlobSasUri_ThenASasUriIsGenerated()
+        public void GivenABlob_WhenGetBlobSasUri_ThenASasUriIsGenerated()
         {
             // Arrange
             const string blobName = "something.png";
@@ -74,7 +74,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             mockBlobClient.Verify(x => x.GenerateSasUri(It.IsAny<BlobSasBuilder>()), Times.Once);
         }
         [Fact]
-        public async void GivenInvalidPermissions_WhenGetBlobSasUri_ThenExceptionIsThrown()
+        public void GivenInvalidPermissions_WhenGetBlobSasUri_ThenExceptionIsThrown()
         {
             // Arrange
             const string blobName = "something.png";
@@ -87,7 +87,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             mockStorageContainerClient.Setup(x => x.GetBlobClient(It.IsAny<string>()))
                 .Returns(mockBlobClient.Object);
 
-            await Assert.ThrowsAsync<Exception>(async () =>
+            Assert.Throws<Exception>(() =>
             {
                 azureStorageGateway.GetUriForBlob(blobName, 100, "anything");
             });

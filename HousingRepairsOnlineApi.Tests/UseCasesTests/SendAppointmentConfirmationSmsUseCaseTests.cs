@@ -30,14 +30,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidNumberArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidNumber_WhenExecute_ThenExceptionIsThrown<T>(T exception, string number) where T : Exception
+        public void GivenAnInvalidNumber_WhenExecute_ThenExceptionIsThrown<T>(T exception, string number) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute(number, "bookingRef", "08:00am");
+            Action act = () => systemUnderTest.Execute(number, "bookingRef", "08:00am");
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         //Arrange
@@ -50,14 +50,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidBookingRefArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidBookingRef_WhenExecute_ThenExceptionIsThrown<T>(T exception, string bookingRef) where T : Exception
+        public void GivenAnInvalidBookingRef_WhenExecute_ThenExceptionIsThrown<T>(T exception, string bookingRef) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute("number", bookingRef, "08:00am");
+            Action act = () => systemUnderTest.Execute("number", bookingRef, "08:00am");
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         //Arrange
@@ -70,18 +70,18 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Theory]
         [MemberData(nameof(InvalidAppointmentTimeArgumentTestData))]
 #pragma warning disable xUnit1026
-        public async void GivenAnInvalidAppointmentTime_WhenExecute_ThenExceptionIsThrown<T>(T exception, string appointmentTime) where T : Exception
+        public void GivenAnInvalidAppointmentTime_WhenExecute_ThenExceptionIsThrown<T>(T exception, string appointmentTime) where T : Exception
 #pragma warning restore xUnit1026
         {
             //Act
-            Func<Task> act = async () => systemUnderTest.Execute("number", "bookingRef", appointmentTime);
+            Action act = () => systemUnderTest.Execute("number", "bookingRef", appointmentTime);
 
             //Assert
-            await act.Should().ThrowExactlyAsync<T>();
+            act.Should().ThrowExactly<T>();
         }
 
         [Fact]
-        public async void GivenValidParameters_WhenExecute_ThenGovNotifyGateWayIsCalled()
+        public void GivenValidParameters_WhenExecute_ThenGovNotifyGateWayIsCalled()
         {
             //Act
             systemUnderTest.Execute("07415300544", "bookingRef", "10:00am");
