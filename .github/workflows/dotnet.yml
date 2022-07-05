@@ -92,25 +92,25 @@ jobs:
       - name: Add env file
         run: |
           touch env.tfvars
-          echo "storage_account_name=${{secrets.STORAGE_ACCOUNT_NAME}}" >> env.tfvars
-          echo "service_name=${{secrets.SERVICE_NAME}}" >> env.tfvars
-          echo "storage_container_name=${{secrets.STORAGE_CONTAINER_NAME}}" >> env.tfvars
-          echo "storage_container_name_staging=${{secrets.STORAGE_CONTAINER_NAME_STAGING}}" >> env.tfvars
-          echo "container_name=${{secrets.CONTAINER_NAME}}" >> env.tfvars
-          echo "resource_group_name=${{secrets.RESOURCE_GROUP_NAME}}" >> env.tfvars
-          echo "resource_group_location=${{secrets.RESOURCE_GROUP_LOCATION}}" >> env.tfvars 
-          echo "key=${{secrets.STORAGE_ACCOUNT_KEY}}" >> env.tfvars
+          echo "storage_account_name=XXX" >> env.tfvars
+          echo "service_name=XXX" >> env.tfvars
+          echo "storage_container_name=XXX" >> env.tfvars
+          echo "storage_container_name_staging=XXX" >> env.tfvars
+          echo "container_name=XXX" >> env.tfvars
+          echo "resource_group_name=XXX" >> env.tfvars
+          echo "resource_group_location=XXX" >> env.tfvars 
+          echo "key=XXX" >> env.tfvars
           echo "environment=staging" >> env.tfvars
           echo "gov_notify_key=\"XXX\"" >> env.tfvars 
           echo "address_api_url=\"XXX\"" >> env.tfvars
-          echo "authentication_identifier=${{secrets.AUTHENTICATION_IDENTIFIER}}" >> env.tfvars
+          echo "authentication_identifier=XXX" >> env.tfvars
           echo "internal_email=\"XXX\"" >> env.tfvars
           echo "confirmation_email_notify_template_id=\"XXX\"" >> env.tfvars
           echo "confirmation_sms_notify_template_id=\"XXX\"" >> env.tfvars
           echo "internal_email_notify_template_id=\"XXX\"" >> env.tfvars 
-          echo "days_until_image_expiry=\"XXX\"" >> env.tfvars s
+          echo "days_until_image_expiry=\"XXX\"" >> env.tfvars
           echo "scheduling_api_url=\"XXX\"" >> env.tfvars
-          echo "jwt_secret=${{secrets.JWT_SECRET}}" >> env.tfvars 
+          echo "jwt_secret=XXX" >> env.tfvars 
           echo "sentry_dsn=\"XXX\"" >> env.tfvars
           echo "sor_configuration=\"XXX\"" >> env.tfvars
 
