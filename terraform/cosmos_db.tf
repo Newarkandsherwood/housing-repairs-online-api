@@ -4,7 +4,7 @@ resource "azurerm_cosmosdb_account" "hro-api" {
   resource_group_name = var.resource_group_name
   offer_type          = "Standard"
   consistency_policy {
-    consistency_level       = "Session"
+    consistency_level = "Session"
   }
   geo_location {
     location          = var.resource_group_location
