@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "hro-api" {
-  name                = "hro-api"
+  name                = var.service_name
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
   sku_name            = "P1v2"
@@ -34,13 +34,13 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     SCHEDULING_API_URL                    = var.scheduling_api_url
     SENTRY_DSN                            = var.sentry_dsn
     SOR_CONFIGURATION                     = var.sor_configuration
-    STORAGE_CONTAINER_NAME                = "housing-repairs-online-staging"
+    STORAGE_CONTAINER_NAME                = var.storage_container_name_staging
   }
   site_config {}
 }
 
 resource "azurerm_windows_web_app" "hro-api" {
-  name                = "hro-api"
+  name                = var.service_name
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
   service_plan_id     = azurerm_service_plan.hro-api.id
@@ -64,6 +64,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     SCHEDULING_API_URL                    = var.scheduling_api_url
     SENTRY_DSN                            = var.sentry_dsn
     SOR_CONFIGURATION                     = var.sor_configuration
-    STORAGE_CONTAINER_NAME                = "housing-repairs-online"
+    STORAGE_CONTAINER_NAME                = var.storage_container_name
+
   }
 }

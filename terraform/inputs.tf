@@ -1,6 +1,15 @@
 variable "storage_account_name" {
   type = string
 }
+variable "service_name" {
+  type = string
+}
+variable "storage_container_name" {
+  type = string
+}
+variable "storage_container_name_staging" {
+  type = string
+}
 variable "container_name" {
   type = string
 }
