@@ -109,8 +109,8 @@ jobs:
           echo "days_until_image_expiry=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY}}\"" >> env.tfvars
           echo "scheduling_api_url_production=\"${{secrets.SCHEDULING_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "scheduling_api_url_staging=\"${{secrets.SCHEDULING_API_URL_STAGING}}\"" >> env.tfvars
-          echo "jwt_secret_staging=${{secrets.JWT_SECRET_STAGING}}" >> env.tfvars 
-          echo "jwt_secret_production=${{secrets.JWT_SECRET_PRODUCTION}}" >> env.tfvars 
+          echo "jwt_secret_staging=\"${{secrets.JWT_SECRET_STAGING}}\"" >> env.tfvars 
+          echo "jwt_secret_production=\"${{secrets.JWT_SECRET_PRODUCTION}}\"" >> env.tfvars 
           echo "sentry_dsn=\"${{secrets.SENTRY_DSN}}\"" >> env.tfvars
           echo "sor_configuration=\"${{secrets.SOR_CONFIG}}\"" >> env.tfvars
 

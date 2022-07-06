@@ -46,7 +46,7 @@ variable "days_until_image_expiry" {
 variable "scheduling_api_url_production" {
   type = string
 }
-variable "scheduling_api_url_staginng" {
+variable "scheduling_api_url_staging" {
   type = string
 }
 variable "jwt_secret_production" {

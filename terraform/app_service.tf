@@ -60,7 +60,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     INTERNAL_EMAIL                        = var.internal_email
     INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
     JWT_SECRET                            = var.jwt_secret_staging
-    SCHEDULING_API_URL                    = var.scheduling_api_url_staginng
+    SCHEDULING_API_URL                    = var.scheduling_api_url_staging
     SENTRY_DSN                            = var.sentry_dsn
     SOR_CONFIGURATION                     = var.sor_configuration
     STORAGE_CONTAINER_NAME                = var.storage_container_name_staging
