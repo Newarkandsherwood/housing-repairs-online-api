@@ -1,5 +1,5 @@
 resource "azurerm_cosmosdb_account" "hro-api" {
-  name                = "hro-api-${var.environment}"
+  name                = var.service_name
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
   offer_type          = "Standard"
