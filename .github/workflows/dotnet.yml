@@ -98,7 +98,8 @@ jobs:
           echo "storage_container_name_staging=\"${{secrets.STORAGE_CONTAINER_NAME_STAGING}}\"" >> env.tfvars
           echo "resource_group_name=\"${{secrets.RESOURCE_GROUP_NAME}}\"" >> env.tfvars
           echo "resource_group_location=\"${{secrets.RESOURCE_GROUP_LOCATION}}\"" >> env.tfvars 
-          echo "gov_notify_key=\"${{secrets.GOV_NOTIFY_KEY}}\"" >> env.tfvars 
+          echo "gov_notify_key_production=\"${{secrets.GOV_NOTIFY_KEY_PRODUCTION}}\"" >> env.tfvars 
+          echo "gov_notify_key_staging=\"${{secrets.GOV_NOTIFY_KEY_STAGING}}\"" >> env.tfvars 
           echo "addresses_api_url_production=\"${{secrets.ADDRESSES_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "addresses_api_url_staging=\"${{secrets.ADDRESSES_API_URL_STAGING}}\"" >> env.tfvars
           echo "authentication_identifier=\"${{secrets.AUTHENTICATION_IDENTIFIER}}\"" >> env.tfvars

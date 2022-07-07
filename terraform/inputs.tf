@@ -16,7 +16,10 @@ variable "resource_group_name" {
 variable "resource_group_location" {
   type = string
 }
-variable "gov_notify_key" {
+variable "gov_notify_key_production" {
+  type = string
+}
+variable "gov_notify_key_staging" {
   type = string
 }
 variable "addresses_api_url_production" {

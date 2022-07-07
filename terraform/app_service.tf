@@ -29,7 +29,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = var.confirmation_email_notify_template_id
     CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = var.confirmation_sms_notify_template_id
     DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry
-    GOV_NOTIFY_KEY                        = var.gov_notify_key
+    GOV_NOTIFY_KEY                        = var.gov_notify_key_production
     INTERNAL_EMAIL                        = var.internal_email
     INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
     JWT_SECRET                            = var.jwt_secret_production
@@ -56,7 +56,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = var.confirmation_email_notify_template_id
     CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = var.confirmation_sms_notify_template_id
     DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry
-    GOV_NOTIFY_KEY                        = var.gov_notify_key
+    GOV_NOTIFY_KEY                        = var.gov_notify_key_staging
     INTERNAL_EMAIL                        = var.internal_email
     INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
     JWT_SECRET                            = var.jwt_secret_staging
