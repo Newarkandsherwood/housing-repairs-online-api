@@ -39,6 +39,9 @@ resource "azurerm_windows_web_app" "hro-api" {
     STORAGE_CONTAINER_NAME                = var.storage_container_name_production
 
   }
+  auth_settings {
+    enabled = false
+  }
 }
 resource "azurerm_windows_web_app_slot" "hro-api" {
   name           = "staging"
@@ -66,5 +69,8 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     STORAGE_CONTAINER_NAME                = var.storage_container_name_staging
   }
   site_config {}
+  auth_settings {
+    enabled = false
+  }
 }
 
