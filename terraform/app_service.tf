@@ -44,7 +44,7 @@ resource "azurerm_windows_web_app" "hro-api" {
   }
 }
 resource "azurerm_windows_web_app_slot" "hro-api" {
-  name           = "staging"
+  name           = "Staging"
   app_service_id = azurerm_windows_web_app.hro-api.id
 
   app_settings = {
