@@ -70,7 +70,6 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
     runs-on: ubuntu-latest
-    environment: "Staging"
 
     defaults:
       run:
@@ -97,21 +96,21 @@ jobs:
           echo "storage_container_name_production=\"${{secrets.STORAGE_CONTAINER_NAME_PRODUCTION}}\"" >> env.tfvars
           echo "storage_container_name_staging=\"${{secrets.STORAGE_CONTAINER_NAME_STAGING}}\"" >> env.tfvars
           echo "resource_group_name=\"${{secrets.RESOURCE_GROUP_NAME}}\"" >> env.tfvars
-          echo "resource_group_location=\"${{secrets.RESOURCE_GROUP_LOCATION}}\"" >> env.tfvars 
-          echo "gov_notify_key_production=\"${{secrets.GOV_NOTIFY_KEY_PRODUCTION}}\"" >> env.tfvars 
-          echo "gov_notify_key_staging=\"${{secrets.GOV_NOTIFY_KEY_STAGING}}\"" >> env.tfvars 
+          echo "resource_group_location=\"${{secrets.RESOURCE_GROUP_LOCATION}}\"" >> env.tfvars
+          echo "gov_notify_key_production=\"${{secrets.GOV_NOTIFY_KEY_PRODUCTION}}\"" >> env.tfvars
+          echo "gov_notify_key_staging=\"${{secrets.GOV_NOTIFY_KEY_STAGING}}\"" >> env.tfvars
           echo "addresses_api_url_production=\"${{secrets.ADDRESSES_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "addresses_api_url_staging=\"${{secrets.ADDRESSES_API_URL_STAGING}}\"" >> env.tfvars
           echo "authentication_identifier=\"${{secrets.AUTHENTICATION_IDENTIFIER}}\"" >> env.tfvars
           echo "internal_email=\"${{secrets.INTERNAL_EMAIL}}\"" >> env.tfvars
           echo "confirmation_email_notify_template_id=\"${{secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "confirmation_sms_notify_template_id=\"${{secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
-          echo "internal_email_notify_template_id=\"${{secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars 
+          echo "internal_email_notify_template_id=\"${{secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "days_until_image_expiry=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY}}\"" >> env.tfvars
           echo "scheduling_api_url_production=\"${{secrets.SCHEDULING_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "scheduling_api_url_staging=\"${{secrets.SCHEDULING_API_URL_STAGING}}\"" >> env.tfvars
-          echo "jwt_secret_staging=\"${{secrets.JWT_SECRET_STAGING}}\"" >> env.tfvars 
-          echo "jwt_secret_production=\"${{secrets.JWT_SECRET_PRODUCTION}}\"" >> env.tfvars 
+          echo "jwt_secret_staging=\"${{secrets.JWT_SECRET_STAGING}}\"" >> env.tfvars
+          echo "jwt_secret_production=\"${{secrets.JWT_SECRET_PRODUCTION}}\"" >> env.tfvars
           echo "sentry_dsn=\"${{secrets.SENTRY_DSN}}\"" >> env.tfvars
           echo "sor_configuration=\"${{secrets.SOR_CONFIG}}\"" >> env.tfvars
 
