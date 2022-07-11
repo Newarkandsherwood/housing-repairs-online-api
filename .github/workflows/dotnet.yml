@@ -117,10 +117,6 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate -no-color
-
-      - name: Terraform destroy
-        run: terraform destroy -auto-approve -var-file="env.tfvars"
-
       - name: Terraform Plan
         run: terraform plan -var-file="env.tfvars"
 
@@ -166,7 +162,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "Staging"
+          app-name: ${{secrets.SERVICE_NAME}}
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PRODUCTION }}
           package: .
