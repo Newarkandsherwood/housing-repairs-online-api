@@ -24,18 +24,18 @@ resource "azurerm_windows_web_app" "hro-api" {
     COSMOS_ENDPOINT_URL                   = azurerm_cosmosdb_account.hro-api.endpoint
     ADDRESSES_API_URL                     = var.addresses_api_url_production
     ASPNETCORE_ENVIRONMENT                = "production"
-    AUTHENTICATION_IDENTIFIER             = var.authentication_identifier
+    AUTHENTICATION_IDENTIFIER             = var.authentication_identifier_production
     AZURE_STORAGE_CONNECTION_STRING       = data.azurerm_storage_account.hro-api.primary_connection_string
     CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = var.confirmation_email_notify_template_id
     CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = var.confirmation_sms_notify_template_id
-    DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry
+    DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry_production
     GOV_NOTIFY_KEY                        = var.gov_notify_key_production
-    INTERNAL_EMAIL                        = var.internal_email
+    INTERNAL_EMAIL                        = var.internal_email_production
     INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
     JWT_SECRET                            = var.jwt_secret_production
     SCHEDULING_API_URL                    = var.scheduling_api_url_production
     SENTRY_DSN                            = var.sentry_dsn
-    SOR_CONFIGURATION                     = var.sor_configuration
+    SOR_CONFIGURATION                     = var.sor_configuration_production
     STORAGE_CONTAINER_NAME                = var.storage_container_name_production
 
   }
@@ -54,18 +54,18 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     COSMOS_ENDPOINT_URL                   = azurerm_cosmosdb_account.hro-api.endpoint
     ADDRESSES_API_URL                     = var.addresses_api_url_staging
     ASPNETCORE_ENVIRONMENT                = "staging"
-    AUTHENTICATION_IDENTIFIER             = var.authentication_identifier
+    AUTHENTICATION_IDENTIFIER             = var.authentication_identifier_staging
     AZURE_STORAGE_CONNECTION_STRING       = data.azurerm_storage_account.hro-api.primary_connection_string
     CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = var.confirmation_email_notify_template_id
     CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = var.confirmation_sms_notify_template_id
-    DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry
+    DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry_staging
     GOV_NOTIFY_KEY                        = var.gov_notify_key_staging
-    INTERNAL_EMAIL                        = var.internal_email
+    INTERNAL_EMAIL                        = var.internal_email_staging
     INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
     JWT_SECRET                            = var.jwt_secret_staging
     SCHEDULING_API_URL                    = var.scheduling_api_url_staging
     SENTRY_DSN                            = var.sentry_dsn
-    SOR_CONFIGURATION                     = var.sor_configuration
+    SOR_CONFIGURATION                     = var.sor_configuration_staging
     STORAGE_CONTAINER_NAME                = var.storage_container_name_staging
   }
   site_config {}
