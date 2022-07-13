@@ -28,10 +28,16 @@ variable "addresses_api_url_production" {
 variable "addresses_api_url_staging" {
   type = string
 }
-variable "authentication_identifier" {
+variable "authentication_identifier_production" {
   type = string
 }
-variable "internal_email" {
+variable "authentication_identifier_staging" {
+  type = string
+}
+variable "internal_email_production" {
+  type = string
+}
+variable "internal_email_staging" {
   type = string
 }
 variable "confirmation_email_notify_template_id" {
@@ -43,7 +49,10 @@ variable "confirmation_sms_notify_template_id" {
 variable "internal_email_notify_template_id" {
   type = string
 }
-variable "days_until_image_expiry" {
+variable "days_until_image_expiry_production" {
+  type = string
+}
+variable "days_until_image_expiry_staging" {
   type = string
 }
 variable "scheduling_api_url_production" {
@@ -61,6 +70,9 @@ variable "jwt_secret_staging" {
 variable "sentry_dsn" {
   type = string
 }
-variable "sor_configuration" {
+variable "sor_configuration_production" {
+  type = string
+}
+variable "sor_configuration_staging" {
   type = string
 }

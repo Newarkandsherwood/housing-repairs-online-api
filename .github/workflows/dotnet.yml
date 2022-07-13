@@ -101,18 +101,22 @@ jobs:
           echo "gov_notify_key_staging=\"${{secrets.GOV_NOTIFY_KEY_STAGING}}\"" >> env.tfvars
           echo "addresses_api_url_production=\"${{secrets.ADDRESSES_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "addresses_api_url_staging=\"${{secrets.ADDRESSES_API_URL_STAGING}}\"" >> env.tfvars
-          echo "authentication_identifier=\"${{secrets.AUTHENTICATION_IDENTIFIER}}\"" >> env.tfvars
-          echo "internal_email=\"${{secrets.INTERNAL_EMAIL}}\"" >> env.tfvars
+          echo "authentication_identifier_production=\"${{secrets.AUTHENTICATION_IDENTIFIER_PRODUCTION}}\"" >> env.tfvars
+          echo "authentication_identifier_staging=\"${{secrets.AUTHENTICATION_IDENTIFIER_STAGING}\"" >> env.tfvars
+          echo "internal_email_production=\"${{secrets.INTERNAL_EMAIL_PRODUCTION}}\"" >> env.tfvars
+          echo "internal_email_staging=\"${{secrets.INTERNAL_EMAIL_STAGING}}\"" >> env.tfvars
           echo "confirmation_email_notify_template_id=\"${{secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "confirmation_sms_notify_template_id=\"${{secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "internal_email_notify_template_id=\"${{secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
-          echo "days_until_image_expiry=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY}}\"" >> env.tfvars
+          echo "days_until_image_expiry_production=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION}}\"" >> env.tfvars
+          echo "days_until_image_expiry_staging=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY_STAGING}}\"" >> env.tfvars
           echo "scheduling_api_url_production=\"${{secrets.SCHEDULING_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "scheduling_api_url_staging=\"${{secrets.SCHEDULING_API_URL_STAGING}}\"" >> env.tfvars
           echo "jwt_secret_staging=\"${{secrets.JWT_SECRET_STAGING}}\"" >> env.tfvars
           echo "jwt_secret_production=\"${{secrets.JWT_SECRET_PRODUCTION}}\"" >> env.tfvars
           echo "sentry_dsn=\"${{secrets.SENTRY_DSN}}\"" >> env.tfvars
-          echo "sor_configuration=\"${{secrets.SOR_CONFIG}}\"" >> env.tfvars
+          echo "sor_configuration_production=\"${{secrets.SOR_CONFIG_PRODUCTION}}\"" >> env.tfvars
+          echo "sor_configuration_staging=\"${{secrets.SOR_CONFIG_STAGING}}\"" >> env.tfvars
 
       - name: Terraform Validate
         run: terraform validate -no-color
