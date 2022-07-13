@@ -16,7 +16,7 @@ resource "azurerm_windows_web_app" "hro-api" {
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
   service_plan_id     = azurerm_service_plan.hro-api.id
-  https_only = true
+  https_only          = true
   site_config {
     health_check_path = "/health"
   }
@@ -49,7 +49,7 @@ resource "azurerm_windows_web_app" "hro-api" {
 resource "azurerm_windows_web_app_slot" "hro-api" {
   name           = "Staging"
   app_service_id = azurerm_windows_web_app.hro-api.id
-  https_only = true
+  https_only     = true
   site_config {
     health_check_path = "/health"
   }
