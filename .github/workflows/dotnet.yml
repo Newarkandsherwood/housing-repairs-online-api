@@ -102,7 +102,7 @@ jobs:
           echo "addresses_api_url_production=\"${{secrets.ADDRESSES_API_URL_PRODUCTION}}\"" >> env.tfvars
           echo "addresses_api_url_staging=\"${{secrets.ADDRESSES_API_URL_STAGING}}\"" >> env.tfvars
           echo "authentication_identifier_production=\"${{secrets.AUTHENTICATION_IDENTIFIER_PRODUCTION}}\"" >> env.tfvars
-          echo "authentication_identifier_staging=\"${{secrets.AUTHENTICATION_IDENTIFIER_STAGING}\"" >> env.tfvars
+          echo "authentication_identifier_staging=\"${{secrets.AUTHENTICATION_IDENTIFIER_STAGING}}\"" >> env.tfvars
           echo "internal_email_production=\"${{secrets.INTERNAL_EMAIL_PRODUCTION}}\"" >> env.tfvars
           echo "internal_email_staging=\"${{secrets.INTERNAL_EMAIL_STAGING}}\"" >> env.tfvars
           echo "confirmation_email_notify_template_id=\"${{secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
