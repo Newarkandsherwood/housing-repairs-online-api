@@ -86,7 +86,7 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init
-        run: terraform init -backend-config="storage_account_name=${{secrets.STORAGE_ACCOUNT_NAME}}" -backend-config="resource_group_name=${{secrets.RESOURCE_GROUP_NAME}}" -backend-config="container_name=${{secrets.CONTAINER_NAME}}" -backend-config="key=${{secrets.STATE_KEY_NAME}}"
+        run: terraform init -reconfigure -backend-config="storage_account_name=${{secrets.STORAGE_ACCOUNT_NAME}}" -backend-config="resource_group_name=${{secrets.RESOURCE_GROUP_NAME}}" -backend-config="container_name=${{secrets.CONTAINER_NAME}}" -backend-config="key=${{secrets.STATE_KEY_NAME}}"
 
       - name: Add env file
         run: |
@@ -124,8 +124,8 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -var-file="env.tfvars"
 
-#      - name: Terraform destroy
-#        run: terraform destroy -auto-approve -var-file="env.tfvars"
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -var-file="env.tfvars"
 
       - name: Terraform Apply
         id: terraform_apply
