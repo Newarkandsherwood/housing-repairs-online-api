@@ -1,9 +1,6 @@
-resource "azurerm_service_plan" "hro-api" {
-  name                = var.service_name
+data "azurerm_service_plan" "hro-app-service-plan" {
+  name                = var.service_plan_name
   resource_group_name = var.resource_group_name
-  location            = var.resource_group_location
-  sku_name            = "P1v2"
-  os_type             = "Windows"
 }
 
 data "azurerm_storage_account" "hro-api" {
@@ -15,7 +12,7 @@ resource "azurerm_windows_web_app" "hro-api" {
   name                = var.service_name
   resource_group_name = var.resource_group_name
   location            = var.resource_group_location
-  service_plan_id     = azurerm_service_plan.hro-api.id
+  service_plan_id     = data.azurerm_service_plan.hro-app-service-plan.id
   https_only          = true
   site_config {
     health_check_path = "/health"
