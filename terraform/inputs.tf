@@ -76,3 +76,6 @@ variable "sor_configuration_production" {
 variable "sor_configuration_staging" {
   type = string
 }
+variable "service_plan_name" {
+  type = string
+}

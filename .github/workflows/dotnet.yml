@@ -118,6 +118,7 @@ jobs:
           echo "sentry_dsn=\"${{secrets.SENTRY_DSN}}\"" >> env.tfvars
           echo "sor_configuration_production=\"${{secrets.SOR_CONFIG_PRODUCTION}}\"" >> env.tfvars
           echo "sor_configuration_staging=\"${{secrets.SOR_CONFIG_STAGING}}\"" >> env.tfvars
+          echo "service_plan_name=\"${{secrets.SERVICE_PLAN_NAME}}\"" >> env.tfvars
 
       - name: Terraform Validate
         run: terraform validate -no-color
