@@ -127,13 +127,17 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate -no-color
+
       - name: Terraform Plan
         run: terraform plan -var-file="env.tfvars"
 
-      - name: Terraform Apply
-        id: terraform_apply
-        run: |
-          terraform apply -auto-approve -var-file="env.tfvars"
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve -var-file="env.tfvars"
+
+#      - name: Terraform Apply
+#        id: terraform_apply
+#        run: |
+#          terraform apply -auto-approve -var-file="env.tfvars"
 
   deploy-staging:
     name: "Deploy Staging"
