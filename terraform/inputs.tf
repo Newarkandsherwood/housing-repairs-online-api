@@ -79,3 +79,13 @@ variable "sor_configuration_staging" {
 variable "service_plan_name" {
   type = string
 }
+
+variable "azure_ad_tenant_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "service_principal_id" {
+  type      = string
+  sensitive = true
+}
