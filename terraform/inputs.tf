@@ -89,7 +89,3 @@ variable "azure_ad_tenant_id" {
   type      = string
   sensitive = true
 }
-variable "service_principal_id" {
-  type      = string
-  sensitive = true
-}
