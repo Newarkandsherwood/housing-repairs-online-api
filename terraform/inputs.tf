@@ -20,7 +20,8 @@ variable "gov_notify_key_production" {
   type = string
 }
 variable "gov_notify_key_staging" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "addresses_api_url_production" {
   type = string
@@ -29,10 +30,12 @@ variable "addresses_api_url_staging" {
   type = string
 }
 variable "authentication_identifier_production" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "authentication_identifier_staging" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "internal_email_production" {
   type = string
@@ -62,13 +65,16 @@ variable "scheduling_api_url_staging" {
   type = string
 }
 variable "jwt_secret_production" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "jwt_secret_staging" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "sentry_dsn" {
-  type = string
+  type      = string
+  sensitive = true
 }
 variable "sor_configuration_production" {
   type = string
@@ -79,12 +85,10 @@ variable "sor_configuration_staging" {
 variable "service_plan_name" {
   type = string
 }
-
 variable "azure_ad_tenant_id" {
   type      = string
   sensitive = true
 }
-
 variable "service_principal_id" {
   type      = string
   sensitive = true
