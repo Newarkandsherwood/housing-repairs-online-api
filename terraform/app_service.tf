@@ -14,9 +14,17 @@ resource "azurerm_windows_web_app" "hro-api" {
   location            = var.resource_group_location
   service_plan_id     = data.azurerm_service_plan.hro-app-service-plan.id
   https_only          = true
+
   site_config {
     health_check_path = "/health"
   }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id]
+  }
+
+  key_vault_reference_identity_id = azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id
 
   app_settings = {
     COSMOS_CONTAINER_ID                   = azurerm_cosmosdb_sql_container.hro-api.name
@@ -40,24 +48,20 @@ resource "azurerm_windows_web_app" "hro-api" {
     STORAGE_CONTAINER_NAME                = var.storage_container_name_production
 
   }
+
   auth_settings {
     enabled = false
   }
 }
+
 resource "azurerm_windows_web_app_slot" "hro-api" {
   name           = "Staging"
   app_service_id = azurerm_windows_web_app.hro-api.id
   https_only     = true
+
   site_config {
     health_check_path = "/health"
   }
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id]
-  }
-
-  key_vault_reference_identity_id = azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id
 
   app_settings = {
     COSMOS_CONTAINER_ID                   = azurerm_cosmosdb_sql_container.hro-api-staging.name
@@ -80,8 +84,8 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     SOR_CONFIGURATION                     = var.sor_configuration_staging
     STORAGE_CONTAINER_NAME                = var.storage_container_name_staging
   }
+
   auth_settings {
     enabled = false
   }
 }
-
