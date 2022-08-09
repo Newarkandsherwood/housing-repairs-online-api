@@ -63,6 +63,13 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     health_check_path = "/health"
   }
 
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id]
+  }
+
+  key_vault_reference_identity_id = azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id
+
   app_settings = {
     COSMOS_CONTAINER_ID                   = azurerm_cosmosdb_sql_container.hro-api-staging.name
     COSMOS_AUTHORIZATION_KEY              = azurerm_cosmosdb_account.hro-api.primary_key
