@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "hro-repairs-api-key-vault" {
-  name                       = "hro-repairs-api-key-vault"
+  name                       = "repairs-api-key-vault"
   location                   = var.resource_group_location
   resource_group_name        = var.resource_group_name
   tenant_id                  = var.azure_ad_tenant_id
