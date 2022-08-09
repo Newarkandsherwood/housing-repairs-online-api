@@ -71,7 +71,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
   infrastructure:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: "Provision Infrastructure"
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
@@ -131,10 +131,10 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -var-file="env.tfvars"
 
-      # - name: Terraform Apply
-      #   id: terraform_apply
-      #   run: |
-      #     terraform apply -auto-approve -var-file="env.tfvars"
+      - name: Terraform Apply
+        id: terraform_apply
+        run: |
+          terraform apply -auto-approve -var-file="env.tfvars"
 
   deploy-staging:
     name: "Deploy Staging"
