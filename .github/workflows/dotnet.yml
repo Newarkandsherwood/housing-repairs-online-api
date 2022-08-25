@@ -136,35 +136,78 @@ jobs:
         run: |
           terraform apply -auto-approve -var-file="env.tfvars"
 
-  deploy-staging:
-    name: "Deploy Staging"
- #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#   deploy-staging:
+#     name: "Deploy Staging"
+#  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#     runs-on: ubuntu-latest
+#     needs: [format, build, infrastructure]
+#     environment:
+#       name: "Staging"
+#       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+#     steps:
+#       - name: Add mask to obscure secrets in debug logs
+#         run: |
+#           echo "::add-mask::${{ secrets.COSMOS_CONTAINER_NAME_STAGING }}"
+#           echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_PRIMARY_KEY }}"
+#           echo "::add-mask::${{ secrets.COSMOS_DATABASE_NAME_STAGING }}"
+#           echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_ENDPOINT }}"
+#           echo "::add-mask::${{ secrets.ADDRESSES_API_URL_STAGING }}"
+#           echo "::add-mask::${{ secrets.AUTHENTICATION_IDENTIFIER_STAGING }}"
+#           echo "::add-mask::${{ secrets.STORAGE_ACCOUNT_PRIMARY_CONNECTION_STRING }}"
+#           echo "::add-mask::${{ secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
+#           echo "::add-mask::${{ secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
+#           echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_STAGING }}"
+#           echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_STAGING }}"
+#           echo "::add-mask::${{ secrets.INTERNAL_EMAIL_STAGING }}"
+#           echo "::add-mask::${{ secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
+#           echo "::add-mask::${{ secrets.JWT_SECRET_STAGING }}"
+#           echo "::add-mask::${{ secrets.SCHEDULING_API_URL_STAGING }}"
+#           echo "::add-mask::${{ secrets.SENTRY_DSN }}"
+#           echo "::add-mask::${{ secrets.SOR_CONFIG_STAGING }}"
+#           echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_STAGING }}"
+
+#       - name: Download artifact from build job
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: .net-app
+#       - name: Deploy to Azure Web App
+#         id: deploy-to-webapp
+#         uses: azure/webapps-deploy@v2
+#         with:
+#           app-name: ${{secrets.SERVICE_NAME}}
+#           slot-name: "Staging"
+#           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+#           package: .
+
+  deploy-production:
+    name: "Deploy Production"
     runs-on: ubuntu-latest
     needs: [format, build, infrastructure]
+    # needs: deploy-staging
     environment:
-      name: "Staging"
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
       - name: Add mask to obscure secrets in debug logs
         run: |
-          echo "::add-mask::${{ secrets.ADDRESSES_API_URL_STAGING }}"
-          echo "::add-mask::${{ secrets.AUTHENTICATION_IDENTIFIER_STAGING }}"
+          echo "::add-mask::${{ secrets.COSMOS_CONTAINER_NAME_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_PRIMARY_KEY }}"
+          echo "::add-mask::${{ secrets.COSMOS_DATABASE_NAME_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_ENDPOINT }}"
+          echo "::add-mask::${{ secrets.ADDRESSES_API_URL_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.AUTHENTICATION_IDENTIFIER_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.STORAGE_ACCOUNT_PRIMARY_CONNECTION_STRING }}"
           echo "::add-mask::${{ secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
-          echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_STAGING }}"
-          echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_STAGING }}"
-          echo "::add-mask::${{ secrets.INTERNAL_EMAIL_STAGING }}"
+          echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.INTERNAL_EMAIL_PRODUCTION }}"
           echo "::add-mask::${{ secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
-          echo "::add-mask::${{ secrets.JWT_SECRET_STAGING }}"
-          echo "::add-mask::${{ secrets.SCHEDULING_API_URL_STAGING }}"
+          echo "::add-mask::${{ secrets.JWT_SECRET_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.SCHEDULING_API_URL_PRODUCTION }}"
           echo "::add-mask::${{ secrets.SENTRY_DSN }}"
-          echo "::add-mask::${{ secrets.SOR_CONFIG_STAGING }}"
-          echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_STAGING }}"
-          echo "::add-mask::${{ secrets.COSMOS_CONTAINER_NAME_STAGING }}"
-          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_PRIMARY_KEY }}"
-          echo "::add-mask::${{ secrets.COSMOS_DATABASE_NAME_STAGING }}"
-          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_ENDPOINT }}"
-          echo "::add-mask::${{ secrets.STORAGE_ACCOUNT_PRIMARY_CONNECTION_STRING }}"
+          echo "::add-mask::${{ secrets.SOR_CONFIG_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_PRODUCTION }}"
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -175,26 +218,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{secrets.SERVICE_NAME}}
-          slot-name: "Staging"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PRODUCTION }}
           package: .
-  # deploy-production:
-  #   name: "Deploy Production"
-  #   runs-on: ubuntu-latest
-  #   needs: deploy-staging
-  #   environment:
-  #     name: "Production"
-  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-  #   steps:
-  #     - name: Download artifact from build job
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: .net-app
-  #     - name: Deploy to Azure Web App
-  #       id: deploy-to-webapp
-  #       uses: azure/webapps-deploy@v2
-  #       with:
-  #         app-name: ${{secrets.SERVICE_NAME}}
-  #         slot-name: "Production"
-  #         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PRODUCTION }}
-  #         package: .

@@ -27,25 +27,25 @@ resource "azurerm_windows_web_app" "hro-api" {
   key_vault_reference_identity_id = azurerm_user_assigned_identity.hro-repairs-api-vault-access-identity.id
 
   app_settings = {
-    COSMOS_CONTAINER_ID                   = azurerm_cosmosdb_sql_container.hro-api.name
-    COSMOS_AUTHORIZATION_KEY              = azurerm_cosmosdb_account.hro-api.primary_key
-    COSMOS_DATABASE_ID                    = azurerm_cosmosdb_sql_database.hro-api.name
-    COSMOS_ENDPOINT_URL                   = azurerm_cosmosdb_account.hro-api.endpoint
-    ADDRESSES_API_URL                     = var.addresses_api_url_production
+    COSMOS_CONTAINER_ID                   = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cosmos-container-id-production.id})"
+    COSMOS_AUTHORIZATION_KEY              = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cosmos-authorization-key.id})"
+    COSMOS_DATABASE_ID                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cosmos-database-id-production.id})"
+    COSMOS_ENDPOINT_URL                   = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cosmos-endpoint-url.id})"
+    ADDRESSES_API_URL                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.addresses-api-url-production.id})"
     ASPNETCORE_ENVIRONMENT                = "production"
-    AUTHENTICATION_IDENTIFIER             = var.authentication_identifier_production
-    AZURE_STORAGE_CONNECTION_STRING       = data.azurerm_storage_account.hro-api.primary_connection_string
-    CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = var.confirmation_email_notify_template_id
-    CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = var.confirmation_sms_notify_template_id
-    DAYS_UNTIL_IMAGE_EXPIRY               = var.days_until_image_expiry_production
-    GOV_NOTIFY_KEY                        = var.gov_notify_key_production
-    INTERNAL_EMAIL                        = var.internal_email_production
-    INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = var.internal_email_notify_template_id
-    JWT_SECRET                            = var.jwt_secret_production
-    SCHEDULING_API_URL                    = var.scheduling_api_url_production
-    SENTRY_DSN                            = var.sentry_dsn
-    SOR_CONFIGURATION                     = var.sor_configuration_production
-    STORAGE_CONTAINER_NAME                = var.storage_container_name_production
+    AUTHENTICATION_IDENTIFIER             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.authentication-identifier-production.id})"
+    AZURE_STORAGE_CONNECTION_STRING       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.azure-storage-connection-string.id})"
+    CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.confirmation-email-notify-template-id.id})"
+    CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.confirmation-sms-notify-template-id.id})"
+    DAYS_UNTIL_IMAGE_EXPIRY               = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.days-until-image-expiry-production.id})"
+    GOV_NOTIFY_KEY                        = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.gov-notify-key-production.id})"
+    INTERNAL_EMAIL                        = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.internal-email-production.id})"
+    INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.internal-email-notify-template-id.id})"
+    JWT_SECRET                            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.jwt-secret-production.id})"
+    SCHEDULING_API_URL                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.scheduling-api-url-production.id})"
+    SENTRY_DSN                            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sentry-dsn.id})"
+    SOR_CONFIGURATION                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-production.id})"
+    STORAGE_CONTAINER_NAME                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-production.id})"
 
   }
 
