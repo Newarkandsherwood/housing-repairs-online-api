@@ -131,3 +131,70 @@ resource "azurerm_key_vault_secret" "storage-container-name-staging" {
 }
 
 #=================================
+#====== Production Secrets
+
+resource "azurerm_key_vault_secret" "cosmos-container-id-production" {
+  name         = "cosmos-container-id-production"
+  value        = azurerm_cosmosdb_sql_container.hro-api.name
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "cosmos-database-id-production" {
+  name         = "cosmos-database-id-production"
+  value        = azurerm_cosmosdb_sql_database.hro-api.name
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "addresses-api-url-production" {
+  name         = "addresses-api-url-production"
+  value        = var.addresses_api_url_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "authentication-identifier-production" {
+  name         = "authentication-identifier-production"
+  value        = var.authentication_identifier_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "days-until-image-expiry-production" {
+  name         = "days-until-image-expiry-production"
+  value        = var.days_until_image_expiry_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "gov-notify-key-production" {
+  name         = "gov-notify-key-production"
+  value        = var.gov_notify_key_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "internal-email-production" {
+  name         = "internal-email-production"
+  value        = var.internal_email_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "jwt-secret-production" {
+  name         = "jwt-secret-production"
+  value        = var.jwt_secret_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "scheduling-api-url-production" {
+  name         = "scheduling-api-url-production"
+  value        = var.scheduling_api_url_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "sor-configuration-production" {
+  name         = "sor-configuration-production"
+  value        = var.sor_configuration_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "storage-container-name-production" {
+  name         = "storage-container-name-production"
+  value        = var.storage_container_name_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
