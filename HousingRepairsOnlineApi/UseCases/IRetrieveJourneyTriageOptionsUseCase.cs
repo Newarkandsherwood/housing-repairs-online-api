@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IRetrieveJourneyTriageOptionsUseCase
     {
-        public Task<object> Execute();
+        public Task<IEnumerable<RepairTriageOption>> Execute();
     }
 }
