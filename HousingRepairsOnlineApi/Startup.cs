@@ -37,6 +37,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRetrieveAddressesUseCase, RetrieveAddressesUseCase>();
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
+            services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
@@ -126,7 +127,12 @@ namespace HousingRepairsOnlineApi
                 );
             });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HousingRepairsOnlineApi", Version = "v1" });

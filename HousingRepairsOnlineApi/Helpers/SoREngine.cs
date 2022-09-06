@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.Helpers
 {
@@ -23,6 +24,11 @@ namespace HousingRepairsOnlineApi.Helpers
             result = soRMapping[location][problem][issue];
 
             return result;
+        }
+
+        public IEnumerable<RepairTriageOption> RepairTriageOptions()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
