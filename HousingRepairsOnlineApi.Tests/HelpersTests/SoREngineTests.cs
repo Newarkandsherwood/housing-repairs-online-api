@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using FluentAssertions;
+using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
 using Xunit;
 
@@ -6,7 +9,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class SoREngineTests
     {
-        private SoREngine systemUnderTest;
+        private readonly SoREngine systemUnderTest;
 
         public SoREngineTests()
         {
@@ -41,7 +44,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                 }
             };
 
-            systemUnderTest = new SoREngine(mapping);
+            var journeyTriageOptions = Array.Empty<RepairTriageOption>();
+            systemUnderTest = new SoREngine(mapping, journeyTriageOptions);
         }
 
         [Theory]
@@ -58,6 +62,19 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
             // Assert
             Assert.Equal(expectedSor, actual);
+        }
+
+        [Fact]
+        public void GivenRepairTriageOptions_WhenRepairTriageOptionsCalled_RepairTriageOptionsReturned()
+        {
+            // Arrange
+            var journeyTriageOptions = Array.Empty<RepairTriageOption>();
+
+            // Act
+            var actual = systemUnderTest.RepairTriageOptions();
+
+            // Assert
+            actual.Should().BeEquivalentTo(journeyTriageOptions);
         }
     }
 }
