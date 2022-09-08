@@ -9,6 +9,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="6.0.3" />
     <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="6.0.1" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="6.0.2" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="GovukNotify" Version="4.0.1" />
     <PackageReference Include="HACT.Dtos" Version="1.1.0" />

@@ -5,11 +5,13 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public class SoREngine : ISoREngine
     {
-        private readonly IDictionary<string, IDictionary<string, dynamic>> soRMapping;
+        private readonly IDictionary<string, IDictionary<string, dynamic>> sorMapping;
+        private readonly IEnumerable<RepairTriageOption> journeyTriageOptions;
 
-        public SoREngine(IDictionary<string, IDictionary<string, dynamic>> soRMapping)
+        public SoREngine(IDictionary<string, IDictionary<string, dynamic>> sorMapping, IEnumerable<RepairTriageOption> journeyTriageOptions)
         {
-            this.soRMapping = soRMapping;
+            this.sorMapping = sorMapping;
+            this.journeyTriageOptions = journeyTriageOptions;
         }
 
         public string MapSorCode(string location, string problem, string issue)
@@ -17,18 +19,18 @@ namespace HousingRepairsOnlineApi.Helpers
             string result;
             if (issue is null)
             {
-                result = soRMapping[location][problem];
+                result = sorMapping[location][problem];
                 return result;
             }
 
-            result = soRMapping[location][problem][issue];
+            result = sorMapping[location][problem][issue];
 
             return result;
         }
 
         public IEnumerable<RepairTriageOption> RepairTriageOptions()
         {
-            throw new System.NotImplementedException();
+            return journeyTriageOptions;
         }
     }
 }
