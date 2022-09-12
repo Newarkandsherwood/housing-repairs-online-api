@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IRetrieveJourneyTriageOptionsUseCase
     {
-        public Task<IEnumerable<RepairTriageOption>> Execute();
+        public Task<IEnumerable<RepairTriageOption>> Execute(string emergencyValue, string notEligibleNonEmergency, string unableToBook);
     }
 }

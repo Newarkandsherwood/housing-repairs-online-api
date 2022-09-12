@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
@@ -13,10 +14,17 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveJourneyTriageOptionsUseCase systemUnderTest;
         private readonly Mock<ISoREngine> sorEngineMock = new();
+        private readonly Mock<IEarlyExitRepairTriageOptionMapper> earlyExitRepairTriageOptionMapperMock = new();
 
         public RetrieveTriageJourneyOptionsUseCaseTests()
         {
-            systemUnderTest = new RetrieveJourneyTriageOptionsUseCase(sorEngineMock.Object);
+            earlyExitRepairTriageOptionMapperMock.Setup(x =>
+                    x.MapRepairTriageOption(It.IsAny<IEnumerable<RepairTriageOption>>(), It.IsAny<string>(),
+                        It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<IEnumerable<RepairTriageOption>, string, string, string>(
+                    (repairTriageOptions, emergencyValue, notEligibleNonEmergency, unableToBook) =>
+                        repairTriageOptions);
+            systemUnderTest = new RetrieveJourneyTriageOptionsUseCase(sorEngineMock.Object, earlyExitRepairTriageOptionMapperMock.Object);
         }
 
         [Fact]
@@ -27,21 +35,21 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns(Array.Empty<RepairTriageOption>());
 
             // Act
-            var actual = await systemUnderTest.Execute();
+            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().BeEmpty();
         }
 
         [Fact]
-        public async Task GivenOptions_WhenExecuting_ThenReturnsEmpty()
+        public async Task GivenOptions_WhenExecuting_ThenReturnsNonEmpty()
         {
             // Arrange
             sorEngineMock.Setup(x => x.RepairTriageOptions())
                 .Returns(new[] { new RepairTriageOption() });
 
             // Act
-            var actual = await systemUnderTest.Execute();
+            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().NotBeEmpty();

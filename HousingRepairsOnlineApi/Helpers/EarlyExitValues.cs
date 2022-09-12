@@ -2,6 +2,10 @@
 {
     public static class EarlyExitValues
     {
-        public static readonly string[] All = { "Emergency", "UnableToBook", "NotEligibleNonEmergency" };
+        public const string EmergencyExitValue = "Emergency";
+        public const string UnableToBook = "UnableToBook";
+        public const string NotEligibleNonEmergency = "NotEligibleNonEmergency";
+
+        public static readonly string[] All = { EmergencyExitValue, UnableToBook, NotEligibleNonEmergency };
     }
 }
