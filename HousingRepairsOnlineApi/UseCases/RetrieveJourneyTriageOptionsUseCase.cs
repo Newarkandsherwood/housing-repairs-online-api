@@ -8,15 +8,21 @@ namespace HousingRepairsOnlineApi.UseCases
     public class RetrieveJourneyTriageOptionsUseCase : IRetrieveJourneyTriageOptionsUseCase
     {
         private readonly ISoREngine sorEngine;
+        private readonly IEarlyExitRepairTriageOptionMapper earlyExitRepairTriageOptionMapper;
 
-        public RetrieveJourneyTriageOptionsUseCase(ISoREngine sorEngine)
+        public RetrieveJourneyTriageOptionsUseCase(ISoREngine sorEngine, IEarlyExitRepairTriageOptionMapper earlyExitRepairTriageOptionMapper)
         {
             this.sorEngine = sorEngine;
+            this.earlyExitRepairTriageOptionMapper = earlyExitRepairTriageOptionMapper;
         }
 
-        public Task<IEnumerable<RepairTriageOption>> Execute()
+        public Task<IEnumerable<RepairTriageOption>> Execute(string emergencyValue, string notEligibleNonEmergency, string unableToBook)
         {
-            return Task.FromResult(sorEngine.RepairTriageOptions());
+            var repairTriageOptions = sorEngine.RepairTriageOptions();
+            var result = earlyExitRepairTriageOptionMapper.MapRepairTriageOption(repairTriageOptions, emergencyValue,
+                notEligibleNonEmergency, unableToBook);
+
+            return Task.FromResult(result);
         }
     }
 }
