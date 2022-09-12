@@ -18,11 +18,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 5.0.x
-      - name: Install dotnet format
-        run: dotnet tool update --global dotnet-format
+          dotnet-version: 6.0.x
       - name: Run dotnet format
-        run: dotnet format --check --verbosity diagnostic
+        run: dotnet format --verify-no-changes --no-restore --severity error
       - name: Setup Terraform
         if: always()
         uses: hashicorp/setup-terraform@v2
@@ -39,7 +37,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
       - name: Authenticate nuget
         run: dotnet nuget add source --username ${{ secrets.NUGET_AUTH_GITHUB_USERNAME }} --password ${{ secrets.NUGET_AUTH_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/City-of-Lincoln-Council/index.json"
       - name: Test
@@ -55,7 +53,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
 
       - name: Authenticate nuget
         run: dotnet nuget add source --username ${{ secrets.NUGET_AUTH_GITHUB_USERNAME }} --password ${{ secrets.NUGET_AUTH_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/City-of-Lincoln-Council/index.json"
