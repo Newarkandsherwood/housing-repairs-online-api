@@ -15,6 +15,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     {
         private readonly Mock<ISorConfigurationProvider> sorConfigurationProviderMock = new();
 
+        private const string Value1 = "value1";
+        private const string Display1 = "display1";
+        private const string Value2 = "value2";
+        private const string Display2 = "display2";
+        private const string Value3 = "value3";
+        private const string Display3 = "display3";
+        private const string SorCode = "sorCode";
+
         [Fact]
         public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineIsRegistered()
         {
@@ -173,32 +181,25 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         public static TheoryData<IEnumerable<SorConfiguration>, IEnumerable<RepairTriageOption>> ValidSorConfigurationForCreatingJourneyRepairTriageOptions()
         {
-            var value = "value1";
-            var display = "display1";
-            var value2 = "value2";
-            var display2 = "display2";
-            var value3 = "value3";
-            var display3 = "display3";
-
             return new TheoryData<IEnumerable<SorConfiguration>, IEnumerable<RepairTriageOption>>()
             {
                 { Array.Empty<SorConfiguration>(), Array.Empty<RepairTriageOption>() },
                 {
-                    new[] { new SorConfiguration { Value = value, Display = display, SorCode = "sorCode" } },
-                    new[] { new RepairTriageOption { Value = value, Display = display, } }
+                    new[] { new SorConfiguration { Value = Value1, Display = Display1, SorCode = SorCode } },
+                    new[] { new RepairTriageOption { Value = Value1, Display = Display1, } }
                 },
                 {
                     new[]
                     {
                         new SorConfiguration
                         {
-                            Value = value,
-                            Display = display,
+                            Value = Value1,
+                            Display = Display1,
                             Options = new[]
                             {
                                 new SorConfiguration
                                 {
-                                    Value = value2, Display = display2, SorCode = "sorCode"
+                                    Value = Value2, Display = Display2, SorCode = SorCode
                                 }
                             }
                         }
@@ -207,9 +208,9 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     {
                         new RepairTriageOption
                         {
-                            Value = value,
-                            Display = display,
-                            Options = new[] { new RepairTriageOption { Value = value2, Display = display2 } }
+                            Value = Value1,
+                            Display = Display1,
+                            Options = new[] { new RepairTriageOption { Value = Value2, Display = Display2 } }
                         }
                     }
                 },
@@ -218,21 +219,21 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     {
                         new SorConfiguration
                         {
-                            Value = value,
-                            Display = display,
+                            Value = Value1,
+                            Display = Display1,
                             Options = new[]
                             {
                                 new SorConfiguration
                                 {
-                                    Value = value2,
-                                    Display = display2,
+                                    Value = Value2,
+                                    Display = Display2,
                                     Options = new[]
                                     {
                                         new SorConfiguration
                                         {
-                                            Value = value3,
-                                            Display = display3,
-                                            SorCode = "sorCode"
+                                            Value = Value3,
+                                            Display = Display3,
+                                            SorCode = SorCode
                                         }
                                     }
                                 }
@@ -243,19 +244,19 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     {
                         new RepairTriageOption
                         {
-                            Value = value,
-                            Display = display,
+                            Value = Value1,
+                            Display = Display1,
                             Options = new[]
                             {
                                 new RepairTriageOption
                                 {
-                                    Value = value2,
-                                    Display = display2,
+                                    Value = Value2,
+                                    Display = Display2,
                                     Options = new[]
                                     {
                                         new RepairTriageOption
                                         {
-                                            Value = value3, Display = display3
+                                            Value = Value3, Display = Display3
                                         }
                                     }
                                 }
@@ -269,14 +270,6 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public static TheoryData<IEnumerable<SorConfiguration>, IDictionary<string, IDictionary<string, dynamic>>>
             ValidSorConfigurationForCreatingSorMapping()
         {
-            var value = "value1";
-            var display = "display1";
-            var sorCode = "sorCode";
-            var value2 = "value2";
-            var display2 = "display2";
-            var value3 = "value3";
-            var display3 = "display3";
-
             return new TheoryData<IEnumerable<SorConfiguration>, IDictionary<string, IDictionary<string, dynamic>>>
             {
                 { Array.Empty<SorConfiguration>(), new Dictionary<string, IDictionary<string, dynamic>>() },
@@ -285,20 +278,20 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     {
                         new SorConfiguration
                         {
-                            Value = value,
-                            Display = display,
+                            Value = Value1,
+                            Display = Display1,
                             Options = new[]
                             {
                                 new SorConfiguration
                                 {
-                                    Value = value2, Display = display2, SorCode = sorCode
+                                    Value = Value2, Display = Display2, SorCode = SorCode
                                 }
                             }
                         }
                     },
                     new Dictionary<string, IDictionary<string, dynamic>>
                     {
-                        { value, new Dictionary<string, dynamic> { { value2, sorCode } } }
+                        { Value1, new Dictionary<string, dynamic> { { Value2, SorCode } } }
                     }
                 },
                 {
@@ -306,21 +299,21 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     {
                         new SorConfiguration
                         {
-                            Value = value,
-                            Display = display,
+                            Value = Value1,
+                            Display = Display1,
                             Options = new[]
                             {
                                 new SorConfiguration
                                 {
-                                    Value = value2,
-                                    Display = display2,
+                                    Value = Value2,
+                                    Display = Display2,
                                     Options = new[]
                                     {
                                         new SorConfiguration
                                         {
-                                            Value = value3,
-                                            Display = display3,
-                                            SorCode = sorCode
+                                            Value = Value3,
+                                            Display = Display3,
+                                            SorCode = SorCode
                                         }
                                     }
                                 }
@@ -330,10 +323,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     new Dictionary<string, IDictionary<string, dynamic>>
                     {
                         {
-                            value,
+                            Value1,
                             new Dictionary<string, dynamic>
                             {
-                                { value2, new Dictionary<string, string> { { value3, sorCode } } }
+                                { Value2, new Dictionary<string, string> { { Value3, SorCode } } }
                             }
                         }
                     }

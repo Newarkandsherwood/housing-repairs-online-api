@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
 using Xunit;
@@ -8,6 +7,10 @@ namespace HousingRepairsOnlineApi.Tests.Domain
 {
     public class SorConfigurationExtensionsTests
     {
+        private const string DisplayValue = "display";
+        private const string ValueValue = "value";
+        private const string SorCodeValue = "sor code";
+
         [Theory]
         [MemberData(nameof(ValidEarlyExitSorConfigurations))]
         [MemberData(nameof(ValidSorConfigurationsWithEitherSorCodeOrOptions))]
@@ -25,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.Domain
             var result = new TheoryData<SorConfiguration>();
             foreach (var earlyExitValue in EarlyExitValues.All)
             {
-                result.Add(new SorConfiguration { Display = "display", Value = earlyExitValue });
+                result.Add(new SorConfiguration { Display = DisplayValue, Value = earlyExitValue });
             }
 
             return result;
@@ -34,31 +37,31 @@ namespace HousingRepairsOnlineApi.Tests.Domain
         public static TheoryData<SorConfiguration> ValidSorConfigurationsWithEitherSorCodeOrOptions() =>
             new()
             {
-                new SorConfiguration { Display = "display", Value = "value", SorCode = "sor code" },
+                new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue },
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
+                    Display = DisplayValue,
+                    Value = ValueValue,
                     Options = new[]
                     {
-                        new SorConfiguration { Display = "display", Value = "value", SorCode = "sor code" }
+                        new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue }
                     }
                 },
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
+                    Display = DisplayValue,
+                    Value = ValueValue,
                     Options = new[]
                     {
                         new SorConfiguration
                         {
-                            Display = "display",
-                            Value = "value",
+                            Display = DisplayValue,
+                            Value = ValueValue,
                             Options = new[]
                             {
                                 new SorConfiguration
                                 {
-                                    Display = "display", Value = "value", SorCode = "sor code"
+                                    Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue
                                 }
                             }
                         }
@@ -81,22 +84,22 @@ namespace HousingRepairsOnlineApi.Tests.Domain
         public static TheoryData<SorConfiguration> InvalidSorConfigurationsWithBothSorCodeAndOptions() =>
             new()
             {
-                new SorConfiguration { Display = "display", Value = "value" },
+                new SorConfiguration { Display = DisplayValue, Value = ValueValue },
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
-                    SorCode = "sor code",
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    SorCode = SorCodeValue,
                     Options = Array.Empty<SorConfiguration>()
                 },
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
-                    SorCode = "sor code",
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    SorCode = SorCodeValue,
                     Options = new[]
                     {
-                        new SorConfiguration { Display = "display", Value = "value", SorCode = "sor code" }
+                        new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue }
                     }
                 },
             };
@@ -106,24 +109,24 @@ namespace HousingRepairsOnlineApi.Tests.Domain
             {
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
+                    Display = DisplayValue,
+                    Value = ValueValue,
                     Options = Array.Empty<SorConfiguration>()
                 },
                 new SorConfiguration
                 {
-                    Display = "display",
-                    Value = "value",
+                    Display = DisplayValue,
+                    Value = ValueValue,
                     Options = new[]
                     {
                         new SorConfiguration
                         {
-                            Display = "display",
-                            Value = "value",
-                            SorCode = "sor code",
+                            Display = DisplayValue,
+                            Value = ValueValue,
+                            SorCode = SorCodeValue,
                             Options = new[]
                             {
-                                new SorConfiguration { Display = "display", Value = "value" }
+                                new SorConfiguration { Display = DisplayValue, Value = ValueValue }
                             }
                         }
                     }
