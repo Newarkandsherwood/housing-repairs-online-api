@@ -10,7 +10,7 @@ using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.GatewaysTests
 {
-    public class AppointmentGatewayTests
+    public class AppointmentGatewayTests : IDisposable
     {
         private readonly AppointmentsGateway systemUnderTest;
         private readonly MockHttpMessageHandler mockHttp;
@@ -117,6 +117,11 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             // Assert
             await act.Should().NotThrowAsync<Exception>();
             mockHttp.VerifyNoOutstandingExpectation();
+        }
+
+        public void Dispose()
+        {
+            mockHttp.Dispose();
         }
     }
 }

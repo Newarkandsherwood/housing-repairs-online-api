@@ -10,7 +10,7 @@ using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.GatewaysTests
 {
-    public class AddressGatewayTests
+    public class AddressGatewayTests : IDisposable
     {
         private const string authenticationIdentifier = "super secret";
         private const string AddressApiEndpoint = "https://our-porxy-UH.api";
@@ -90,5 +90,9 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             Assert.Empty(data);
         }
 
+        public void Dispose()
+        {
+            mockHttp.Dispose();
+        }
     }
 }
