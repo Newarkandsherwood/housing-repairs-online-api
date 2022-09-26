@@ -20,9 +20,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             earlyExitRepairTriageOptionMapperMock.Setup(x =>
                     x.MapRepairTriageOption(It.IsAny<IEnumerable<RepairTriageOption>>(), It.IsAny<string>(),
-                        It.IsAny<string>(), It.IsAny<string>()))
-                .Returns<IEnumerable<RepairTriageOption>, string, string, string>(
-                    (repairTriageOptions, emergencyValue, notEligibleNonEmergency, unableToBook) =>
+                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<IEnumerable<RepairTriageOption>, string, string, string, string>(
+                    (repairTriageOptions, emergencyValue, notEligibleNonEmergency, unableToBook, contactUs) =>
                         repairTriageOptions);
             systemUnderTest = new RetrieveJourneyTriageOptionsUseCase(sorEngineMock.Object, earlyExitRepairTriageOptionMapperMock.Object);
         }
@@ -35,7 +35,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns(Array.Empty<RepairTriageOption>());
 
             // Act
-            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty);
+            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().BeEmpty();
@@ -49,7 +49,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns(new[] { new RepairTriageOption() });
 
             // Act
-            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty);
+            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().NotBeEmpty();

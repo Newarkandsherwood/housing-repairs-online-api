@@ -18,7 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> JourneyRepairTriageOptions(string emergencyValue, string notEligibleNonEmergencyValue, string unableToBookValue)
+        public async Task<IActionResult> JourneyRepairTriageOptions(string emergencyValue, string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
             if (string.IsNullOrWhiteSpace(emergencyValue))
             {
@@ -32,10 +32,14 @@ namespace HousingRepairsOnlineApi.Controllers
             {
                 return StatusCode(400, $"{nameof(unableToBookValue)} is mandatory and must be non-empty and not whitespace");
             }
+            if (string.IsNullOrWhiteSpace(contactUsValue))
+            {
+                return StatusCode(400, $"{nameof(contactUsValue)} is mandatory and must be non-empty and not whitespace");
+            }
 
             try
             {
-                var result = await retrieveJourneyTriageOptionsUseCase.Execute(emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+                var result = await retrieveJourneyTriageOptionsUseCase.Execute(emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
                 return Ok(result);
             }
             catch (Exception ex)

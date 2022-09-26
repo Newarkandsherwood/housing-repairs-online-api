@@ -8,13 +8,14 @@ namespace HousingRepairsOnlineApi.Helpers
     {
         public IEnumerable<RepairTriageOption> MapRepairTriageOption(
             IEnumerable<RepairTriageOption> repairTriageOptions, string emergencyValue,
-            string notEligibleNonEmergencyValue, string unableToBookValue)
+            string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
             var earlyExitValuesMapped = new Dictionary<string, string>
             {
                 { EarlyExitValues.EmergencyExitValue, emergencyValue },
                 { EarlyExitValues.NotEligibleNonEmergency, notEligibleNonEmergencyValue },
                 { EarlyExitValues.UnableToBook, unableToBookValue },
+                { EarlyExitValues.ContactUs, contactUsValue },
             };
 
             var result = repairTriageOptions.Select(x => new RepairTriageOption
@@ -24,7 +25,7 @@ namespace HousingRepairsOnlineApi.Helpers
                 Options = x.Options == null
                     ? null
                     : MapRepairTriageOption(x.Options, emergencyValue, notEligibleNonEmergencyValue,
-                        unableToBookValue).ToArray(),
+                        unableToBookValue, contactUsValue).ToArray(),
             });
 
             return result;
