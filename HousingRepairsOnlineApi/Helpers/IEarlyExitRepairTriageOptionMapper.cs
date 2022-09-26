@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.Helpers
     public interface IEarlyExitRepairTriageOptionMapper
     {
         IEnumerable<RepairTriageOption> MapRepairTriageOption(IEnumerable<RepairTriageOption> repairTriageOptions,
-            string emergencyValue, string notEligibleNonEmergencyValue, string unableToBookValue);
+            string emergencyValue, string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue);
     }
 }

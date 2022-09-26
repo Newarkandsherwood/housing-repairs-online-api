@@ -14,6 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         private readonly string emergencyArgument = "emergency";
         private readonly string notEligibleNonEmergencyArgument = "notEligibleNonEmergencyArgument";
         private readonly string unableToBookArgument = "unableToBookArgument";
+        private readonly string contactUsArgument = "contactUs";
 
         public RepairTriageControllerTests()
         {
@@ -27,12 +28,12 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(200);
             retrieveTriageJourneyOptionsMock.Verify(
-                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -43,7 +44,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(earlyExitValue, notEligibleNonEmergencyArgument, unableToBookArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(earlyExitValue, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -57,7 +58,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, earlyExitValue, unableToBookArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, earlyExitValue, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -71,7 +72,21 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, earlyExitValue);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, earlyExitValue, contactUsArgument);
+
+            // Assert
+            GetStatusCode(result).Should().Be(400);
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidParameterValueData))]
+        public async Task
+            GivenInvalidContactIsValueParameter_WhenRequestingJourneyRepairTriageOptions_ThenStatusCodeIs400(string earlyExitValue)
+        {
+            // Arrange
+
+            // Act
+            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, earlyExitValue);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -88,11 +103,11 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
             retrieveTriageJourneyOptionsMock
                 .Setup(x =>
-                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Throws<System.Exception>();
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(500);

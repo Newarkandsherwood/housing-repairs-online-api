@@ -11,6 +11,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private const string emergencyValue = "emergency";
         private const string notEligibleNonEmergencyValue = "notEligibleNonEmergency";
         private const string unableToBookValue = "unableToBook";
+        private const string contactUsValue = "contactUs";
         private readonly EarlyExitRepairTriageOptionMapper systemUnderTest = new();
 
         [Fact]
@@ -21,7 +22,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             var input = new[] { expected };
 
             // Act
-            var repairTriageOptions = systemUnderTest.MapRepairTriageOption(input, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+            var repairTriageOptions = systemUnderTest.MapRepairTriageOption(input, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
             var actual = repairTriageOptions.FirstOrDefault();
 
             // Assert
@@ -32,6 +33,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [InlineData(EarlyExitValues.EmergencyExitValue, emergencyValue)]
         [InlineData(EarlyExitValues.UnableToBook, unableToBookValue)]
         [InlineData(EarlyExitValues.NotEligibleNonEmergency, notEligibleNonEmergencyValue)]
+        [InlineData(EarlyExitValues.ContactUs, contactUsValue)]
         public void GivenValuesNeedingMapping_WhenExecuting_ThenReturnedValueContainsMappedValues(string triageOptionValue, string triageOptionsMappedValue)
         {
             // Arrange
@@ -39,7 +41,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             var expected = new RepairTriageOption { Value = triageOptionsMappedValue };
 
             // Act
-            var repairTriageOptions = systemUnderTest.MapRepairTriageOption(input, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+            var repairTriageOptions = systemUnderTest.MapRepairTriageOption(input, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
             var actual = repairTriageOptions.FirstOrDefault();
 
             // Assert
