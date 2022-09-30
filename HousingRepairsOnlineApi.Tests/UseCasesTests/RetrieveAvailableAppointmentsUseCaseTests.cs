@@ -127,7 +127,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var repairCode = "N373049";
             sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
-            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null), Times.Once);
+            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null, null), Times.Once);
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
 
-            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null))
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null, null))
                 .ReturnsAsync(new List<Appointment> { new()
                 {
                     TimeOfDay = new TimeOfDay
