@@ -82,6 +82,12 @@ variable "sor_configuration_production" {
 variable "sor_configuration_staging" {
   type = string
 }
+variable "allowed_appointment_slots_production" {
+  type = string
+}
+variable "allowed_appointment_slots_staging" {
+  type = string
+}
 variable "service_plan_name" {
   type = string
 }

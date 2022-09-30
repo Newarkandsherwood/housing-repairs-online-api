@@ -124,6 +124,12 @@ resource "azurerm_key_vault_secret" "sor-configuration-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "allowed-appointment-slots-staging" {
+  name         = "allowed-appointment-slots-staging"
+  value        = var.allowed_appointment_slots_staging
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 resource "azurerm_key_vault_secret" "storage-container-name-staging" {
   name         = "storage-container-name-staging"
   value        = var.storage_container_name_staging
@@ -190,6 +196,12 @@ resource "azurerm_key_vault_secret" "scheduling-api-url-production" {
 resource "azurerm_key_vault_secret" "sor-configuration-production" {
   name         = "sor-configuration-production"
   value        = var.sor_configuration_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "allowed-appointment-slots-production" {
+  name         = "allowed-appointment-slots-production"
+  value        = var.allowed_appointment_slots_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
