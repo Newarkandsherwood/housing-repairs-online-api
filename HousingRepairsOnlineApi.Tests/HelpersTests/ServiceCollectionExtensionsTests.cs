@@ -110,6 +110,39 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Theory]
+        [MemberData(nameof(InvalidJsonAppointmentSlotConfigTestData))]
+#pragma warning disable xUnit1026
+        public void GivenInvalidJsonAppointmentSlotsConfiguration_WhenParsingConfigurationJson_ThenExceptionIsThrown<T>(
+            T exception,
+            string configJson) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            Action act = () => ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(configJson);
+
+            // Assert
+            act.Should().Throw<InvalidOperationException>().WithInnerException<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidJsonAppointmentSlotConfigTestData))]
+#pragma warning disable xUnit1026
+        public void GivenValidJsonAppointmentSlotsConfiguration_WhenParsingConfigurationJson_ThenExceptionIsThrown(
+            string configJson, IEnumerable<AppointmentSlotTimeSpan> expected)
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            var actual = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(configJson);
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
         [MemberData(nameof(ValidSorConfigurationForCreatingJourneyRepairTriageOptions))]
         public void GivenSorConfigurations_WhenGeneratingJourneyRepairTriageOptions_ThenRepairTriageOptionsReturned(
             IEnumerable<SorConfiguration> sorConfigurations, IEnumerable<RepairTriageOption> expected)
@@ -329,6 +362,61 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                                 { Value2, new Dictionary<string, string> { { Value3, SorCode } } }
                             }
                         }
+                    }
+                },
+            };
+        }
+
+        public static TheoryData<JsonException, string> InvalidJsonAppointmentSlotConfigTestData()
+        {
+            return new TheoryData<JsonException, string>
+            {
+                { new JsonSerializationException(), @"{" },
+                { new JsonReaderException(), @"}" },
+                {
+                    new JsonSerializationException(), @"{
+                        ""startTime"": {
+                    }"
+                },
+                {
+                    new JsonReaderException(), @"[{
+                    ""startTime"": ""08:00:00""
+                    ]"
+                },
+            };
+        }
+
+        public static TheoryData<string, IEnumerable<AppointmentSlotTimeSpan>> ValidJsonAppointmentSlotConfigTestData()
+        {
+            return new TheoryData<string, IEnumerable<AppointmentSlotTimeSpan>>
+            {
+                {
+                    @"[
+                        {
+                          ""startTime"": ""08:00:00"",
+                          ""endTime"": ""12:00:00""
+                        }
+                    ]",
+                    new AppointmentSlotTimeSpan[]
+                    {
+                        new() { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0) }
+                    }
+                },
+                {
+                    @"[
+                        {
+                          ""startTime"": ""08:00:00"",
+                          ""endTime"": ""12:00:00""
+                        },
+                        {
+                          ""startTime"": ""12:00:00"",
+                          ""endTime"": ""16:00:00""
+                        }
+                    ]",
+                    new AppointmentSlotTimeSpan[]
+                    {
+                        new() { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0) },
+                        new() { StartTime = new TimeSpan(12, 0, 0), EndTime = new TimeSpan(16, 0, 0) },
                     }
                 },
             };

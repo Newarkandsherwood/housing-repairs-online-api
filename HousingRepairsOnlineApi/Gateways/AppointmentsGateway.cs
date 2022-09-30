@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using HACT.Dtos;
 using HousingRepairsOnline.Authentication.Helpers;
+using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.Gateways
 {
@@ -21,10 +22,13 @@ namespace HousingRepairsOnlineApi.Gateways
             this.authenticationIdentifier = authenticationIdentifier;
         }
 
-        public async Task<IEnumerable<Appointment>> GetAvailableAppointments(string sorCode, string locationId, DateTime? fromDate = null)
+        public async Task<IEnumerable<Appointment>> GetAvailableAppointments(string sorCode, string locationId, DateTime? fromDate = null, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                $"/Appointments/AvailableAppointments?sorCode={sorCode}&locationId={locationId}&fromDate={fromDate}");
+                $"/Appointments/AvailableAppointments?sorCode={sorCode}&locationId={locationId}&fromDate={fromDate}")
+            {
+                Content = JsonContent.Create(allowedAppointmentSlots),
+            };
 
             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 

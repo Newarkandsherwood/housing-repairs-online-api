@@ -15,6 +15,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Notify.Client;
+using ServiceCollectionExtensions = HousingRepairsOnlineApi.Helpers.ServiceCollectionExtensions;
 
 namespace HousingRepairsOnlineApi
 {
@@ -33,6 +34,10 @@ namespace HousingRepairsOnlineApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSoREngine(new EnvironmentVariableSorConfigurationProvider());
+
+            var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
+            var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
+            services.AddTransient(_ => allowedAppointmentSlots);
 
             services.AddTransient<IRetrieveAddressesUseCase, RetrieveAddressesUseCase>();
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();

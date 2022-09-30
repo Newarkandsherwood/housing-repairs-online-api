@@ -45,6 +45,21 @@ namespace HousingRepairsOnlineApi.Helpers
             return result;
         }
 
+        public static IEnumerable<AppointmentSlotTimeSpan> ParseAppointmentSlotsConfigurationJson(string appointmentSlotsConfigurationValueJson)
+        {
+            AppointmentSlotTimeSpan[] result;
+            try
+            {
+                result = JsonConvert.DeserializeObject<AppointmentSlotTimeSpan[]>(appointmentSlotsConfigurationValueJson);
+            }
+            catch (JsonException e)
+            {
+                throw new InvalidOperationException($"Contents of appointment slots configuration value is malformed JSON.", e);
+            }
+
+            return result;
+        }
+
         public static IEnumerable<RepairTriageOption> GenerateJourneyRepairTriageOptions(IEnumerable<SorConfiguration> sorConfigurations)
         {
             var mapperConfiguration = new MapperConfiguration(cfg =>
