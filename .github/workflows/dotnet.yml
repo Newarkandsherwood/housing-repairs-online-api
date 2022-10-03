@@ -10,41 +10,41 @@ on:
       - main
 
 jobs:
-  format:
-    name: Format
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 6.0.x
-      - name: Run dotnet format
-        run: dotnet format --verify-no-changes --no-restore --severity error
-      - name: Setup Terraform
-        if: always()
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-      - name: Run Terraform format
-        run: terraform fmt -check ./terraform
+  # format:
+  #   name: Format
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v2
+  #       with:
+  #         dotnet-version: 6.0.x
+  #     - name: Run dotnet format
+  #       run: dotnet format --verify-no-changes --no-restore --severity error
+  #     - name: Setup Terraform
+  #       if: always()
+  #       uses: hashicorp/setup-terraform@v2
+  #       with:
+  #         terraform_wrapper: false
+  #     - name: Run Terraform format
+  #       run: terraform fmt -check ./terraform
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 6.0.x
-      - name: Authenticate nuget
-        run: dotnet nuget add source --username ${{ secrets.NUGET_AUTH_GITHUB_USERNAME }} --password ${{ secrets.NUGET_AUTH_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/City-of-Lincoln-Council/index.json"
-      - name: Test
-        run: dotnet test --logger:"console;verbosity=detailed"
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v2
+  #       with:
+  #         dotnet-version: 6.0.x
+  #     - name: Authenticate nuget
+  #       run: dotnet nuget add source --username ${{ secrets.NUGET_AUTH_GITHUB_USERNAME }} --password ${{ secrets.NUGET_AUTH_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/City-of-Lincoln-Council/index.json"
+  #     - name: Test
+  #       run: dotnet test --logger:"console;verbosity=detailed"
 
   build:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Build Release
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +70,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
   infrastructure:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: "Provision Infrastructure"
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
@@ -141,7 +141,7 @@ jobs:
     name: "Deploy Staging"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: [format, test, build, infrastructure]
+    needs: [build, infrastructure]
     environment:
       name: "Staging"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -181,45 +181,45 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
           package: .
 
-  deploy-production:
-    name: "Deploy Production"
-    runs-on: ubuntu-latest
-    needs: deploy-staging
-    environment:
-      name: "Production"
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    steps:
-      - name: Add mask to obscure secrets in debug logs
-        run: |
-          echo "::add-mask::${{ secrets.COSMOS_CONTAINER_NAME_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_PRIMARY_KEY }}"
-          echo "::add-mask::${{ secrets.COSMOS_DATABASE_NAME_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_ENDPOINT }}"
-          echo "::add-mask::${{ secrets.ADDRESSES_API_URL_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.AUTHENTICATION_IDENTIFIER_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.STORAGE_ACCOUNT_PRIMARY_CONNECTION_STRING }}"
-          echo "::add-mask::${{ secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
-          echo "::add-mask::${{ secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
-          echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.INTERNAL_EMAIL_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
-          echo "::add-mask::${{ secrets.JWT_SECRET_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.SCHEDULING_API_URL_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.SENTRY_DSN }}"
-          echo "::add-mask::${{ secrets.SOR_CONFIG_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION }}"
-          echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_PRODUCTION }}"
+  # deploy-production:
+  #   name: "Deploy Production"
+  #   runs-on: ubuntu-latest
+  #   needs: deploy-staging
+  #   environment:
+  #     name: "Production"
+  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  #   steps:
+  #     - name: Add mask to obscure secrets in debug logs
+  #       run: |
+  #         echo "::add-mask::${{ secrets.COSMOS_CONTAINER_NAME_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_PRIMARY_KEY }}"
+  #         echo "::add-mask::${{ secrets.COSMOS_DATABASE_NAME_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.COSMOS_ACCOUNT_ENDPOINT }}"
+  #         echo "::add-mask::${{ secrets.ADDRESSES_API_URL_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.AUTHENTICATION_IDENTIFIER_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.STORAGE_ACCOUNT_PRIMARY_CONNECTION_STRING }}"
+  #         echo "::add-mask::${{ secrets.CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
+  #         echo "::add-mask::${{ secrets.CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
+  #         echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.INTERNAL_EMAIL_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
+  #         echo "::add-mask::${{ secrets.JWT_SECRET_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.SCHEDULING_API_URL_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.SENTRY_DSN }}"
+  #         echo "::add-mask::${{ secrets.SOR_CONFIG_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION }}"
+  #         echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_PRODUCTION }}"
 
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: .net-app
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{secrets.SERVICE_NAME}}
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PRODUCTION }}
-          package: .
+  #     - name: Download artifact from build job
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: .net-app
+  #     - name: Deploy to Azure Web App
+  #       id: deploy-to-webapp
+  #       uses: azure/webapps-deploy@v2
+  #       with:
+  #         app-name: ${{secrets.SERVICE_NAME}}
+  #         slot-name: "Production"
+  #         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_PRODUCTION }}
+  #         package: .
