@@ -6,6 +6,7 @@ using HousingRepairsOnlineApi.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using Xunit;
 using ServiceCollectionExtensions = HousingRepairsOnlineApi.Helpers.ServiceCollectionExtensions;
 
@@ -110,6 +111,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Theory]
+        [MemberData(nameof(InvalidAgainstSchemaJsonAppointmentSlotConfigTestData))]
         [MemberData(nameof(InvalidJsonAppointmentSlotConfigTestData))]
 #pragma warning disable xUnit1026
         public void GivenInvalidJsonAppointmentSlotsConfiguration_WhenParsingConfigurationJson_ThenExceptionIsThrown<T>(
@@ -367,17 +369,37 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             };
         }
 
+        public static TheoryData<JSchemaValidationException, string> InvalidAgainstSchemaJsonAppointmentSlotConfigTestData()
+        {
+            return new TheoryData<JSchemaValidationException, string>
+            {
+                { new JSchemaValidationException(), @"{" },
+                {
+                    new JSchemaValidationException(), @"{
+                        ""startTime"": {
+                    }"
+                },
+                {
+                    new JSchemaValidationException(), @"[{
+                        ""startTime"": ""08:00:00""
+                    }]"
+                },
+                {
+                    new JSchemaValidationException(), @"[{
+                        ""endTime"": ""08:00:00""
+                    }]"
+                },
+                {
+                    new JSchemaValidationException(), @"[{}]"
+                },
+            };
+        }
+
         public static TheoryData<JsonException, string> InvalidJsonAppointmentSlotConfigTestData()
         {
             return new TheoryData<JsonException, string>
             {
-                { new JsonSerializationException(), @"{" },
                 { new JsonReaderException(), @"}" },
-                {
-                    new JsonSerializationException(), @"{
-                        ""startTime"": {
-                    }"
-                },
                 {
                     new JsonReaderException(), @"[{
                     ""startTime"": ""08:00:00""

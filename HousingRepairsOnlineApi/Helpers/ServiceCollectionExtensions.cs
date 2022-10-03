@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Ardalis.GuardClauses;
 using AutoMapper;
 using HousingRepairsOnlineApi.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 
 namespace HousingRepairsOnlineApi.Helpers
 {
@@ -45,19 +48,42 @@ namespace HousingRepairsOnlineApi.Helpers
             return result;
         }
 
-        public static IEnumerable<AppointmentSlotTimeSpan> ParseAppointmentSlotsConfigurationJson(string appointmentSlotsConfigurationValueJson)
+        public static IEnumerable<AppointmentSlotTimeSpan> ParseAppointmentSlotsConfigurationJson(string appointmentSlotsConfigurationValue)
         {
-            AppointmentSlotTimeSpan[] result;
+            var appointmentSlotTimeSpanSchema = GetJsonSchemaForType<AppointmentSlotTimeSpan>();
+
+            var reader = new JsonTextReader(new StringReader(appointmentSlotsConfigurationValue));
+            var validatingReader = new JSchemaValidatingReader(reader);
+            validatingReader.Schema = appointmentSlotTimeSpanSchema;
+
+            var serializer = new JsonSerializer();
+
+            IEnumerable<AppointmentSlotTimeSpan> result;
             try
             {
-                result = JsonConvert.DeserializeObject<AppointmentSlotTimeSpan[]>(appointmentSlotsConfigurationValueJson);
+                result = serializer.Deserialize<IEnumerable<AppointmentSlotTimeSpan>>(validatingReader);
             }
             catch (JsonException e)
             {
                 throw new InvalidOperationException($"Contents of appointment slots configuration value is malformed JSON.", e);
             }
+            catch (JSchemaValidationException e)
+            {
+                throw new InvalidOperationException($"Contents of appointment slots configuration value doesn't match schema.", e);
+            }
 
             return result;
+
+            JSchema GetJsonSchemaForType<T>()
+            {
+                var type = typeof(T);
+                var fullName = type.FullName;
+                var manifestResourceStream = type.GetTypeInfo().Assembly
+                    .GetManifestResourceStream(fullName + ".schema.json")!;
+                var jsonSchema = new StreamReader(manifestResourceStream).ReadToEnd();
+                var schema = JSchema.Parse(jsonSchema);
+                return schema;
+            }
         }
 
         public static IEnumerable<RepairTriageOption> GenerateJourneyRepairTriageOptions(IEnumerable<SorConfiguration> sorConfigurations)
