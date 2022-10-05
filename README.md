@@ -31,10 +31,11 @@ Only make the changes necessary to enable you to work on functionality locally a
 Take care to not commit any of these local-only changes.
 
 In your local .env file, if you wish to connect to the Housing Management API, set
-AUTHENTICATION_IDENTIFIER to the same value as the front end and the Housing Management API.
-Set ADDRESSES_API_URL to the location of your locally running Housing Management API:
+`AUTHENTICATION_IDENTIFIER` to the same value as the front end and the Housing Management API.
+Set `ADDRESSES_API_URL` to the location of your locally running Housing Management API and `SCHEDULING_API_URL` to the location of your locally running Scheduling API:
 ```
 export ADDRESSES_API_URL=https://localhost:6001/
+export SCHEDULING_API_URL=https://localhost:6002/
 ```
 
 1. In Program.cs, if you do not have Sentry set up, then comment out the Sentry section:
@@ -76,7 +77,7 @@ export ADDRESSES_API_URL=https://localhost:6001/
 
 4. In Startup.cs, disable Https Redirection if you wish to use Http.
 ```
-//app.UseHttpsRedirection();
+    //  app.UseHttpsRedirection();
 ```
 5. In Startup.cs, disable Sentry Tracing
 ```
