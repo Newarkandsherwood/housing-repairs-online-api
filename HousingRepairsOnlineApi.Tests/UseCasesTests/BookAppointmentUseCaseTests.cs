@@ -14,6 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private const string BookingReference = "bookingReference";
         private const string SorCode = "sorCode";
         private const string LocationId = "locationId";
+        private const string RepairDescriptionText = "repair description text";
 
         private Mock<IAppointmentsGateway> appointmentsGatewayMock;
         private readonly BookAppointmentUseCase systemUnderTest;
@@ -40,7 +41,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                bookingRef, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()
+                bookingRef, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -56,7 +57,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                BookingReference, sorCode, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()
+                BookingReference, sorCode, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -72,7 +73,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                BookingReference, SorCode, locationId, It.IsAny<DateTime>(), It.IsAny<DateTime>()
+                BookingReference, SorCode, locationId, It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -90,7 +91,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    BookingReference, SorCode, LocationId, startDateTime, endDateTime
+                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, RepairDescriptionText
                 );
             };
 

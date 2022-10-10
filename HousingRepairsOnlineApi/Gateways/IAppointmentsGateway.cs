@@ -10,6 +10,6 @@ namespace HousingRepairsOnlineApi.Gateways
     {
         Task<IEnumerable<Appointment>> GetAvailableAppointments(string sorCode, string locationId, DateTime? fromDate = null, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default);
 
-        Task BookAppointment(string bookingReference, string sorCode, string locationId, DateTime startDateTime, DateTime endDateTime);
+        Task BookAppointment(string bookingReference, string sorCode, string locationId, DateTime startDateTime, DateTime endDateTime, string repairDescriptionText);
     }
 }

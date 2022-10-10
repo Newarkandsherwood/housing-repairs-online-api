@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HACT.Dtos;
@@ -102,16 +103,18 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             const string SorCode = "SOR Code";
             const string LocationId = "Location ID";
             const string BookingReference = "Booking Reference";
+            const string RepairDescriptionText = "Repair description text";
             var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
             var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
-
-            mockHttp.Expect($"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+            var jsonContent = JsonContent.Create(new { RepairDescriptionText });
+            mockHttp.Expect(
+                    $"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}")
                 .Respond(HttpStatusCode.OK);
 
             // Act
             Func<Task> act = async () =>
             {
-                await systemUnderTest.BookAppointment(BookingReference, SorCode, LocationId, startDateTime, endDateTime);
+                await systemUnderTest.BookAppointment(BookingReference, SorCode, LocationId, startDateTime, endDateTime, RepairDescriptionText);
             };
 
             // Assert

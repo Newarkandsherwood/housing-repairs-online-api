@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
     public interface IBookAppointmentUseCase
     {
         Task Execute(string bookingReference, string sorCode, string locationId, DateTime startDateTime,
-            DateTime endDateTime);
+            DateTime endDateTime, string repairDescriptionText);
     }
 }
