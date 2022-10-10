@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
 using HACT.Dtos;
 using HousingRepairsOnline.Authentication.Helpers;
 using HousingRepairsOnlineApi.Domain;
+using Newtonsoft.Json;
 
 namespace HousingRepairsOnlineApi.Gateways
 {
@@ -44,10 +46,15 @@ namespace HousingRepairsOnlineApi.Gateways
         }
 
         public async Task BookAppointment(string bookingReference, string sorCode, string locationId, DateTime startDateTime,
-            DateTime endDateTime)
+            DateTime endDateTime, string repairDescriptionText)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                 $"/Appointments/BookAppointment?bookingReference={bookingReference}&sorCode={sorCode}&locationId={locationId}&startDateTime={startDateTime}&endDateTime={endDateTime}");
+
+            var json = JsonConvert.SerializeObject(repairDescriptionText);
+            var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            request.Content = stringContent;
 
             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 

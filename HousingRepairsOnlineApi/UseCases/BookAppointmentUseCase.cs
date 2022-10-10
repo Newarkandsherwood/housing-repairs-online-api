@@ -15,14 +15,15 @@ namespace HousingRepairsOnlineApi.UseCases
         }
 
         public async Task Execute(string bookingReference, string sorCode, string locationId, DateTime startDateTime,
-            DateTime endDateTime)
+            DateTime endDateTime, string repairDescriptionText)
         {
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(bookingReference));
             Guard.Against.NullOrWhiteSpace(sorCode, nameof(sorCode));
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
+            Guard.Against.NullOrWhiteSpace(repairDescriptionText, nameof(repairDescriptionText));
             Guard.Against.OutOfRange(endDateTime, nameof(endDateTime), startDateTime, DateTime.MaxValue);
 
-            await appointmentsGateway.BookAppointment(bookingReference, sorCode, locationId, startDateTime, endDateTime);
+            await appointmentsGateway.BookAppointment(bookingReference, sorCode, locationId, startDateTime, endDateTime, repairDescriptionText);
         }
     }
 }

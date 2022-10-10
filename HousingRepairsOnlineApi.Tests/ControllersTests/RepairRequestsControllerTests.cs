@@ -116,7 +116,11 @@ namespace HousingRepairsOnlineApi.Tests
                     Value = "dr.who@tardis.com"
                 },
                 Time = repairAvailability,
-                Address = repairAddress
+                Address = repairAddress,
+                Description = new RepairDescription()
+                {
+                    Text = "some textual description"
+                }
             };
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(repairRequest)).ReturnsAsync(repair);
 
@@ -152,7 +156,11 @@ namespace HousingRepairsOnlineApi.Tests
                     Value = "0765374057"
                 },
                 Time = repairAvailability,
-                Address = repairAddress
+                Address = repairAddress,
+                Description = new RepairDescription()
+                {
+                    Text = "some textual description"
+                }
             };
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(repairRequest)).ReturnsAsync(repair);
