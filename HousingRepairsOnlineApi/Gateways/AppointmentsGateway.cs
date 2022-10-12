@@ -51,7 +51,8 @@ namespace HousingRepairsOnlineApi.Gateways
             var request = new HttpRequestMessage(HttpMethod.Post,
                 $"/Appointments/BookAppointment?bookingReference={bookingReference}&sorCode={sorCode}&locationId={locationId}&startDateTime={startDateTime}&endDateTime={endDateTime}");
 
-            var json = JsonConvert.SerializeObject(repairDescriptionText);
+            var json = JsonConvert.SerializeObject(new {Text=repairDescriptionText});
+
             var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             request.Content = stringContent;
