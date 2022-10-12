@@ -14,7 +14,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private const string BookingReference = "bookingReference";
         private const string SorCode = "sorCode";
         private const string LocationId = "locationId";
-        private const string RepairDescriptionText = "repair description text";
 
         private Mock<IAppointmentsGateway> appointmentsGatewayMock;
         private readonly BookAppointmentUseCase systemUnderTest;
@@ -91,7 +90,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, RepairDescriptionText
+                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, It.IsAny<string>()
                 );
             };
 
