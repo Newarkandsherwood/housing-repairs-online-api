@@ -90,7 +90,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, It.IsAny<string>()
+                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, "description"
                 );
             };
 
