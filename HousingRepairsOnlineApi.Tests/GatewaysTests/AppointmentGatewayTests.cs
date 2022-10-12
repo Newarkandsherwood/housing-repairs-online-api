@@ -106,9 +106,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             const string RepairDescriptionText = "Repair description text";
             var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
             var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
-            var jsonContent = JsonContent.Create(new { RepairDescriptionText });
             mockHttp.Expect(
-                    $"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+                    $"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}").With()
                 .Respond(HttpStatusCode.OK);
 
             // Act
