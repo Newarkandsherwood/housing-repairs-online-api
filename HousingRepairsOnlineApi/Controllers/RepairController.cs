@@ -16,18 +16,22 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IAppointmentConfirmationSender appointmentConfirmationSender;
         private readonly IBookAppointmentUseCase bookAppointmentUseCase;
         private readonly IInternalEmailSender internalEmailSender;
+        private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
+
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
             IInternalEmailSender internalEmailSender,
             IAppointmentConfirmationSender appointmentConfirmationSender,
-            IBookAppointmentUseCase bookAppointmentUseCase
+            IBookAppointmentUseCase bookAppointmentUseCase,
+            IRetrieveRepairsUseCase retrieveRepairsUseCase
         )
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
+            this.retrieveRepairsUseCase = retrieveRepairsUseCase;
         }
 
         [HttpPost]
@@ -41,6 +45,21 @@ namespace HousingRepairsOnlineApi.Controllers
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
                 return Ok(result.Id);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PropertyRepairs([FromQuery] string propertyReference)
+        {
+            try
+            {
+                var result = await retrieveRepairsUseCase.Execute(propertyReference);
+                return Ok(result);
             }
             catch (Exception ex)
             {

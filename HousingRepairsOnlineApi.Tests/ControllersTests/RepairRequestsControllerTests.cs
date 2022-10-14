@@ -14,6 +14,7 @@ namespace HousingRepairsOnlineApi.Tests
     {
         private RepairController systemUnderTest;
         private Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
+        private Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
         private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
         private Mock<IInternalEmailSender> internalEmailSender;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
@@ -36,8 +37,8 @@ namespace HousingRepairsOnlineApi.Tests
             bookAppointmentUseCaseMock = new Mock<IBookAppointmentUseCase>();
             appointmentConfirmationSender = new Mock<IAppointmentConfirmationSender>();
             internalEmailSender = new Mock<IInternalEmailSender>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSender.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object);
-
+            retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSender.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object);
         }
 
         [Fact]
