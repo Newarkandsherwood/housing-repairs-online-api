@@ -25,7 +25,7 @@ namespace HousingRepairsOnlineApi.Helpers
             if (sorConfigurations.Any(x => !x.IsValid()))
             {
                 throw new InvalidOperationException(
-                    "Invalid SOR configuration: each option should have a 'display' and 'value' value and either a SOR code or additional options");
+                    "Invalid SOR configuration: each option should have a 'display' and 'value' value and either a SOR code and priority or additional options");
             }
 
             var journeyTriageOptions = GenerateJourneyRepairTriageOptions(sorConfigurations);
