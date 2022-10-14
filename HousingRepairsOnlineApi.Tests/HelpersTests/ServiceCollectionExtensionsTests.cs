@@ -47,7 +47,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                         ""options"": [{
                             ""value"": ""doorHangingOff"",
                             ""display"": ""Hanging Door"",
-                            ""sorCode"": ""SoR Code 1""
+                            ""sorCode"": ""SoR Code 1"",
+                            ""priority"": ""priority""
                         }]
                     }]
                 },
@@ -60,7 +61,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     ""options"": [{
                         ""value"": ""taps"",
                         ""display"": ""Bath taps"",
-                        ""sorCode"": ""SoR Code 1""
+                        ""sorCode"": ""SoR Code 1"",
+                        ""priority"": ""priority""
                     }]
                 }]
             }]";

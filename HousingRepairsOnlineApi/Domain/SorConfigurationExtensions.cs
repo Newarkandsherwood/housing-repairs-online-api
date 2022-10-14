@@ -10,7 +10,7 @@ namespace HousingRepairsOnlineApi.Domain
             var result = IsEarlyExit();
             if (!result)
             {
-                result = HasEitherSorCodeOrOptions();
+                result = HasEitherSorCodeAndPriorityOrOptions();
                 if (result && sorConfiguration.Options != null)
                 {
                     result = HasAtLeastOneOptionAndAllOptionsAreValid();
@@ -25,9 +25,10 @@ namespace HousingRepairsOnlineApi.Domain
                        EarlyExitValues.All.Contains(sorConfiguration.Value);
             }
 
-            bool HasEitherSorCodeOrOptions()
+            bool HasEitherSorCodeAndPriorityOrOptions()
             {
-                return (sorConfiguration.Options != null) ^ (sorConfiguration.SorCode != null);
+                return (sorConfiguration.Options != null) ^
+                       (sorConfiguration.SorCode != null && sorConfiguration.Priority != null);
             }
 
             bool HasAtLeastOneOptionAndAllOptionsAreValid()
