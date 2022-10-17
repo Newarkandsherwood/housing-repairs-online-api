@@ -38,7 +38,7 @@ namespace HousingRepairsOnlineApi.UseCases
                 {
                     Text = repairRequest.Description.Text,
                 },
-                SOR = sorEngine.MapSorCode(
+                SOR = sorEngine.MapToRepairTriageDetails(
                     repairRequest.Location.Value,
                     repairRequest.Problem.Value,
                     repairRequest.Issue?.Value).ScheduleOfRateCode

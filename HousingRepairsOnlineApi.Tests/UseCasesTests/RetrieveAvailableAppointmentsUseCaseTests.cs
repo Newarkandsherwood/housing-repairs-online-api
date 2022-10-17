@@ -116,12 +116,12 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenRepairParameters_WhenExecute_ThenMapSorCodeIsCalled()
+        public async void GivenRepairParameters_WhenExecute_ThenMapToRepairTriageDetails()
         {
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff))
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff))
                 .Returns(new RepairTriageDetails());
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
-            sorEngineMock.Verify(x => x.MapSorCode(kitchen, cupboards, doorHangingOff), Times.Once);
+            sorEngineMock.Verify(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff), Times.Once);
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             var repairCode = "N373049";
             var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode };
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
             appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null, null), Times.Once);
         }
@@ -142,7 +142,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var startTime = DateTime.Today.AddHours(8);
             var endTime = DateTime.Today.AddHours(12);
 
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
 
             appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null, null))
                 .ReturnsAsync(new List<Appointment> { new()

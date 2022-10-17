@@ -59,7 +59,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             var expected = new RepairTriageDetails { ScheduleOfRateCode = expectedSor, Priority = expectedPriority };
 
             // Act
-            var actual = systemUnderTest.MapSorCode(location, problem, issue);
+            var actual = systemUnderTest.MapToRepairTriageDetails(location, problem, issue);
 
             // Assert
             actual.Should().BeEquivalentTo(expected);

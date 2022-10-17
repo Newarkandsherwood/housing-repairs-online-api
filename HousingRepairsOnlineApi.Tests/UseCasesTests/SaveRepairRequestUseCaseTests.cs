@@ -60,7 +60,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             };
 
-            mockSorEngine.Setup(x => x.MapSorCode(Location, Problem, Issue))
+            mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
                 .Returns(repairTriageDetails);
 
             mockAzureStorageGateway.Setup(x => x.UploadBlob(Base64Img, FileExtension))
@@ -72,7 +72,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var _ = await systemUnderTest.Execute(repairRequest);
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
-            mockSorEngine.Verify(x => x.MapSorCode(Location, Problem, Issue), Times.Once);
+            mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Description.PhotoUrl == ImgUrl)), Times.Once);
         }
 
@@ -106,7 +106,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             };
 
-            mockSorEngine.Setup(x => x.MapSorCode(Location, Problem, Issue))
+            mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
                 .Returns(repairTriageDetails);
 
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
@@ -114,7 +114,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             var _ = await systemUnderTest.Execute(repairRequest);
 
-            mockSorEngine.Verify(x => x.MapSorCode(Location, Problem, Issue), Times.Once);
+            mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Description.PhotoUrl == null)), Times.Once);
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
         }
