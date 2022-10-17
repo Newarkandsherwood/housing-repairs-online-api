@@ -23,6 +23,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private const string Value3 = "value3";
         private const string Display3 = "display3";
         private const string SorCode = "sorCode";
+        private const string Priority = "priority";
 
         [Fact]
         public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineIsRegistered()
@@ -321,14 +322,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                             {
                                 new SorConfiguration
                                 {
-                                    Value = Value2, Display = Display2, SorCode = SorCode
+                                    Value = Value2, Display = Display2, SorCode = SorCode, Priority = Priority
                                 }
                             }
                         }
                     },
                     new Dictionary<string, IDictionary<string, dynamic>>
                     {
-                        { Value1, new Dictionary<string, dynamic> { { Value2, SorCode } } }
+                        { Value1, new Dictionary<string, dynamic> { { Value2, new RepairTriageDetails{ScheduleOfRateCode = SorCode, Priority = Priority } } } }
                     }
                 },
                 {
@@ -350,7 +351,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                                         {
                                             Value = Value3,
                                             Display = Display3,
-                                            SorCode = SorCode
+                                            SorCode = SorCode,
+                                            Priority = Priority,
                                         }
                                     }
                                 }
@@ -363,7 +365,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                             Value1,
                             new Dictionary<string, dynamic>
                             {
-                                { Value2, new Dictionary<string, string> { { Value3, SorCode } } }
+                                { Value2, new Dictionary<string, RepairTriageDetails> { { Value3, new RepairTriageDetails{ ScheduleOfRateCode = SorCode, Priority = Priority } } } }
                             }
                         }
                     }

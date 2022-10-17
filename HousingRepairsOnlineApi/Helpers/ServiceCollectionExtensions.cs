@@ -112,12 +112,12 @@ namespace HousingRepairsOnlineApi.Helpers
                     {
                         var key2 = sorConfiguration2.Value;
                         dynamic value2 = !string.IsNullOrEmpty(sorConfiguration2.SorCode)
-                            ? sorConfiguration2.SorCode
+                            ? CreateRepairTriageDetails(sorConfiguration2)
                             : sorConfiguration2.Options?.Where(c => !EarlyExitValues.All.Contains(c.Value)).Select(
                                 sorConfiguration3 =>
                                 {
                                     var key3 = sorConfiguration3.Value;
-                                    var value3 = sorConfiguration3.SorCode;
+                                    var value3 = CreateRepairTriageDetails(sorConfiguration3);
                                     return new { key2 = key3, value2 = value3 };
                                 }).ToDictionary(kvp => kvp.key2, kvp => kvp.value2);
                         return new { key = key2, value = value2 };
@@ -128,6 +128,11 @@ namespace HousingRepairsOnlineApi.Helpers
             }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             return result;
+
+            RepairTriageDetails CreateRepairTriageDetails(SorConfiguration sorConfiguration)
+            {
+                return new RepairTriageDetails { ScheduleOfRateCode = sorConfiguration.SorCode, Priority = sorConfiguration.Priority };
+            }
         }
     }
 }
