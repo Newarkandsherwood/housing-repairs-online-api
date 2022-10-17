@@ -128,23 +128,25 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void GivenRepairParameters_WhenExecute_ThenGetAvailableAppointmentsGatewayIsCalled()
         {
             var repairCode = "N373049";
-            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode };
+            var priority = "priority";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode, Priority = priority };
             sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
-            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null, null), Times.Once);
+            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null), Times.Once);
         }
 
         [Fact]
         public async void GivenRepairParameters_WhenExecute_AppointmentTimeAreReturned()
         {
             var repairCode = "N373049";
-            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode };
+            var priority = "priority";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode, Priority = priority };
             var startTime = DateTime.Today.AddHours(8);
             var endTime = DateTime.Today.AddHours(12);
 
             sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
 
-            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null, null))
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null))
                 .ReturnsAsync(new List<Appointment> { new()
                 {
                     TimeOfDay = new TimeOfDay
