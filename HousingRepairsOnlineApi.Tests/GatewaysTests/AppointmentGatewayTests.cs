@@ -17,6 +17,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         private readonly MockHttpMessageHandler mockHttp;
         private const string authenticationIdentifier = "super secret";
         private const string SchedulingApiEndpoint = "https://our-proxy-scheduling.api";
+        private const string Priority = "priority";
 
         public AppointmentGatewayTests()
         {
@@ -34,11 +35,11 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             const string SorCode = "SOR Code";
             const string LocationId = "Location ID";
 
-            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&locationId={LocationId}")
+            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&priority={Priority}&locationId={LocationId}")
                 .Respond("application/json", "[]");
 
             // Act
-            var data = await systemUnderTest.GetAvailableAppointments(SorCode, LocationId);
+            var data = await systemUnderTest.GetAvailableAppointments(SorCode, Priority, LocationId);
 
             // Assert
             Assert.Empty(data);
@@ -64,12 +65,12 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 }
             };
 
-            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&locationId={LocationId}")
+            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&priority={Priority}&locationId={LocationId}")
                 .Respond($"application/json",
                     "[" + JsonConvert.SerializeObject(expected) + "]");
 
             // Act
-            var data = await systemUnderTest.GetAvailableAppointments(SorCode, LocationId);
+            var data = await systemUnderTest.GetAvailableAppointments(SorCode, Priority, LocationId);
 
             // Assert
             data.Should().BeEquivalentTo(new[] { expected });
@@ -85,11 +86,11 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             const string SorCode = "SOR Code";
             const string LocationId = "Location ID";
 
-            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&locationId={LocationId}")
+            mockHttp.Expect($"/Appointments/AvailableAppointments?sorCode={SorCode}&priority={Priority}&locationId={LocationId}")
                 .Respond(httpStatusCode);
 
             // Act
-            var data = await systemUnderTest.GetAvailableAppointments(SorCode, LocationId);
+            var data = await systemUnderTest.GetAvailableAppointments(SorCode, Priority, LocationId);
 
             // Assert
             Assert.Empty(data);
@@ -107,13 +108,13 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
             var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
             mockHttp.Expect(
-                    $"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}").WithContent("{\"Text\":\"Repair description text\"}")
+                    $"/Appointments/BookAppointment?bookingReference={BookingReference}&sorCode={SorCode}&priority={Priority}&locationId={LocationId}&startDateTime={startDateTime}&endDateTime={endDateTime}").WithContent("{\"Text\":\"Repair description text\"}")
                 .Respond(HttpStatusCode.OK);
 
             // Act
             Func<Task> act = async () =>
             {
-                await systemUnderTest.BookAppointment(BookingReference, SorCode, LocationId, startDateTime, endDateTime, RepairDescriptionText);
+                await systemUnderTest.BookAppointment(BookingReference, SorCode, Priority, LocationId, startDateTime, endDateTime, RepairDescriptionText);
             };
 
             // Assert

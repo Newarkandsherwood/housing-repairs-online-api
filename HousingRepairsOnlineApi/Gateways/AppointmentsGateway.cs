@@ -24,10 +24,10 @@ namespace HousingRepairsOnlineApi.Gateways
             this.authenticationIdentifier = authenticationIdentifier;
         }
 
-        public async Task<IEnumerable<Appointment>> GetAvailableAppointments(string sorCode, string locationId, DateTime? fromDate = null, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
+        public async Task<IEnumerable<Appointment>> GetAvailableAppointments(string sorCode, string priority, string locationId, DateTime? fromDate = null, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                $"/Appointments/AvailableAppointments?sorCode={sorCode}&locationId={locationId}&fromDate={fromDate}")
+                $"/Appointments/AvailableAppointments?sorCode={sorCode}&priority={priority}&locationId={locationId}&fromDate={fromDate}")
             {
                 Content = JsonContent.Create(allowedAppointmentSlots),
             };
@@ -45,11 +45,11 @@ namespace HousingRepairsOnlineApi.Gateways
             return result;
         }
 
-        public async Task BookAppointment(string bookingReference, string sorCode, string locationId, DateTime startDateTime,
+        public async Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId, DateTime startDateTime,
             DateTime endDateTime, string repairDescriptionText)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
-                $"/Appointments/BookAppointment?bookingReference={bookingReference}&sorCode={sorCode}&locationId={locationId}&startDateTime={startDateTime}&endDateTime={endDateTime}");
+                $"/Appointments/BookAppointment?bookingReference={bookingReference}&sorCode={sorCode}&priority={priority}&locationId={locationId}&startDateTime={startDateTime}&endDateTime={endDateTime}");
 
             var json = JsonConvert.SerializeObject(new { Text = repairDescriptionText });
 
