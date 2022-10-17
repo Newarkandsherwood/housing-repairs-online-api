@@ -23,7 +23,10 @@ namespace HousingRepairsOnlineApi.UseCases
 
         public async Task<Repair> Execute(RepairRequest repairRequest)
         {
-
+            var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
+                repairRequest.Location.Value,
+                repairRequest.Problem.Value,
+                repairRequest.Issue?.Value);
             var repair = new Repair
             {
                 Address = repairRequest.Address,
@@ -38,10 +41,8 @@ namespace HousingRepairsOnlineApi.UseCases
                 {
                     Text = repairRequest.Description.Text,
                 },
-                SOR = sorEngine.MapToRepairTriageDetails(
-                    repairRequest.Location.Value,
-                    repairRequest.Problem.Value,
-                    repairRequest.Issue?.Value).ScheduleOfRateCode
+                SOR = repairTriageDetails.ScheduleOfRateCode,
+                Priority = repairTriageDetails.Priority,
             };
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))

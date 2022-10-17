@@ -8,6 +8,7 @@ namespace HousingRepairsOnlineApi.Domain
         public string Id { get; set; }
         public string Postcode { get; set; }
         public string SOR { get; set; }
+        public string Priority { get; set; }
         public RepairAddress Address { get; set; }
         public RepairLocation Location { get; set; }
         public RepairProblem Problem { get; set; }
