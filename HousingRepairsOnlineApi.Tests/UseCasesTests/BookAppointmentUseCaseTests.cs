@@ -13,6 +13,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private const string BookingReference = "bookingReference";
         private const string SorCode = "sorCode";
+        private const string Priority = "priority";
         private const string LocationId = "locationId";
 
         private Mock<IAppointmentsGateway> appointmentsGatewayMock;
@@ -40,7 +41,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                bookingRef, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
+                bookingRef, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -56,7 +57,23 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                BookingReference, sorCode, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
+                BookingReference, sorCode, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
+            );
+
+            //Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidPriority_WhenExecuting_ThenExceptionIsThrown<T>(T exception, string priority)
+            where T : Exception
+#pragma warning restore xUnit1026
+        {
+            //Act
+            Func<Task> act = async () => await systemUnderTest.Execute(
+                BookingReference, SorCode, priority, It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -72,7 +89,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                BookingReference, SorCode, locationId, It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
+                BookingReference, SorCode, Priority, locationId, It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>()
             );
 
             //Assert
@@ -90,7 +107,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    BookingReference, SorCode, LocationId, startDateTime, endDateTime, "description"
+                    BookingReference, SorCode, Priority, LocationId, startDateTime, endDateTime, "description"
                 );
             };
 
