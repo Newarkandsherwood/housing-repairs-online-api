@@ -41,7 +41,7 @@ namespace HousingRepairsOnlineApi.UseCases
                 SOR = sorEngine.MapSorCode(
                     repairRequest.Location.Value,
                     repairRequest.Problem.Value,
-                    repairRequest.Issue?.Value)
+                    repairRequest.Issue?.Value).ScheduleOfRateCode
             };
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))

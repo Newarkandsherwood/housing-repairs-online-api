@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HACT.Dtos;
+using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
@@ -117,6 +118,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Fact]
         public async void GivenRepairParameters_WhenExecute_ThenMapSorCodeIsCalled()
         {
+            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff))
+                .Returns(new RepairTriageDetails());
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
             sorEngineMock.Verify(x => x.MapSorCode(kitchen, cupboards, doorHangingOff), Times.Once);
         }
@@ -125,7 +128,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void GivenRepairParameters_WhenExecute_ThenGetAvailableAppointmentsGatewayIsCalled()
         {
             var repairCode = "N373049";
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode };
+            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
             await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
             appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null, null), Times.Once);
         }
@@ -134,10 +138,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void GivenRepairParameters_WhenExecute_AppointmentTimeAreReturned()
         {
             var repairCode = "N373049";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode };
             var startTime = DateTime.Today.AddHours(8);
             var endTime = DateTime.Today.AddHours(12);
 
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
+            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
 
             appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null, null))
                 .ReturnsAsync(new List<Appointment> { new()
