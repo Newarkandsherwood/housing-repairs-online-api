@@ -30,7 +30,7 @@ namespace HousingRepairsOnlineApi.UseCases
             Guard.Against.NullOrWhiteSpace(repairLocation, nameof(repairLocation));
             Guard.Against.NullOrWhiteSpace(repairProblem, nameof(repairProblem));
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
-            var repairCode = sorEngine.MapSorCode(repairLocation, repairProblem, repairIssue);
+            var repairCode = sorEngine.MapToRepairTriageDetails(repairLocation, repairProblem, repairIssue);
 
             var result = await appointmentsGateway.GetAvailableAppointments(repairCode.ScheduleOfRateCode, locationId, fromDate, allowedAppointmentSlots);
             var convertedResults = result.Select(ConvertToHactAppointment).ToList();
