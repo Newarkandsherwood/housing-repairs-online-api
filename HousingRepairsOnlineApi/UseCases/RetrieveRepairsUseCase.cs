@@ -20,9 +20,13 @@ namespace HousingRepairsOnlineApi.UseCases
             this.sorEngine = sorEngine;
         }
 
-        public async Task<IEnumerable<Repair>> Execute(string propertyReference)
+        public async Task<IEnumerable<RepairRequestSummary>> Execute(string propertyReference)
         {
-            return new []{ new Repair()};
+            // Retrieve the repairs from the Cosmos DB for this
+            if(propertyReference == null)
+                throw new ArgumentNullException(nameof(propertyReference));
+
+            return await cosmosGateway.SearchByPropertyReference(propertyReference);
         }
     }
 }

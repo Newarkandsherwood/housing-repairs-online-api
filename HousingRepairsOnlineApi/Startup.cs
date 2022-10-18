@@ -44,6 +44,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
+            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
@@ -120,8 +121,9 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {
                 var idGenerator = s.GetService<IIdGenerator>();
+                var repairQueryHelper = s.GetService<IRepairQueryHelper>();
                 return new CosmosGateway(
-                    cosmosContainer, idGenerator
+                    cosmosContainer, idGenerator, repairQueryHelper
                 );
             });
 

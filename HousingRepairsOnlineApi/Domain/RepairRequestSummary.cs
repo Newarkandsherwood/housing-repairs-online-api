@@ -1,22 +1,14 @@
-﻿using Newtonsoft.Json;
-
+﻿
 namespace HousingRepairsOnlineApi.Domain
 {
-    public class Repair
+    public class RepairRequestSummary
     {
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
-        public string RepairType { get; set; } /// communal, tenant, leasehold
         public string Postcode { get; set; }
         public string SOR { get; set; }
         public RepairAddress Address { get; set; }
         public RepairLocation Location { get; set; }
         public RepairProblem Problem { get; set; }
         public RepairIssue Issue { get; set; }
-        public string ContactPersonNumber { get; set; }
         public RepairDescription Description { get; set; }
-        public RepairContactDetails ContactDetails { get; set; }
-        public RepairAvailability Time { get; set; }
     }
 }
