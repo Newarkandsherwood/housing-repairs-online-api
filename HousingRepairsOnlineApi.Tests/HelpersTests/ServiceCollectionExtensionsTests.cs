@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class ServiceCollectionExtensionsTests
     {
-        private readonly Mock<ISorConfigurationProvider> sorConfigurationProviderMock = new();
+        private readonly Mock<IRepairTypeSorConfigurationProvider> sorConfigurationProviderMock = new();
 
         private const string Value1 = "value1";
         private const string Display1 = "display1";
@@ -26,14 +26,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private const string Priority = "priority";
 
         [Fact]
-        public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineIsRegistered()
+        public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineResolverIsRegistered()
         {
             // Arrange
             var serviceCollectionMock = new Mock<IServiceCollection>();
             serviceCollectionMock.Setup(x =>
                 x.Add(It.Is<ServiceDescriptor>(serviceDescriptor =>
-                        serviceDescriptor.ServiceType == typeof(ISoREngine) &&
-                        serviceDescriptor.ImplementationFactory != null
+                        serviceDescriptor.ServiceType == typeof(ISorEngineResolver) &&
+                        serviceDescriptor.ImplementationFactory == null
                     )
                 )
             );

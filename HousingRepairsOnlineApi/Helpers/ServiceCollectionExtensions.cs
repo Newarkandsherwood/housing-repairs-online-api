@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddSoREngine(this IServiceCollection services, ISorConfigurationProvider sorConfigurationProvider)
+        public static void AddSoREngine(this IServiceCollection services, IRepairTypeSorConfigurationProvider sorConfigurationProvider)
         {
             Guard.Against.Null(sorConfigurationProvider, nameof(sorConfigurationProvider));
 
@@ -30,7 +30,12 @@ namespace HousingRepairsOnlineApi.Helpers
 
             var journeyTriageOptions = GenerateJourneyRepairTriageOptions(sorConfigurations);
             var sorMapping = GenerateSorMapping(sorConfigurations);
-            services.AddTransient<ISoREngine, SoREngine>(_ => new SoREngine(sorMapping, journeyTriageOptions));
+            services.AddTransient<IDictionary<string, ISoREngine>>(_ =>
+                new Dictionary<string, ISoREngine>
+                {
+                    { sorConfigurationProvider.RepairType, new SoREngine(sorMapping, journeyTriageOptions) }
+                });
+            services.AddTransient<ISorEngineResolver, SorEngineResolver>();
         }
 
         public static IEnumerable<SorConfiguration> ParseSorConfigurationJson(string sorConfigurationValueJson)

@@ -17,6 +17,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveAvailableAppointmentsUseCase systemUnderTest;
         private readonly Mock<IAppointmentsGateway> appointmentsGatewayMock;
+        private readonly Mock<ISorEngineResolver> sorEngineResolverMock;
         private readonly Mock<ISoREngine> sorEngineMock;
         const string kitchen = "kitchen";
         const string cupboards = "cupboards";
@@ -25,8 +26,10 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public RetrieveAvailableAppointmentsUseCaseTests()
         {
             sorEngineMock = new Mock<ISoREngine>();
+            sorEngineResolverMock = new Mock<ISorEngineResolver>();
+            sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
             appointmentsGatewayMock = new Mock<IAppointmentsGateway>();
-            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
+            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineResolverMock.Object);
         }
 
         [Theory]
@@ -36,7 +39,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
             Func<Task> act = async () => await systemUnderTest.Execute(repairLocation, cupboards, doorHangingOff, "A UPRN");
@@ -52,7 +54,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
             Func<Task> act = async () => await systemUnderTest.Execute(kitchen, repairProblem, doorHangingOff, "A UPRN");
@@ -68,7 +69,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
             Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, repairIssue, "A UPRN");
@@ -84,7 +84,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
             Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, uprn);
@@ -106,7 +105,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
             Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "Location ID", null);
