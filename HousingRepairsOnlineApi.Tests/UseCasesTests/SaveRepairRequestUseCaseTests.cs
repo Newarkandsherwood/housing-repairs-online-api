@@ -10,6 +10,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     public class SaveRepairRequestUseCaseTests
     {
         private readonly SaveRepairRequestUseCase systemUnderTest;
+        private readonly Mock<ISorEngineResolver> mockSorEngineResolver;
         private readonly Mock<ISoREngine> mockSorEngine;
         private readonly Mock<IRepairStorageGateway> mockCosmosGateway;
         private readonly Mock<IBlobStorageGateway> mockAzureStorageGateway;
@@ -17,12 +18,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public SaveRepairRequestUseCaseTests()
         {
             mockSorEngine = new Mock<ISoREngine>();
+            mockSorEngineResolver = new Mock<ISorEngineResolver>();
+            mockSorEngineResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(mockSorEngine.Object);
             mockCosmosGateway = new Mock<IRepairStorageGateway>();
             mockAzureStorageGateway = new Mock<IBlobStorageGateway>();
             systemUnderTest = new SaveRepairRequestUseCase(
                 mockCosmosGateway.Object,
                 mockAzureStorageGateway.Object,
-                mockSorEngine.Object
+                mockSorEngineResolver.Object
                 );
         }
 

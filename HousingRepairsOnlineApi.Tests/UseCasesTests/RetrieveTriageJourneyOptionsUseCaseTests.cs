@@ -14,6 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveJourneyTriageOptionsUseCase systemUnderTest;
         private readonly Mock<ISoREngine> sorEngineMock = new();
+        private readonly Mock<ISorEngineResolver> sorEngineResolverMock = new();
         private readonly Mock<IEarlyExitRepairTriageOptionMapper> earlyExitRepairTriageOptionMapperMock = new();
 
         public RetrieveTriageJourneyOptionsUseCaseTests()
@@ -24,7 +25,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns<IEnumerable<RepairTriageOption>, string, string, string, string>(
                     (repairTriageOptions, emergencyValue, notEligibleNonEmergency, unableToBook, contactUs) =>
                         repairTriageOptions);
-            systemUnderTest = new RetrieveJourneyTriageOptionsUseCase(sorEngineMock.Object, earlyExitRepairTriageOptionMapperMock.Object);
+            sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
+            systemUnderTest = new RetrieveJourneyTriageOptionsUseCase(sorEngineResolverMock.Object, earlyExitRepairTriageOptionMapperMock.Object);
         }
 
         [Fact]

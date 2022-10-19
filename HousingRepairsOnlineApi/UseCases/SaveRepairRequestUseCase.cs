@@ -11,18 +11,18 @@ namespace HousingRepairsOnlineApi.UseCases
     {
         private readonly IRepairStorageGateway cosmosGateway;
         private readonly IBlobStorageGateway storageGateway;
-        private readonly ISoREngine sorEngine;
+        private readonly ISorEngineResolver sorEngineResolver;
 
-        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, ISoREngine sorEngine)
-
+        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, ISorEngineResolver sorEngineResolver)
         {
             this.cosmosGateway = cosmosGateway;
             this.storageGateway = storageGateway;
-            this.sorEngine = sorEngine;
+            this.sorEngineResolver = sorEngineResolver;
         }
 
         public async Task<Repair> Execute(RepairRequest repairRequest)
         {
+            var sorEngine = sorEngineResolver.Resolve(RepairType.Tenant);
             var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
                 repairRequest.Location.Value,
                 repairRequest.Problem.Value,
