@@ -76,10 +76,10 @@ variable "sentry_dsn" {
   type      = string
   sensitive = true
 }
-variable "sor_configuration_production" {
+variable "sor_configuration_tenant_production" {
   type = string
 }
-variable "sor_configuration_staging" {
+variable "sor_configuration_tenant_staging" {
   type = string
 }
 variable "allowed_appointment_slots_production" {

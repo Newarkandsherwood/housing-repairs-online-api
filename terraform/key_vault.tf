@@ -118,9 +118,9 @@ resource "azurerm_key_vault_secret" "scheduling-api-url-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "sor-configuration-staging" {
+resource "azurerm_key_vault_secret" "sor-configuration-tenant-staging" {
   name         = "sor-configuration-staging"
-  value        = var.sor_configuration_staging
+  value        = var.sor_configuration_tenant_staging
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
@@ -193,9 +193,9 @@ resource "azurerm_key_vault_secret" "scheduling-api-url-production" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "sor-configuration-production" {
+resource "azurerm_key_vault_secret" "sor-configuration-tenant-production" {
   name         = "sor-configuration-production"
-  value        = var.sor_configuration_production
+  value        = var.sor_configuration_tenant_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
