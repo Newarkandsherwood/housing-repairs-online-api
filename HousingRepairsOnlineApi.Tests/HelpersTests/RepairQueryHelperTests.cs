@@ -10,13 +10,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     public class RepairQueryHelperTests
     {
         private RepairQueryHelper systemUnderTest;
-        private Mock<Container> containerMock;
+        private Mock<ContainerResponse> containerMock;
         private Mock<FeedIterator<Repair>> feedIteratorMock;
         private const string MockPostcode = "NG21 9LQ";
+        private const string repairType = "Communal";
 
         public RepairQueryHelperTests()
         {
-            containerMock = new Mock<Container>();
+            containerMock = new Mock<ContainerResponse>();
             systemUnderTest = new RepairQueryHelper(containerMock.Object);
             feedIteratorMock = new Mock<FeedIterator<Repair>>();
         }
@@ -29,14 +30,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Arrange
             feedIteratorMock.Setup(_ => _.HasMoreResults).Returns(false);
             containerMock
-                .Setup(_ => _.GetItemQueryIterator<Repair>("TEST", null, null)) //It.IsAny<string>()
+                .Setup(_ => _.Container.GetItemQueryIterator<Repair>("TEST", null, null)) //It.IsAny<string>()
                 .Returns(feedIteratorMock.Object);
 
             // Act
-            var result = systemUnderTest.GetItemQueryIterator<Repair>(MockPostcode);
+            var result = systemUnderTest.GetItemQueryIterator<Repair>(repairType, MockPostcode);
 
             // Assert
-            containerMock.Verify(m => m.GetItemQueryIterator<Repair>(
+            containerMock.Verify(m => m.Container.GetItemQueryIterator<Repair>(
                 It.Is<QueryDefinition>(u =>
                         u.QueryText.Contains("SELECT")
                 )
@@ -51,14 +52,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Arrange
             feedIteratorMock.Setup(_ => _.HasMoreResults).Returns(false);
             containerMock
-                .Setup(_ => _.GetItemQueryIterator<Repair>("TEST", null, null))
+                .Setup(_ => _.Container.GetItemQueryIterator<Repair>("TEST", null, null))
                 .Returns(feedIteratorMock.Object);
 
             // Act
-            systemUnderTest.GetItemQueryIterator<Repair>(MockPostcode);
+            systemUnderTest.GetItemQueryIterator<Repair>(repairType, MockPostcode);
 
             // Assert
-            containerMock.Verify(m => m.GetItemQueryIterator<Repair>(
+            containerMock.Verify(m => m.Container.GetItemQueryIterator<Repair>(
                 It.Is<QueryDefinition>(u =>
                     u.GetQueryParameters()[0].Name == "@propertyReference"
                     && u.GetQueryParameters()[0].Value.ToString() == MockPostcode

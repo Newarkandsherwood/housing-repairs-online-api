@@ -13,6 +13,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly Mock<ISoREngine> mockSorEngine;
         private readonly Mock<IRepairStorageGateway> mockCosmosGateway;
         private readonly Mock<IBlobStorageGateway> mockAzureStorageGateway;
+        private const string repairType = "Communal";
 
         public SaveRepairRequestUseCaseTests()
         {
@@ -68,7 +69,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(repairRequest);
+            var _ = await systemUnderTest.Execute(repairRequest, repairType);
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
             mockSorEngine.Verify(x => x.MapSorCode(Location, Problem, Issue), Times.Once);
@@ -110,7 +111,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(repairRequest);
+            var _ = await systemUnderTest.Execute(repairRequest, repairType);
 
             mockSorEngine.Verify(x => x.MapSorCode(Location, Problem, Issue), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Description.PhotoUrl == null)), Times.Once);

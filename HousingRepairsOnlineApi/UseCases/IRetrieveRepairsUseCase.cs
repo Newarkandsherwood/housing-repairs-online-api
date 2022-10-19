@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IRetrieveRepairsUseCase
     {
-        Task<IEnumerable<RepairRequestSummary>> Execute(string propertyReference);
+        Task<IEnumerable<RepairRequestSummary>> Execute(string repairType, string propertyReference);
     }
 }

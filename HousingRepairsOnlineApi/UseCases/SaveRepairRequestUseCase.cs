@@ -21,11 +21,11 @@ namespace HousingRepairsOnlineApi.UseCases
             this.sorEngine = sorEngine;
         }
 
-        public async Task<Repair> Execute(RepairRequest repairRequest)
+        public async Task<Repair> Execute(RepairRequest repairRequest, string repairType)
         {
-
             var repair = new Repair
             {
+                RepairType = repairType,
                 Address = repairRequest.Address,
                 Postcode = repairRequest.Postcode,
                 Location = repairRequest.Location,

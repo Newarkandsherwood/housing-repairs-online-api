@@ -7,6 +7,6 @@ namespace HousingRepairsOnlineApi.Gateways
     public interface IRepairStorageGateway
     {
         Task<Repair> AddRepair(Repair repair);
-        Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string propertyReference);
+        Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string repairType, string propertyReference);
     }
 }

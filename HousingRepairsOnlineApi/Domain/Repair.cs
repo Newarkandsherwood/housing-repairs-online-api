@@ -6,8 +6,7 @@ namespace HousingRepairsOnlineApi.Domain
     {
         [JsonProperty("id")]
         public string Id { get; set; }
-
-        public string RepairType { get; set; } /// communal, tenant, leasehold
+        public string RepairType { get; set; } /// Communal, Tenant, Leasehold
         public string Postcode { get; set; }
         public string SOR { get; set; }
         public RepairAddress Address { get; set; }

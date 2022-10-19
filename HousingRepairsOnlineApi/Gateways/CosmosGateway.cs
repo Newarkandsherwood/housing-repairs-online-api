@@ -42,9 +42,9 @@ namespace HousingRepairsOnlineApi.Gateways
             }
         }
 
-        public async Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string propertyReference)
+        public async Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string repairType, string propertyReference)
         {
-            using var queryResultSetIterator = repairQueryHelper.GetItemQueryIterator<Repair>(propertyReference);
+            using var queryResultSetIterator = repairQueryHelper.GetItemQueryIterator<Repair>(repairType, propertyReference);
             var repairs = new List<RepairRequestSummary>();
 
             while (queryResultSetIterator.HasMoreResults)

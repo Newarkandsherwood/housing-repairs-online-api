@@ -5,6 +5,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface ISaveRepairRequestUseCase
     {
-        public Task<Repair> Execute(RepairRequest repairRequest);
+        public Task<Repair> Execute(RepairRequest repairRequest, string RepairType);
     }
 }

@@ -7,18 +7,19 @@ namespace HousingRepairsOnlineApi.Helpers
 
     public class RepairQueryHelper : IRepairQueryHelper
     {
-        private readonly Container cosmosContainer;
-        public RepairQueryHelper(Container container) => cosmosContainer = container;
+        private readonly ContainerResponse cosmosContainer;
+        public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
-        public FeedIterator<Repair> GetItemQueryIterator<T>(string propertyReference) =>
-            cosmosContainer.GetItemQueryIterator<Repair>(GetQueryDefinition(propertyReference));
+        public FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference) =>
+            cosmosContainer.Container.GetItemQueryIterator<Repair>(GetQueryDefinition(propertyReference, repairType));
 
-        private static QueryDefinition GetQueryDefinition(string propertyReference)
+        private static QueryDefinition GetQueryDefinition(string repairType, string propertyReference)
         {
             var query =
-                "SELECT * FROM c WHERE c.Address.LocationId  = @propertyReference ORDER BY c.Time.StartDateTime ASC";
+                "SELECT * FROM c WHERE c.Address.RepairType  = @repairType AND c.Address.LocationId  = @propertyReference ORDER BY c.Time.StartDateTime ASC";
             return new QueryDefinition(query)
+                .WithParameter("@repairType", repairType)
                 .WithParameter("@propertyReference", propertyReference);
-        }
+       }
     }
 }

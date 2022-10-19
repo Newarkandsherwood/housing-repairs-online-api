@@ -34,17 +34,33 @@ namespace HousingRepairsOnlineApi.Controllers
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SaveRepair([FromBody] RepairRequest repairRequest)
+        // [HttpPost]
+        // public async Task<IActionResult> SaveRepair([FromBody] RepairRequest repairRequest)
+        // {
+        //     try
+        //     {
+        //         var result = await saveRepairRequestUseCase.Execute(repairRequest);
+        //         await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Address.LocationId,
+        //             result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
+        //         appointmentConfirmationSender.Execute(result);
+        //         await internalEmailSender.Execute(result);
+        //         return Ok(result.Id);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         SentrySdk.CaptureException(ex);
+        //         return StatusCode(500, ex.Message);
+        //     }
+        // }
+
+        [HttpGet]
+        [Route("PropertyRepairsCommunal")]
+        public async Task<IActionResult> PropertyRepairsCommunal([FromQuery] string propertyReference)
         {
             try
             {
-                var result = await saveRepairRequestUseCase.Execute(repairRequest);
-                await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Address.LocationId,
-                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
-                appointmentConfirmationSender.Execute(result);
-                await internalEmailSender.Execute(result);
-                return Ok(result.Id);
+                var result = await retrieveRepairsUseCase.Execute(RepairTypeHelper.CommunalRepairType, propertyReference);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -53,19 +69,44 @@ namespace HousingRepairsOnlineApi.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> PropertyRepairs([FromQuery] string propertyReference)
+        [HttpPost]
+        [Route("RepairTenant")]
+        public async Task<IActionResult> RepairTenant([FromBody] RepairRequest repairRequest)
         {
             try
             {
-                var result = await retrieveRepairsUseCase.Execute(propertyReference);
-                return Ok(result);
+                return await SaveRepair(repairRequest, RepairTypeHelper.TenantRepairType);
             }
             catch (Exception ex)
             {
                 SentrySdk.CaptureException(ex);
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("RepairCommunal")]
+        public async Task<IActionResult> RepairCommunal([FromBody] RepairRequest repairRequest)
+        {
+            try
+            {
+                return await SaveRepair(repairRequest, RepairTypeHelper.CommunalRepairType);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> SaveRepair(RepairRequest repairRequest, string repairType)
+        {
+            var result = await saveRepairRequestUseCase.Execute(repairRequest, RepairTypeHelper.TenantRepairType);
+            await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Address.LocationId,
+                result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
+            appointmentConfirmationSender.Execute(result);
+            await internalEmailSender.Execute(result);
+            return Ok(result.Id);
         }
     }
 }
