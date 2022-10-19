@@ -33,7 +33,7 @@ namespace HousingRepairsOnlineApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSoREngine(new EnvironmentVariableSorConfigurationProvider());
+            services.AddSoREngine(new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant));
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
