@@ -4,7 +4,7 @@
     {
         public string ConfigurationValue()
         {
-            var sorConfigurationValue = EnvironmentVariableHelper.GetEnvironmentVariable("SOR_CONFIGURATION");
+            var sorConfigurationValue = EnvironmentVariableHelper.GetEnvironmentVariable("SOR_CONFIGURATION_TENANT");
 
             return sorConfigurationValue;
         }
