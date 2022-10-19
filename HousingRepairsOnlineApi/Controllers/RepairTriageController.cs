@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Mvc;
 using Sentry;
@@ -39,7 +40,7 @@ namespace HousingRepairsOnlineApi.Controllers
 
             try
             {
-                var result = await retrieveJourneyTriageOptionsUseCase.Execute(emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
+                var result = await retrieveJourneyTriageOptionsUseCase.Execute(RepairType.Tenant, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
                 return Ok(result);
             }
             catch (Exception ex)

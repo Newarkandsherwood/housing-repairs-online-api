@@ -12,6 +12,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 {
     public class RetrieveTriageJourneyOptionsUseCaseTests
     {
+        private readonly string RepairTypeParameterValue = RepairType.Tenant;
         private readonly RetrieveJourneyTriageOptionsUseCase systemUnderTest;
         private readonly Mock<ISoREngine> sorEngineMock = new();
         private readonly Mock<ISorEngineResolver> sorEngineResolverMock = new();
@@ -37,7 +38,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns(Array.Empty<RepairTriageOption>());
 
             // Act
-            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty, string.Empty);
+            var actual = await systemUnderTest.Execute(RepairTypeParameterValue, string.Empty, string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().BeEmpty();
@@ -51,10 +52,58 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .Returns(new[] { new RepairTriageOption() });
 
             // Act
-            var actual = await systemUnderTest.Execute(string.Empty, string.Empty, string.Empty, string.Empty);
+            var actual = await systemUnderTest.Execute(RepairTypeParameterValue, string.Empty, string.Empty, string.Empty, string.Empty);
 
             // Assert
             actual.Should().NotBeEmpty();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidArgumentTestData))]
+        [MemberData(nameof(InvalidRepairTypeArgument))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidRepairType_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairTypeParameter) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            Func<Task> act = async () => await systemUnderTest.Execute(repairTypeParameter, string.Empty, string.Empty, string.Empty, string.Empty);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        public static IEnumerable<object[]> InvalidArgumentTestData()
+        {
+            yield return new object[] { new ArgumentNullException(), null };
+            yield return new object[] { new ArgumentException(), "" };
+            yield return new object[] { new ArgumentException(), " " };
+        }
+
+        public static TheoryData<Exception, string> InvalidRepairTypeArgument() => new() { { new ArgumentException(), "non-repair-type-value" } };
+
+        [Theory]
+        [MemberData(nameof(ValidRepairTypeArgumentTestData))]
+        public void GivenValidRepairTypeParameter_WhenResolving_ThenExceptionIsNotThrown(string repairTypeParameter)
+        {
+            // Arrange
+
+            // Act
+            Action act = () => _ = systemUnderTest.Execute(repairTypeParameter, string.Empty, string.Empty, string.Empty, string.Empty);
+
+            // Assert
+            act.Should().NotThrow<ArgumentException>();
+        }
+
+        public static TheoryData<string> ValidRepairTypeArgumentTestData()
+        {
+            var result = new TheoryData<string>();
+            foreach (var repairType in RepairType.All)
+            {
+                result.Add(repairType);
+            }
+            return result;
         }
     }
 }

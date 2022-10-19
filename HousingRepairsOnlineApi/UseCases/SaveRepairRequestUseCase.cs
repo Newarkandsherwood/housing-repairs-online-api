@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
@@ -20,9 +21,12 @@ namespace HousingRepairsOnlineApi.UseCases
             this.sorEngineResolver = sorEngineResolver;
         }
 
-        public async Task<Repair> Execute(RepairRequest repairRequest)
+        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
         {
-            var sorEngine = sorEngineResolver.Resolve(RepairType.Tenant);
+            Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
+            Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
+
+            var sorEngine = sorEngineResolver.Resolve(repairType);
             var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
                 repairRequest.Location.Value,
                 repairRequest.Problem.Value,
