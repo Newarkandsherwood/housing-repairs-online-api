@@ -33,7 +33,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Assert
             GetStatusCode(result).Should().Be(200);
             retrieveTriageJourneyOptionsMock.Verify(
-                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -103,7 +103,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
             retrieveTriageJourneyOptionsMock
                 .Setup(x =>
-                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Throws<System.Exception>();
 
             // Act

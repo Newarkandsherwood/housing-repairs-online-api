@@ -1,4 +1,8 @@
-﻿using HousingRepairsOnlineApi.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
+using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
@@ -9,6 +13,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 {
     public class SaveRepairRequestUseCaseTests
     {
+        private const string RepairTypeParameterValue = RepairType.Tenant;
+
         private readonly SaveRepairRequestUseCase systemUnderTest;
         private readonly Mock<ISorEngineResolver> mockSorEngineResolver;
         private readonly Mock<ISoREngine> mockSorEngine;
@@ -73,7 +79,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(repairRequest);
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
             mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
@@ -117,11 +123,59 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(repairRequest);
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
 
             mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Priority == Priority && p.Description.PhotoUrl == null)), Times.Once);
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidArgumentTestData))]
+        [MemberData(nameof(InvalidRepairTypeArgument))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidRepairType_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairTypeParameter) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            Func<Task> act = async () => await systemUnderTest.Execute(repairTypeParameter, default);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        public static IEnumerable<object[]> InvalidArgumentTestData()
+        {
+            yield return new object[] { new ArgumentNullException(), null };
+            yield return new object[] { new ArgumentException(), "" };
+            yield return new object[] { new ArgumentException(), " " };
+        }
+
+        public static TheoryData<Exception, string> InvalidRepairTypeArgument() => new() { { new ArgumentException(), "non-repair-type-value" } };
+
+        [Theory]
+        [MemberData(nameof(ValidRepairTypeArgumentTestData))]
+        public void GivenValidRepairTypeParameter_WhenResolving_ThenExceptionIsNotThrown(string repairTypeParameter)
+        {
+            // Arrange
+
+            // Act
+            Action act = () => _ = systemUnderTest.Execute(repairTypeParameter, default);
+
+            // Assert
+            act.Should().NotThrow<ArgumentException>();
+        }
+
+        public static TheoryData<string> ValidRepairTypeArgumentTestData()
+        {
+            var result = new TheoryData<string>();
+            foreach (var repairType in RepairType.All)
+            {
+                result.Add(repairType);
+            }
+            return result;
         }
     }
 }

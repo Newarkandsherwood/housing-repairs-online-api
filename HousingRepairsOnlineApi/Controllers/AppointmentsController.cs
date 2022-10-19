@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Mvc;
 using Sentry;
@@ -28,7 +29,7 @@ namespace HousingRepairsOnlineApi.Controllers
         {
             try
             {
-                var result = await retrieveAvailableAppointmentsUseCase.Execute(repairLocation, repairProblem, repairIssue, locationId, fromDate);
+                var result = await retrieveAvailableAppointmentsUseCase.Execute(RepairType.Tenant, repairLocation, repairProblem, repairIssue, locationId, fromDate);
                 return Ok(result);
             }
             catch (Exception ex)

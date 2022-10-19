@@ -35,7 +35,7 @@ namespace HousingRepairsOnlineApi.Controllers
         {
             try
             {
-                var result = await saveRepairRequestUseCase.Execute(repairRequest);
+                var result = await saveRepairRequestUseCase.Execute(RepairType.Tenant, repairRequest);
                 await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
                     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
                 appointmentConfirmationSender.Execute(result);

@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             const string Uprn = "12345";
             var result = await systemUndertest.AvailableAppointments(RepairLocation, RepairProblem, RepairIssue, Uprn);
             GetStatusCode(result).Should().Be(200);
-            availableAppointmentsUseCaseMock.Verify(x => x.Execute(RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
+            availableAppointmentsUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
 
             // Assert
             GetStatusCode(result).Should().Be(200);
-            availableAppointmentsUseCaseMock.Verify(x => x.Execute(RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
+            availableAppointmentsUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
         }
 
         [Fact]
@@ -58,7 +58,9 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             const string LocationId = "location ID";
             var fromDate = new DateTime(2021, 12, 15);
 
-            availableAppointmentsUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>())).Throws<System.Exception>();
+            availableAppointmentsUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
+                .Throws<Exception>();
 
             var result = await systemUndertest.AvailableAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId, fromDate);
 

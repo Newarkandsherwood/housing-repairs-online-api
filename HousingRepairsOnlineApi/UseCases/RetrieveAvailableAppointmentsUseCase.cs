@@ -24,14 +24,16 @@ namespace HousingRepairsOnlineApi.UseCases
             this.allowedAppointmentSlots = allowedAppointmentSlots;
         }
 
-        public async Task<List<ApplicationTime>> Execute(string repairLocation, string repairProblem,
+        public async Task<List<ApplicationTime>> Execute(string repairType, string repairLocation, string repairProblem,
             string repairIssue, string locationId, DateTime? fromDate = null)
         {
+            Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
+            Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
             Guard.Against.NullOrWhiteSpace(repairLocation, nameof(repairLocation));
             Guard.Against.NullOrWhiteSpace(repairProblem, nameof(repairProblem));
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
 
-            var sorEngine = sorEngineResolver.Resolve(RepairType.Tenant);
+            var sorEngine = sorEngineResolver.Resolve(repairType);
             var repairCode = sorEngine.MapToRepairTriageDetails(repairLocation, repairProblem, repairIssue);
 
             var result = await appointmentsGateway.GetAvailableAppointments(repairCode.ScheduleOfRateCode, repairCode.Priority, locationId, fromDate, allowedAppointmentSlots);
