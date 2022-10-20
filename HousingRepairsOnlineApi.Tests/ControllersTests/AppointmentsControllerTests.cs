@@ -46,6 +46,19 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         }
 
         [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            // Arrange
+
+            // Act
+            _ = await systemUndertest.AvailableCommunalAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId);
+
+            // Assert
+            availableAppointmentsUseCaseMock.Verify(
+                x => x.Execute(RepairType.Communal, RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
+        }
+
+        [Fact]
         public async Task GivenAFromDate_WhenRequestingAvailableAppointments_ThenResultsAreReturned()
         {
             // Arrange

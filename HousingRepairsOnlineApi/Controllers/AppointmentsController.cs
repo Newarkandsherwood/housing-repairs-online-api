@@ -30,6 +30,18 @@ namespace HousingRepairsOnlineApi.Controllers
             return await AvailableAppointments(RepairType.Tenant, repairLocation, repairProblem, repairIssue, locationId, fromDate);
         }
 
+        [HttpGet]
+        [Route("AvailableCommunalAppointments")]
+        public async Task<IActionResult> AvailableCommunalAppointments(
+            [FromQuery] string repairLocation,
+            [FromQuery] string repairProblem,
+            [FromQuery] string repairIssue,
+            [FromQuery] string locationId,
+            [FromQuery] DateTime? fromDate = null)
+        {
+            return await AvailableAppointments(RepairType.Communal, repairLocation, repairProblem, repairIssue, locationId, fromDate);
+        }
+
         internal async Task<IActionResult> AvailableAppointments(string repairType,
             string repairLocation,
             string repairProblem,

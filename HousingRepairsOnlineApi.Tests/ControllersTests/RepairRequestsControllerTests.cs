@@ -73,6 +73,22 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Tenant, repairRequest), Times.Once);
         }
 
+        [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.CommunalRepair(repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Communal, repairRequest), Times.Once);
+        }
+
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()
         {
             var repairRequest = new RepairRequest
