@@ -52,6 +52,20 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
                 x => x.Execute(RepairType.Tenant, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
+        [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var result = await systemUnderTest.CommunalRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            retrieveTriageJourneyOptionsMock.Verify(
+                x => x.Execute(RepairType.Communal, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
         [Theory]
         [MemberData(nameof(InvalidParameterValueData))]
         public async Task

@@ -37,6 +37,13 @@ namespace HousingRepairsOnlineApi.Controllers
             return await SaveRepair(RepairType.Tenant, repairRequest);
         }
 
+        [HttpPost]
+        [Route("CommunalRepair")]
+        public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
+        {
+            return await SaveRepair(RepairType.Communal, repairRequest);
+        }
+
         internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
         {
             try
