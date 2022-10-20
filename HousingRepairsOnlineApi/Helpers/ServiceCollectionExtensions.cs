@@ -14,18 +14,16 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddSoREngine(this IServiceCollection services, IRepairTypeSorConfigurationProvider sorConfigurationProvider)
+        public static void AddSorEngines(this IServiceCollection services, IEnumerable<IRepairTypeSorConfigurationProvider> sorConfigurationProviders)
         {
-            Guard.Against.Null(sorConfigurationProvider, nameof(sorConfigurationProvider));
+            Guard.Against.Null(sorConfigurationProviders, nameof(sorConfigurationProviders));
 
-            var sorEngine = CreateSorEngine(sorConfigurationProvider);
-            services.AddTransient<IDictionary<string, ISoREngine>>(_ =>
-            {
-                return new Dictionary<string, ISoREngine>
-                {
-                    { sorConfigurationProvider.RepairType, sorEngine }
-                };
-            });
+            var sorEngines = sorConfigurationProviders.ToDictionary(
+                x => x.RepairType,
+                x => CreateSorEngine(x)
+            );
+
+            services.AddTransient<IDictionary<string, ISoREngine>>(_ => sorEngines);
             services.AddTransient<ISorEngineResolver, SorEngineResolver>();
         }
 
