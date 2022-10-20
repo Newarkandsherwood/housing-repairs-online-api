@@ -37,6 +37,7 @@ namespace HousingRepairsOnlineApi
                 new[]
                 {
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
+                    new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
                 });
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");

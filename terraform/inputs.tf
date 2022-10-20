@@ -82,6 +82,12 @@ variable "sor_configuration_tenant_production" {
 variable "sor_configuration_tenant_staging" {
   type = string
 }
+variable "sor_configuration_communal_production" {
+  type = string
+}
+variable "sor_configuration_communal_staging" {
+  type = string
+}
 variable "allowed_appointment_slots_production" {
   type = string
 }
