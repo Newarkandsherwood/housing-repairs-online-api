@@ -131,8 +131,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Theory]
-        [MemberData(nameof(InvalidArgumentTestData))]
-        [MemberData(nameof(InvalidRepairTypeArgument))]
+        [MemberData(nameof(Helpers.RepairTypeTestData.InvalidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
 #pragma warning disable xUnit1026
         public async void GivenAnInvalidRepairType_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairTypeParameter) where T : Exception
 #pragma warning restore xUnit1026
@@ -146,17 +145,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             await act.Should().ThrowExactlyAsync<T>();
         }
 
-        public static IEnumerable<object[]> InvalidArgumentTestData()
-        {
-            yield return new object[] { new ArgumentNullException(), null };
-            yield return new object[] { new ArgumentException(), "" };
-            yield return new object[] { new ArgumentException(), " " };
-        }
-
-        public static TheoryData<Exception, string> InvalidRepairTypeArgument() => new() { { new ArgumentException(), "non-repair-type-value" } };
-
         [Theory]
-        [MemberData(nameof(ValidRepairTypeArgumentTestData))]
+        [MemberData(nameof(Helpers.RepairTypeTestData.ValidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
         public void GivenValidRepairTypeParameter_WhenResolving_ThenExceptionIsNotThrown(string repairTypeParameter)
         {
             // Arrange
@@ -166,16 +156,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             // Assert
             act.Should().NotThrow<ArgumentException>();
-        }
-
-        public static TheoryData<string> ValidRepairTypeArgumentTestData()
-        {
-            var result = new TheoryData<string>();
-            foreach (var repairType in RepairType.All)
-            {
-                result.Add(repairType);
-            }
-            return result;
         }
     }
 }
