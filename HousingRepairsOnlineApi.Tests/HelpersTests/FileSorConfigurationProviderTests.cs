@@ -34,7 +34,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Fact]
-        public void GivenPathToMissingSorConfigPathArgument_WhenSorMappingCalled_ThenInvalidOperationExceptionIsThrown()
+        public void GivenPathToMissingSorConfigPathArgument_WhenMapToRepairTriageDetailsCalled_ThenInvalidOperationExceptionIsThrown()
         {
             // Arrange
 

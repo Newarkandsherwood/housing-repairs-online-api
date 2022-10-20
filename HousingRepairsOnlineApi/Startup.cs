@@ -33,7 +33,11 @@ namespace HousingRepairsOnlineApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSoREngine(new EnvironmentVariableSorConfigurationProvider());
+            services.AddSorEngines(
+                new[]
+                {
+                    new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
+                });
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
@@ -44,6 +48,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
+            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
@@ -116,8 +121,6 @@ namespace HousingRepairsOnlineApi
             var cosmosContainer = GetCosmosContainer();
 
             services.AddTransient<IIdGenerator, IdGenerator>();
-
-            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>(s => new RepairQueryHelper(GetCosmosContainer()));
 
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {

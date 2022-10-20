@@ -9,6 +9,7 @@ namespace HousingRepairsOnlineApi.Domain
         public string RepairType { get; set; } /// Communal, Tenant, Leasehold
         public string Postcode { get; set; }
         public string SOR { get; set; }
+        public string Priority { get; set; }
         public RepairAddress Address { get; set; }
         public RepairLocation Location { get; set; }
         public RepairProblem Problem { get; set; }

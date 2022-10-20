@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class ServiceCollectionExtensionsTests
     {
-        private readonly Mock<ISorConfigurationProvider> sorConfigurationProviderMock = new();
+        private readonly Mock<IRepairTypeSorConfigurationProvider> sorConfigurationProviderMock = new();
 
         private const string Value1 = "value1";
         private const string Display1 = "display1";
@@ -23,16 +23,17 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private const string Value3 = "value3";
         private const string Display3 = "display3";
         private const string SorCode = "sorCode";
+        private const string Priority = "priority";
 
         [Fact]
-        public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineIsRegistered()
+        public void GivenValidSorConfigArgument_WhenAddingSorEnginesToServices_ThenSoREngineResolverIsRegistered()
         {
             // Arrange
             var serviceCollectionMock = new Mock<IServiceCollection>();
             serviceCollectionMock.Setup(x =>
                 x.Add(It.Is<ServiceDescriptor>(serviceDescriptor =>
-                        serviceDescriptor.ServiceType == typeof(ISoREngine) &&
-                        serviceDescriptor.ImplementationFactory != null
+                        serviceDescriptor.ServiceType == typeof(ISorEngineResolver) &&
+                        serviceDescriptor.ImplementationFactory == null
                     )
                 )
             );
@@ -47,7 +48,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                         ""options"": [{
                             ""value"": ""doorHangingOff"",
                             ""display"": ""Hanging Door"",
-                            ""sorCode"": ""SoR Code 1""
+                            ""sorCode"": ""SoR Code 1"",
+                            ""priority"": ""priority""
                         }]
                     }]
                 },
@@ -60,14 +62,16 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     ""options"": [{
                         ""value"": ""taps"",
                         ""display"": ""Bath taps"",
-                        ""sorCode"": ""SoR Code 1""
+                        ""sorCode"": ""SoR Code 1"",
+                        ""priority"": ""priority""
                     }]
                 }]
             }]";
+            sorConfigurationProviderMock.SetupGet(x => x.RepairType).Returns("repairType");
             sorConfigurationProviderMock.Setup(x => x.ConfigurationValue()).Returns(jsonConfig);
 
             // Act
-            ServiceCollectionExtensions.AddSoREngine(serviceCollection, sorConfigurationProviderMock.Object);
+            ServiceCollectionExtensions.AddSorEngines(serviceCollection, new[] { sorConfigurationProviderMock.Object });
 
             // Assert
             serviceCollectionMock.VerifyAll();
@@ -76,19 +80,16 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidJsonSorConfigTestData))]
 #pragma warning disable xUnit1026
-        public void GivenInvalidJsonSorConfig_WhenAddingSoREngineToServices_ThenExceptionIsThrown<T>(T exception,
+        public void GivenInvalidJsonSorConfig_WhenCreatingSoREngine_ThenExceptionIsThrown<T>(T exception,
             string configJson) where T : Exception
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var serviceCollectionMock = new Mock<IServiceCollection>();
-            var serviceCollection = serviceCollectionMock.Object;
-
             sorConfigurationProviderMock.Setup(x => x.ConfigurationValue()).Returns(configJson);
 
             // Act
             Action act = () =>
-                ServiceCollectionExtensions.AddSoREngine(serviceCollection, sorConfigurationProviderMock.Object);
+                ServiceCollectionExtensions.CreateSorEngine(sorConfigurationProviderMock.Object);
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithInnerException<T>();
@@ -319,14 +320,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                             {
                                 new SorConfiguration
                                 {
-                                    Value = Value2, Display = Display2, SorCode = SorCode
+                                    Value = Value2, Display = Display2, SorCode = SorCode, Priority = Priority
                                 }
                             }
                         }
                     },
                     new Dictionary<string, IDictionary<string, dynamic>>
                     {
-                        { Value1, new Dictionary<string, dynamic> { { Value2, SorCode } } }
+                        { Value1, new Dictionary<string, dynamic> { { Value2, new RepairTriageDetails{ScheduleOfRateCode = SorCode, Priority = Priority } } } }
                     }
                 },
                 {
@@ -348,7 +349,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                                         {
                                             Value = Value3,
                                             Display = Display3,
-                                            SorCode = SorCode
+                                            SorCode = SorCode,
+                                            Priority = Priority,
                                         }
                                     }
                                 }
@@ -361,7 +363,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                             Value1,
                             new Dictionary<string, dynamic>
                             {
-                                { Value2, new Dictionary<string, string> { { Value3, SorCode } } }
+                                { Value2, new Dictionary<string, RepairTriageDetails> { { Value3, new RepairTriageDetails{ ScheduleOfRateCode = SorCode, Priority = Priority } } } }
                             }
                         }
                     }

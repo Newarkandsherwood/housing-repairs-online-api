@@ -20,14 +20,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     "kitchen", new Dictionary<string, dynamic>
                     {
                         {
-                            "cupboards", new Dictionary<string, string>
+                            "cupboards", new Dictionary<string, RepairTriageDetails>
                             {
-                                { "doorHangingOff", "N373049" },
-                                { "doorMissing", "N373049" },
+                                { "doorHangingOff", new RepairTriageDetails { ScheduleOfRateCode = "N373049", Priority = "1" } },
+                                { "doorMissing", new RepairTriageDetails { ScheduleOfRateCode = "N373049", Priority = "1" } },
                             }
                         },
                         {
-                            "worktop", "N372005"
+                            "worktop", new RepairTriageDetails { ScheduleOfRateCode = "N372005", Priority = "2" }
                         },
                     }
                 },
@@ -35,9 +35,9 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     "bathroom", new Dictionary<string, dynamic>
                     {
                         {
-                            "bath", new Dictionary<string, string>
+                            "bath", new Dictionary<string, RepairTriageDetails>
                             {
-                                { "bathTaps", "N631301" }
+                                { "bathTaps", new RepairTriageDetails { ScheduleOfRateCode = "N631301", Priority = "3" } }
                             }
                         }
                     }
@@ -49,19 +49,20 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Theory]
-        [InlineData("kitchen", "cupboards", "doorHangingOff", "N373049")]
-        [InlineData("kitchen", "cupboards", "doorMissing", "N373049")]
-        [InlineData("kitchen", "worktop", null, "N372005")]
-        [InlineData("bathroom", "bath", "bathTaps", "N631301")]
-        public void GivenLocationProblemIssue_WhenCallingMapSorCode_ThenExpectedSorIsReturned(string location, string problem, string issue, string expectedSor)
+        [InlineData("kitchen", "cupboards", "doorHangingOff", "N373049", "1")]
+        [InlineData("kitchen", "cupboards", "doorMissing", "N373049", "1")]
+        [InlineData("kitchen", "worktop", null, "N372005", "2")]
+        [InlineData("bathroom", "bath", "bathTaps", "N631301", "3")]
+        public void GivenLocationProblemIssue_WhenCallingMapSorCode_ThenExpectedSorIsReturned(string location, string problem, string issue, string expectedSor, string expectedPriority)
         {
             // Arrange
+            var expected = new RepairTriageDetails { ScheduleOfRateCode = expectedSor, Priority = expectedPriority };
 
             // Act
-            var actual = systemUnderTest.MapSorCode(location, problem, issue);
+            var actual = systemUnderTest.MapToRepairTriageDetails(location, problem, issue);
 
             // Assert
-            Assert.Equal(expectedSor, actual);
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Fact]

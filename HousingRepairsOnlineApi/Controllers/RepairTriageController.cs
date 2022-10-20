@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Mvc;
 using Sentry;
@@ -18,7 +19,23 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> JourneyRepairTriageOptions(string emergencyValue, string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
+        [Route("TenantRepairTriageOptions")]
+        public async Task<IActionResult> TenantRepairTriageOptions(string emergencyValue,
+            string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
+        {
+            return await JourneyRepairTriageOptions(RepairType.Tenant, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+        }
+
+        [HttpGet]
+        [Route("CommunalRepairTriageOptions")]
+        public async Task<IActionResult> CommunalRepairTriageOptions(string emergencyValue,
+            string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
+        {
+            return await JourneyRepairTriageOptions(RepairType.Communal, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+        }
+
+        internal async Task<IActionResult> JourneyRepairTriageOptions(string repairType, string emergencyValue,
+            string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
             if (string.IsNullOrWhiteSpace(emergencyValue))
             {
@@ -39,7 +56,7 @@ namespace HousingRepairsOnlineApi.Controllers
 
             try
             {
-                var result = await retrieveJourneyTriageOptionsUseCase.Execute(emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
+                var result = await retrieveJourneyTriageOptionsUseCase.Execute(repairType, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -14,25 +14,29 @@ namespace HousingRepairsOnlineApi.UseCases
     public class RetrieveAvailableAppointmentsUseCase : IRetrieveAvailableAppointmentsUseCase
     {
         private readonly IAppointmentsGateway appointmentsGateway;
-        private readonly ISoREngine sorEngine;
+        private readonly ISorEngineResolver sorEngineResolver;
         private readonly IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots;
 
-        public RetrieveAvailableAppointmentsUseCase(IAppointmentsGateway appointmentsGateway, ISoREngine sorEngine, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
+        public RetrieveAvailableAppointmentsUseCase(IAppointmentsGateway appointmentsGateway, ISorEngineResolver sorEngineResolver, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
         {
             this.appointmentsGateway = appointmentsGateway;
-            this.sorEngine = sorEngine;
+            this.sorEngineResolver = sorEngineResolver;
             this.allowedAppointmentSlots = allowedAppointmentSlots;
         }
 
-        public async Task<List<ApplicationTime>> Execute(string repairLocation, string repairProblem,
+        public async Task<List<ApplicationTime>> Execute(string repairType, string repairLocation, string repairProblem,
             string repairIssue, string locationId, DateTime? fromDate = null)
         {
+            Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
+            Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
             Guard.Against.NullOrWhiteSpace(repairLocation, nameof(repairLocation));
             Guard.Against.NullOrWhiteSpace(repairProblem, nameof(repairProblem));
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
-            var repairCode = sorEngine.MapSorCode(repairLocation, repairProblem, repairIssue);
 
-            var result = await appointmentsGateway.GetAvailableAppointments(repairCode, locationId, fromDate, allowedAppointmentSlots);
+            var sorEngine = sorEngineResolver.Resolve(repairType);
+            var repairCode = sorEngine.MapToRepairTriageDetails(repairLocation, repairProblem, repairIssue);
+
+            var result = await appointmentsGateway.GetAvailableAppointments(repairCode.ScheduleOfRateCode, repairCode.Priority, locationId, fromDate, allowedAppointmentSlots);
             var convertedResults = result.Select(ConvertToHactAppointment).ToList();
 
             return convertedResults;

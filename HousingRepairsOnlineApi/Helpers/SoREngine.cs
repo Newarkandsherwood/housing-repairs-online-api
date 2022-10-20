@@ -14,18 +14,9 @@ namespace HousingRepairsOnlineApi.Helpers
             this.journeyTriageOptions = journeyTriageOptions;
         }
 
-        public string MapSorCode(string location, string problem, string issue)
+        public RepairTriageDetails MapToRepairTriageDetails(string location, string problem, string issue)
         {
-            string result;
-            if (issue is null)
-            {
-                result = sorMapping[location][problem];
-                return result;
-            }
-
-            result = sorMapping[location][problem][issue];
-
-            return result;
+            return issue is null ? sorMapping[location][problem] : sorMapping[location][problem][issue];
         }
 
         public IEnumerable<RepairTriageOption> RepairTriageOptions()

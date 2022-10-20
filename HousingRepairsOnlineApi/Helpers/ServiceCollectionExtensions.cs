@@ -14,10 +14,21 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddSoREngine(this IServiceCollection services, ISorConfigurationProvider sorConfigurationProvider)
+        public static void AddSorEngines(this IServiceCollection services, IEnumerable<IRepairTypeSorConfigurationProvider> sorConfigurationProviders)
         {
-            Guard.Against.Null(sorConfigurationProvider, nameof(sorConfigurationProvider));
+            Guard.Against.Null(sorConfigurationProviders, nameof(sorConfigurationProviders));
 
+            var sorEngines = sorConfigurationProviders.ToDictionary(
+                x => x.RepairType,
+                x => CreateSorEngine(x)
+            );
+
+            services.AddTransient<IDictionary<string, ISoREngine>>(_ => sorEngines);
+            services.AddTransient<ISorEngineResolver, SorEngineResolver>();
+        }
+
+        public static ISoREngine CreateSorEngine(IRepairTypeSorConfigurationProvider sorConfigurationProvider)
+        {
             var json = sorConfigurationProvider.ConfigurationValue();
 
             var sorConfigurations = ParseSorConfigurationJson(json).ToArray();
@@ -25,12 +36,14 @@ namespace HousingRepairsOnlineApi.Helpers
             if (sorConfigurations.Any(x => !x.IsValid()))
             {
                 throw new InvalidOperationException(
-                    "Invalid SOR configuration: each option should have a 'display' and 'value' value and either a SOR code or additional options");
+                    "Invalid SOR configuration: each option should have a 'display' and 'value' value and either a SOR code and priority or additional options");
             }
 
             var journeyTriageOptions = GenerateJourneyRepairTriageOptions(sorConfigurations);
             var sorMapping = GenerateSorMapping(sorConfigurations);
-            services.AddTransient<ISoREngine, SoREngine>(_ => new SoREngine(sorMapping, journeyTriageOptions));
+            var result = new SoREngine(sorMapping, journeyTriageOptions);
+
+            return result;
         }
 
         public static IEnumerable<SorConfiguration> ParseSorConfigurationJson(string sorConfigurationValueJson)
@@ -112,12 +125,12 @@ namespace HousingRepairsOnlineApi.Helpers
                     {
                         var key2 = sorConfiguration2.Value;
                         dynamic value2 = !string.IsNullOrEmpty(sorConfiguration2.SorCode)
-                            ? sorConfiguration2.SorCode
+                            ? CreateRepairTriageDetails(sorConfiguration2)
                             : sorConfiguration2.Options?.Where(c => !EarlyExitValues.All.Contains(c.Value)).Select(
                                 sorConfiguration3 =>
                                 {
                                     var key3 = sorConfiguration3.Value;
-                                    var value3 = sorConfiguration3.SorCode;
+                                    var value3 = CreateRepairTriageDetails(sorConfiguration3);
                                     return new { key2 = key3, value2 = value3 };
                                 }).ToDictionary(kvp => kvp.key2, kvp => kvp.value2);
                         return new { key = key2, value = value2 };
@@ -128,6 +141,11 @@ namespace HousingRepairsOnlineApi.Helpers
             }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             return result;
+
+            RepairTriageDetails CreateRepairTriageDetails(SorConfiguration sorConfiguration)
+            {
+                return new RepairTriageDetails { ScheduleOfRateCode = sorConfiguration.SorCode, Priority = sorConfiguration.Priority };
+            }
         }
     }
 }

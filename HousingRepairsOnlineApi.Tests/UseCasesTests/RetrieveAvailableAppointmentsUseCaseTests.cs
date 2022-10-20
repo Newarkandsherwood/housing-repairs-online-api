@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HACT.Dtos;
+using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
@@ -16,7 +17,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveAvailableAppointmentsUseCase systemUnderTest;
         private readonly Mock<IAppointmentsGateway> appointmentsGatewayMock;
+        private readonly Mock<ISorEngineResolver> sorEngineResolverMock;
         private readonly Mock<ISoREngine> sorEngineMock;
+        const string repairType = RepairType.Tenant;
         const string kitchen = "kitchen";
         const string cupboards = "cupboards";
         const string doorHangingOff = "doorHangingOff";
@@ -24,8 +27,10 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public RetrieveAvailableAppointmentsUseCaseTests()
         {
             sorEngineMock = new Mock<ISoREngine>();
+            sorEngineResolverMock = new Mock<ISorEngineResolver>();
+            sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
             appointmentsGatewayMock = new Mock<IAppointmentsGateway>();
-            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
+            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineResolverMock.Object);
         }
 
         [Theory]
@@ -35,10 +40,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(repairLocation, cupboards, doorHangingOff, "A UPRN");
+            Func<Task> act = async () => await systemUnderTest.Execute(repairType, repairLocation, cupboards, doorHangingOff, "A UPRN");
 
             // Assert
             await act.Should().ThrowExactlyAsync<T>();
@@ -51,10 +55,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(kitchen, repairProblem, doorHangingOff, "A UPRN");
+            Func<Task> act = async () => await systemUnderTest.Execute(repairType, kitchen, repairProblem, doorHangingOff, "A UPRN");
 
             // Assert
             await act.Should().ThrowExactlyAsync<T>();
@@ -67,10 +70,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, repairIssue, "A UPRN");
+            Func<Task> act = async () => await systemUnderTest.Execute(repairType, kitchen, cupboards, repairIssue, "A UPRN");
 
             // Assert
             await act.Should().NotThrowAsync<T>();
@@ -83,10 +85,24 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, uprn);
+            Func<Task> act = async () => await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, uprn);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(Helpers.RepairTypeTestData.InvalidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidRepairType_WhenExecute_ThenExceptionIsThrown<T>(T exception, string repairTypeParameter) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            Func<Task> act = async () => await systemUnderTest.Execute(repairTypeParameter, kitchen, cupboards, doorHangingOff, "locationId");
 
             // Assert
             await act.Should().ThrowExactlyAsync<T>();
@@ -99,47 +115,65 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             yield return new object[] { new ArgumentException(), " " };
         }
 
+        [Theory]
+        [MemberData(nameof(Helpers.RepairTypeTestData.ValidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
+        public void GivenValidRepairTypeParameter_WhenResolving_ThenExceptionIsNotThrown(string repairTypeParameter)
+        {
+            // Arrange
+
+            // Act
+            Action act = () => _ = systemUnderTest.Execute(repairTypeParameter, kitchen, cupboards, doorHangingOff, "locationId");
+
+            // Assert
+            act.Should().NotThrow<ArgumentException>();
+        }
+
         [Fact]
 #pragma warning disable xUnit1026
         public async void GivenANullFromDate_WhenExecute_ThenExceptionIsNotThrown()
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineMock.Object);
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "Location ID", null);
+            Func<Task> act = async () => await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, "Location ID", null);
 
             // Assert
             await act.Should().NotThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
-        public async void GivenRepairParameters_WhenExecute_ThenMapSorCodeIsCalled()
+        public async void GivenRepairParameters_WhenExecute_ThenMapToRepairTriageDetails()
         {
-            await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
-            sorEngineMock.Verify(x => x.MapSorCode(kitchen, cupboards, doorHangingOff), Times.Once);
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff))
+                .Returns(new RepairTriageDetails());
+            await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, "uprn");
+            sorEngineMock.Verify(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff), Times.Once);
         }
 
         [Fact]
         public async void GivenRepairParameters_WhenExecute_ThenGetAvailableAppointmentsGatewayIsCalled()
         {
             var repairCode = "N373049";
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
-            await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
-            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, "uprn", null, null), Times.Once);
+            var priority = "priority";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode, Priority = priority };
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
+            await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, "uprn");
+            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null), Times.Once);
         }
 
         [Fact]
         public async void GivenRepairParameters_WhenExecute_AppointmentTimeAreReturned()
         {
             var repairCode = "N373049";
+            var priority = "priority";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode, Priority = priority };
             var startTime = DateTime.Today.AddHours(8);
             var endTime = DateTime.Today.AddHours(12);
 
-            sorEngineMock.Setup(x => x.MapSorCode(kitchen, cupboards, doorHangingOff)).Returns(repairCode);
+            sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
 
-            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, "uprn", null, null))
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null))
                 .ReturnsAsync(new List<Appointment> { new()
                 {
                     TimeOfDay = new TimeOfDay
@@ -149,7 +183,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                     },
                 } });
 
-            var actual = await systemUnderTest.Execute(kitchen, cupboards, doorHangingOff, "uprn");
+            var actual = await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, "uprn");
             var actualAddress = actual.First();
 
             Assert.Equal(startTime, actualAddress.StartTime);

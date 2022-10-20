@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Controllers;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
@@ -15,6 +16,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         private readonly string notEligibleNonEmergencyArgument = "notEligibleNonEmergencyArgument";
         private readonly string unableToBookArgument = "unableToBookArgument";
         private readonly string contactUsArgument = "contactUs";
+        private readonly string repairTypeArgument = RepairType.Tenant;
 
         public RepairTriageControllerTests()
         {
@@ -28,12 +30,40 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(200);
             retrieveTriageJourneyOptionsMock.Verify(
-                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                x => x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestTenantEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var result = await systemUnderTest.TenantRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            retrieveTriageJourneyOptionsMock.Verify(
+                x => x.Execute(RepairType.Tenant, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var result = await systemUnderTest.CommunalRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            retrieveTriageJourneyOptionsMock.Verify(
+                x => x.Execute(RepairType.Communal, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -44,7 +74,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(earlyExitValue, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, earlyExitValue, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -58,7 +88,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, earlyExitValue, unableToBookArgument, contactUsArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, emergencyArgument, earlyExitValue, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -72,7 +102,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, earlyExitValue, contactUsArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, emergencyArgument, notEligibleNonEmergencyArgument, earlyExitValue, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -86,7 +116,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, earlyExitValue);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, earlyExitValue);
 
             // Assert
             GetStatusCode(result).Should().Be(400);
@@ -103,11 +133,11 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             // Arrange
             retrieveTriageJourneyOptionsMock
                 .Setup(x =>
-                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    x.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Throws<System.Exception>();
 
             // Act
-            var result = await systemUnderTest.JourneyRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+            var result = await systemUnderTest.JourneyRepairTriageOptions(repairTypeArgument, emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
 
             // Assert
             GetStatusCode(result).Should().Be(500);

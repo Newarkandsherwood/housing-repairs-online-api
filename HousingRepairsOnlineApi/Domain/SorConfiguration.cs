@@ -9,5 +9,7 @@
         public SorConfiguration[] Options { get; set; }
 
         public string SorCode { get; set; }
+
+        public string Priority { get; set; }
     }
 }

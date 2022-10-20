@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
@@ -11,18 +12,25 @@ namespace HousingRepairsOnlineApi.UseCases
     {
         private readonly IRepairStorageGateway cosmosGateway;
         private readonly IBlobStorageGateway storageGateway;
-        private readonly ISoREngine sorEngine;
+        private readonly ISorEngineResolver sorEngineResolver;
 
-        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, ISoREngine sorEngine)
-
+        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, ISorEngineResolver sorEngineResolver)
         {
             this.cosmosGateway = cosmosGateway;
             this.storageGateway = storageGateway;
-            this.sorEngine = sorEngine;
+            this.sorEngineResolver = sorEngineResolver;
         }
 
-        public async Task<Repair> Execute(RepairRequest repairRequest, string repairType)
+        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
         {
+            Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
+            Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
+
+            var sorEngine = sorEngineResolver.Resolve(repairType);
+            var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
+                repairRequest.Location.Value,
+                repairRequest.Problem.Value,
+                repairRequest.Issue?.Value);
             var repair = new Repair
             {
                 RepairType = repairType,
@@ -38,10 +46,8 @@ namespace HousingRepairsOnlineApi.UseCases
                 {
                     Text = repairRequest.Description.Text,
                 },
-                SOR = sorEngine.MapSorCode(
-                    repairRequest.Location.Value,
-                    repairRequest.Problem.Value,
-                    repairRequest.Issue?.Value)
+                SOR = repairTriageDetails.ScheduleOfRateCode,
+                Priority = repairTriageDetails.Priority,
             };
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))

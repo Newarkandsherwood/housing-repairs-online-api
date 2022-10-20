@@ -18,7 +18,8 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
         private Mock<IInternalEmailSender> internalEmailSender;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
-        private const string repairType = "Communal";
+        private readonly string repairTypeArgument = RepairType.Tenant;
+
         private readonly RepairAvailability repairAvailability = new()
         {
             Display = "Displayed Time",
@@ -44,6 +45,53 @@ namespace HousingRepairsOnlineApi.Tests
         [Fact]
         public async Task TestEndpoint()
         {
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+
+            GetStatusCode(result).Should().Be(200);
+
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
+
+            internalEmailSender.Verify(x => x.Execute(repair), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestTenantEndpoint()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Tenant, repairRequest), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.CommunalRepair(repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Communal, repairRequest), Times.Once);
+        }
+
+        private (RepairRequest, Repair) CreateRepairRequestAndRepair()
+        {
             var repairRequest = new RepairRequest
             {
                 ContactDetails = new RepairContactDetails { Value = "07465087654" },
@@ -67,15 +115,7 @@ namespace HousingRepairsOnlineApi.Tests
                 Time = repairAvailability,
             };
 
-            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<RepairRequest>(), repairType)).ReturnsAsync(repair);
-
-            var result = await systemUnderTest.RepairTenant(repairRequest);
-
-            GetStatusCode(result).Should().Be(200);
-
-            saveRepairRequestUseCaseMock.Verify(x => x.Execute(repairRequest, repairType), Times.Once);
-
-            internalEmailSender.Verify(x => x.Execute(repair), Times.Once);
+            return (repairRequest, repair);
         }
 
         [Fact]
@@ -83,12 +123,12 @@ namespace HousingRepairsOnlineApi.Tests
         {
             RepairRequest repairRequest = new RepairRequest();
 
-            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<RepairRequest>(), repairType)).Throws<System.Exception>();
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
-            var result = await systemUnderTest.RepairTenant(repairRequest);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             GetStatusCode(result).Should().Be(500);
-            saveRepairRequestUseCaseMock.Verify(x => x.Execute(repairRequest, repairType), Times.Once);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
         }
 
         [Fact]
@@ -122,10 +162,10 @@ namespace HousingRepairsOnlineApi.Tests
                     Text = "some textual description"
                 }
             };
-            saveRepairRequestUseCaseMock.Setup(x => x.Execute(repairRequest, repairType)).ReturnsAsync(repair);
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Assert
-            await systemUnderTest.RepairTenant(repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Act
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
@@ -163,10 +203,10 @@ namespace HousingRepairsOnlineApi.Tests
                 }
             };
 
-            saveRepairRequestUseCaseMock.Setup(x => x.Execute(repairRequest, repairType)).ReturnsAsync(repair);
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Act
-            await systemUnderTest.RepairTenant(repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Assert
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);

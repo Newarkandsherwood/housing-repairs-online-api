@@ -10,6 +10,7 @@ namespace HousingRepairsOnlineApi.Tests.Domain
         private const string DisplayValue = "display";
         private const string ValueValue = "value";
         private const string SorCodeValue = "sor code";
+        private const string PriorityValue = "priority";
 
         [Theory]
         [MemberData(nameof(ValidEarlyExitSorConfigurations))]
@@ -37,14 +38,14 @@ namespace HousingRepairsOnlineApi.Tests.Domain
         public static TheoryData<SorConfiguration> ValidSorConfigurationsWithEitherSorCodeOrOptions() =>
             new()
             {
-                new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue },
+                new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue, Priority = PriorityValue},
                 new SorConfiguration
                 {
                     Display = DisplayValue,
                     Value = ValueValue,
                     Options = new[]
                     {
-                        new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue }
+                        new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue, Priority = PriorityValue }
                     }
                 },
                 new SorConfiguration
@@ -61,7 +62,7 @@ namespace HousingRepairsOnlineApi.Tests.Domain
                             {
                                 new SorConfiguration
                                 {
-                                    Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue
+                                    Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue, Priority = PriorityValue
                                 }
                             }
                         }
@@ -71,7 +72,9 @@ namespace HousingRepairsOnlineApi.Tests.Domain
 
         [Theory]
         [MemberData(nameof(InvalidSorConfigurationsWithBothSorCodeAndOptions))]
+        [MemberData(nameof(InvalidSorConfigurationsWithBothPriorityAndOptions))]
         [MemberData(nameof(InvalidSorConfigurationsWithInvalidOptions))]
+        [MemberData(nameof(InvalidSorConfigurationsSorCodeAndPrioritiesDependency))]
         public void GivenInvalidSorConfiguration_WhenValidating_ThenReturnsFalse(SorConfiguration sorConfiguration)
         {
             // Act
@@ -97,6 +100,29 @@ namespace HousingRepairsOnlineApi.Tests.Domain
                     Display = DisplayValue,
                     Value = ValueValue,
                     SorCode = SorCodeValue,
+                    Options = new[]
+                    {
+                        new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue }
+                    }
+                },
+            };
+
+        public static TheoryData<SorConfiguration> InvalidSorConfigurationsWithBothPriorityAndOptions() =>
+            new()
+            {
+                new SorConfiguration { Display = DisplayValue, Value = ValueValue },
+                new SorConfiguration
+                {
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    Priority = PriorityValue,
+                    Options = Array.Empty<SorConfiguration>()
+                },
+                new SorConfiguration
+                {
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    Priority = PriorityValue,
                     Options = new[]
                     {
                         new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue }
@@ -131,6 +157,23 @@ namespace HousingRepairsOnlineApi.Tests.Domain
                         }
                     }
                 },
+            };
+
+        public static TheoryData<SorConfiguration> InvalidSorConfigurationsSorCodeAndPrioritiesDependency() =>
+            new()
+            {
+                new SorConfiguration
+                {
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    SorCode = SorCodeValue,
+                },
+                new SorConfiguration
+                {
+                    Display = DisplayValue,
+                    Value = ValueValue,
+                    Priority = PriorityValue,
+                }
             };
     }
 }
