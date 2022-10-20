@@ -31,11 +31,17 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveRepair([FromBody] RepairRequest repairRequest)
+        [Route("TenantRepair")]
+        public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
+        {
+            return await SaveRepair(RepairType.Tenant, repairRequest);
+        }
+
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
         {
             try
             {
-                var result = await saveRepairRequestUseCase.Execute(RepairType.Tenant, repairRequest);
+                var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
                 await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
                     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
                 appointmentConfirmationSender.Execute(result);

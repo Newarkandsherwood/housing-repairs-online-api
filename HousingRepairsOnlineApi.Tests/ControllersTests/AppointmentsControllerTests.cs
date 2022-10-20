@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Controllers;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
@@ -26,9 +27,27 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             const string RepairIssue = "doorHangingOff";
 
             const string Uprn = "12345";
-            var result = await systemUndertest.AvailableAppointments(RepairLocation, RepairProblem, RepairIssue, Uprn);
+            var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, Uprn);
             GetStatusCode(result).Should().Be(200);
             availableAppointmentsUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestTenantEndpoint()
+        {
+            // Arrange
+            const string RepairLocation = "kitchen";
+            const string RepairProblem = "cupboards";
+            const string RepairIssue = "doorHangingOff";
+
+            const string Uprn = "12345";
+
+            // Act
+            _ = await systemUndertest.AvailableTenantAppointments(RepairLocation, RepairProblem, RepairIssue, Uprn);
+
+            // Assert
+            availableAppointmentsUseCaseMock.Verify(
+                x => x.Execute(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
         }
 
         [Fact]
@@ -42,7 +61,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
             var fromDate = new DateTime(2021, 12, 15);
 
             // Act
-            var result = await systemUndertest.AvailableAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId);
+            var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, LocationId);
 
             // Assert
             GetStatusCode(result).Should().Be(200);
@@ -62,7 +81,7 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Throws<Exception>();
 
-            var result = await systemUndertest.AvailableAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId, fromDate);
+            var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, LocationId, fromDate);
 
             GetStatusCode(result).Should().Be(500);
         }

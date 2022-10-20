@@ -17,6 +17,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
         private Mock<IInternalEmailSender> internalEmailSender;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
+        private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
         {
@@ -68,7 +69,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
 
-            var result = await systemUnderTest.SaveRepair(repairRequest);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             GetStatusCode(result).Should().Be(200);
 
@@ -79,13 +80,51 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
+        public async Task TestTenantEndpoint()
+        {
+            // Arrange
+            var repairRequest = new RepairRequest
+            {
+                ContactDetails = new RepairContactDetails { Value = "07465087654" },
+                Address = new RepairAddress { Display = "address", LocationId = "uprn" },
+                Description = new RepairDescriptionRequest { Text = "repair description", Base64Img = "image" },
+                Location = new RepairLocation { Value = "location" },
+                Problem = new RepairProblem { Value = "problem" },
+                Issue = new RepairIssue { Value = "issue" }
+            };
+
+            var repair = new Repair
+            {
+                Id = "1AB2C3D4",
+                ContactDetails = new RepairContactDetails { Value = "07465087654" },
+                Address = new RepairAddress { Display = "address", LocationId = "uprn" },
+                Description = new RepairDescription { Text = "repair description", Base64Image = "image", PhotoUrl = "x/Url.png" },
+                Location = new RepairLocation { Value = "location" },
+                Problem = new RepairProblem { Value = "problem" },
+                Issue = new RepairIssue { Value = "issue" },
+                SOR = "sor",
+                Time = repairAvailability,
+            };
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Tenant, repairRequest), Times.Once);
+            internalEmailSender.Verify(x => x.Execute(repair), Times.Once);
+        }
+
+        [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
             RepairRequest repairRequest = new RepairRequest();
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
-            var result = await systemUnderTest.SaveRepair(repairRequest);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             GetStatusCode(result).Should().Be(500);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
@@ -125,7 +164,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Assert
-            await systemUnderTest.SaveRepair(repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Act
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
@@ -166,7 +205,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Act
-            await systemUnderTest.SaveRepair(repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Assert
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
