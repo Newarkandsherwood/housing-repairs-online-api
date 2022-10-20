@@ -70,8 +70,8 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
-        [Route("RepairTenant")]
-        public async Task<IActionResult> RepairTenant([FromBody] RepairRequest repairRequest)
+        [Route("TenantRepair")]
+        public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
             try
             {
@@ -85,8 +85,8 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
-        [Route("RepairCommunal")]
-        public async Task<IActionResult> RepairCommunal([FromBody] RepairRequest repairRequest)
+        [Route("CommunalRepair")]
+        public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
             try
             {
