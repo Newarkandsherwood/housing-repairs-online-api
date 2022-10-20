@@ -123,6 +123,8 @@ jobs:
           echo "sentry_dsn=\"${{secrets.SENTRY_DSN}}\"" >> env.tfvars
           echo "sor_configuration_tenant_production=\"${{secrets.SOR_CONFIG_TENANT_PRODUCTION}}\"" >> env.tfvars
           echo "sor_configuration_tenant_staging=\"${{secrets.SOR_CONFIG_TENANT_STAGING}}\"" >> env.tfvars
+          echo "sor_configuration_communal_production=\"${{secrets.SOR_CONFIG_COMMUNAL_PRODUCTION}}\"" >> env.tfvars
+          echo "sor_configuration_communal_staging=\"${{secrets.SOR_CONFIG_COMMUNAL_STAGING}}\"" >> env.tfvars
           echo "allowed_appointment_slots_production=\"${{secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION}}\"" >> env.tfvars
           echo "allowed_appointment_slots_staging=\"${{secrets.ALLOWED_APPOINTMENT_SLOTS_STAGING}}\"" >> env.tfvars
           echo "service_plan_name=\"${{secrets.SERVICE_PLAN_NAME}}\"" >> env.tfvars
@@ -165,6 +167,7 @@ jobs:
           echo "::add-mask::${{ secrets.SCHEDULING_API_URL_STAGING }}"
           echo "::add-mask::${{ secrets.SENTRY_DSN }}"
           echo "::add-mask::${{ secrets.SOR_CONFIG_TENANT_STAGING }}"
+          echo "::add-mask::${{ secrets.SOR_CONFIG_COMMUNAL_STAGING }}"
           echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_STAGING }}"
           echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_STAGING }}"
 
@@ -208,6 +211,7 @@ jobs:
           echo "::add-mask::${{ secrets.SCHEDULING_API_URL_PRODUCTION }}"
           echo "::add-mask::${{ secrets.SENTRY_DSN }}"
           echo "::add-mask::${{ secrets.SOR_CONFIG_TENANT_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.SOR_CONFIG_COMMUNAL_PRODUCTION }}"
           echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION }}"
           echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_PRODUCTION }}"
 

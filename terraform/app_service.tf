@@ -45,6 +45,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     SCHEDULING_API_URL                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.scheduling-api-url-production.id})"
     SENTRY_DSN                            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sentry-dsn.id})"
     SOR_CONFIGURATION_TENANT              = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-tenant-production.id})"
+    SOR_CONFIGURATION_COMMUNAL            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-communal-production.id})"
     ALLOWED_APPOINTMENT_SLOTS             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-production.id})"
     STORAGE_CONTAINER_NAME                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-production.id})"
 
@@ -90,6 +91,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     SCHEDULING_API_URL                    = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.scheduling-api-url-staging.id})"
     SENTRY_DSN                            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sentry-dsn.id})"
     SOR_CONFIGURATION_TENANT              = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-tenant-staging.id})"
+    SOR_CONFIGURATION_COMMUNAL            = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-communal-staging.id})"
     ALLOWED_APPOINTMENT_SLOTS             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-staging.id})"
     STORAGE_CONTAINER_NAME                = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-staging.id})"
   }
