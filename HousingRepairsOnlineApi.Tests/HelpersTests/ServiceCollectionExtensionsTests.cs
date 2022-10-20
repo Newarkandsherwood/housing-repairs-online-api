@@ -79,19 +79,16 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidJsonSorConfigTestData))]
 #pragma warning disable xUnit1026
-        public void GivenInvalidJsonSorConfig_WhenAddingSoREngineToServices_ThenExceptionIsThrown<T>(T exception,
+        public void GivenInvalidJsonSorConfig_WhenCreatingSoREngine_ThenExceptionIsThrown<T>(T exception,
             string configJson) where T : Exception
 #pragma warning restore xUnit1026
         {
             // Arrange
-            var serviceCollectionMock = new Mock<IServiceCollection>();
-            var serviceCollection = serviceCollectionMock.Object;
-
             sorConfigurationProviderMock.Setup(x => x.ConfigurationValue()).Returns(configJson);
 
             // Act
             Action act = () =>
-                ServiceCollectionExtensions.AddSoREngine(serviceCollection, sorConfigurationProviderMock.Object);
+                ServiceCollectionExtensions.CreateSorEngine(sorConfigurationProviderMock.Object);
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithInnerException<T>();
