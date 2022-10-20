@@ -29,7 +29,7 @@ public class SorEngineResolverTests
     }
 
     [Theory]
-    [MemberData(nameof(InvalidArgumentTestData))]
+    [MemberData(nameof(Helpers.RepairTypeTestData.InvalidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
     public void GivenInvalidRepairTypeParameter_WhenResolving_ThenExceptionIsThrown<T>(T exception,
         string repairTypeParameter) where T : Exception
     {
@@ -42,19 +42,8 @@ public class SorEngineResolverTests
         act.Should().Throw<T>();
     }
 
-    public static TheoryData<Exception, string> InvalidArgumentTestData()
-    {
-        return new()
-        {
-            { new ArgumentNullException(), null },
-            { new ArgumentException(), string.Empty },
-            { new ArgumentException(), " " },
-            { new ArgumentException(), "non-repair-type-value" },
-        };
-    }
-
     [Theory]
-    [MemberData(nameof(ValidRepairTypeArgumentTestData))]
+    [MemberData(nameof(Helpers.RepairTypeTestData.ValidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
     public void GivenValidRepairTypeParameter_WhenResolving_ThenExceptionIsNotThrown(string repairTypeParameter)
     {
         // Arrange
@@ -64,16 +53,6 @@ public class SorEngineResolverTests
 
         // Assert
         act.Should().NotThrow<ArgumentException>();
-    }
-
-    public static TheoryData<string> ValidRepairTypeArgumentTestData()
-    {
-        var result = new TheoryData<string>();
-        foreach (var repairType in RepairType.All)
-        {
-            result.Add(repairType);
-        }
-        return result;
     }
 
     [Fact]
