@@ -11,6 +11,11 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
 {
     public class AppointmentsControllerTests : ControllerTests
     {
+        private const string RepairLocation = "kitchen";
+        private const string RepairProblem = "cupboards";
+        private const string RepairIssue = "doorHangingOff";
+        private const string LocationId = "location ID";
+
         private AppointmentsController systemUndertest;
         private Mock<IRetrieveAvailableAppointmentsUseCase> availableAppointmentsUseCaseMock;
         public AppointmentsControllerTests()
@@ -22,43 +27,28 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         [Fact]
         public async Task TestEndpoint()
         {
-            const string RepairLocation = "kitchen";
-            const string RepairProblem = "cupboards";
-            const string RepairIssue = "doorHangingOff";
-
-            const string Uprn = "12345";
-            var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, Uprn);
+            var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, LocationId);
             GetStatusCode(result).Should().Be(200);
-            availableAppointmentsUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
+            availableAppointmentsUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
         }
 
         [Fact]
         public async Task TestTenantEndpoint()
         {
             // Arrange
-            const string RepairLocation = "kitchen";
-            const string RepairProblem = "cupboards";
-            const string RepairIssue = "doorHangingOff";
-
-            const string Uprn = "12345";
 
             // Act
-            _ = await systemUndertest.AvailableTenantAppointments(RepairLocation, RepairProblem, RepairIssue, Uprn);
+            _ = await systemUndertest.AvailableTenantAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId);
 
             // Assert
             availableAppointmentsUseCaseMock.Verify(
-                x => x.Execute(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, Uprn, null), Times.Once);
+                x => x.Execute(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
         }
 
         [Fact]
         public async Task GivenAFromDate_WhenRequestingAvailableAppointments_ThenResultsAreReturned()
         {
             // Arrange
-            const string RepairLocation = "kitchen";
-            const string RepairProblem = "cupboards";
-            const string RepairIssue = "doorHangingOff";
-            const string LocationId = "location ID";
-            var fromDate = new DateTime(2021, 12, 15);
 
             // Act
             var result = await systemUndertest.AvailableAppointments(RepairType.Tenant, RepairLocation, RepairProblem, RepairIssue, LocationId);
@@ -71,10 +61,6 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
-            const string RepairLocation = "kitchen";
-            const string RepairProblem = "cupboards";
-            const string RepairIssue = "doorHangingOff";
-            const string LocationId = "location ID";
             var fromDate = new DateTime(2021, 12, 15);
 
             availableAppointmentsUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<string>(),
