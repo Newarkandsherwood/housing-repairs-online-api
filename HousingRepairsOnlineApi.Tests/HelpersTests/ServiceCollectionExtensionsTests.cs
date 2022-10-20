@@ -26,7 +26,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private const string Priority = "priority";
 
         [Fact]
-        public void GivenValidSorConfigPathArgument_WhenAddingSoREngineToServices_ThenSoREngineResolverIsRegistered()
+        public void GivenValidSorConfigArgument_WhenAddingSorEnginesToServices_ThenSoREngineResolverIsRegistered()
         {
             // Arrange
             var serviceCollectionMock = new Mock<IServiceCollection>();
@@ -67,10 +67,11 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     }]
                 }]
             }]";
+            sorConfigurationProviderMock.SetupGet(x => x.RepairType).Returns("repairType");
             sorConfigurationProviderMock.Setup(x => x.ConfigurationValue()).Returns(jsonConfig);
 
             // Act
-            ServiceCollectionExtensions.AddSoREngine(serviceCollection, sorConfigurationProviderMock.Object);
+            ServiceCollectionExtensions.AddSorEngines(serviceCollection, new[] { sorConfigurationProviderMock.Object });
 
             // Assert
             serviceCollectionMock.VerifyAll();
