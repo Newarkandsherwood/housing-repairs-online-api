@@ -11,7 +11,7 @@ namespace HousingRepairsOnlineApi.Helpers
         public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
         public FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference) =>
-            cosmosContainer.Container.GetItemQueryIterator<Repair>(GetQueryDefinition(propertyReference, repairType));
+            cosmosContainer.Container.GetItemQueryIterator<Repair>(GetQueryDefinition(repairType, propertyReference));
 
         private static QueryDefinition GetQueryDefinition(string repairType, string propertyReference)
         {

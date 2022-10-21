@@ -11,13 +11,11 @@ namespace HousingRepairsOnlineApi.UseCases
     public class RetrieveRepairsUseCase : IRetrieveRepairsUseCase
     {
         private readonly IRepairStorageGateway cosmosGateway;
-        private readonly ISoREngine sorEngine;
 
-        public RetrieveRepairsUseCase(IRepairStorageGateway cosmosGateway, ISoREngine sorEngine)
+        public RetrieveRepairsUseCase(IRepairStorageGateway cosmosGateway)
 
         {
             this.cosmosGateway = cosmosGateway;
-            this.sorEngine = sorEngine;
         }
 
         public async Task<IEnumerable<RepairRequestSummary>> Execute(string repairType, string propertyReference)
