@@ -16,7 +16,7 @@ namespace HousingRepairsOnlineApi.Helpers
         private static QueryDefinition GetQueryDefinition(string repairType, string propertyReference)
         {
             var query =
-                "SELECT * FROM c WHERE c.Address.RepairType = @repairType AND c.Address.LocationId = @propertyReference ORDER BY c.Time.StartDateTime ASC";
+                "SELECT * FROM c WHERE UPPER(c.Address.RepairType) = UPPER(@repairType) AND c.Address.LocationId = @propertyReference ORDER BY c.Time.StartDateTime ASC";
             return new QueryDefinition(query)
                 .WithParameter("@repairType", repairType)
                 .WithParameter("@propertyReference", propertyReference);
