@@ -21,7 +21,7 @@ namespace HousingRepairsOnlineApi.UseCases
         public async Task<IEnumerable<RepairRequestSummary>> Execute(string repairType, string propertyReference)
         {
             // Retrieve the repairs from the Cosmos DB for this
-            if(propertyReference == null)
+            if (propertyReference == null)
                 throw new ArgumentNullException(nameof(propertyReference));
 
             return await cosmosGateway.SearchByPropertyReference(repairType, propertyReference);

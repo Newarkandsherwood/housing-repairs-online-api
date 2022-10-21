@@ -20,6 +20,6 @@ namespace HousingRepairsOnlineApi.Helpers
             return new QueryDefinition(query)
                 .WithParameter("@repairType", repairType)
                 .WithParameter("@propertyReference", propertyReference);
-       }
+        }
     }
 }
