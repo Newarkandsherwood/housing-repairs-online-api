@@ -35,8 +35,8 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpGet]
-        [Route("PropertyRepairsCommunal")]
-        public async Task<IActionResult> PropertyRepairsCommunal([FromQuery] string propertyReference)
+        [Route("CommunalPropertyRepairs")]
+        public async Task<IActionResult> CommunalPropertyRepairs([FromQuery] string propertyReference)
         {
             try
             {
