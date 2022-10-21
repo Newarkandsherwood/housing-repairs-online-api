@@ -13,7 +13,6 @@ namespace HousingRepairsOnlineApi.UseCases
         private readonly IRepairStorageGateway cosmosGateway;
 
         public RetrieveRepairsUseCase(IRepairStorageGateway cosmosGateway)
-
         {
             this.cosmosGateway = cosmosGateway;
         }
