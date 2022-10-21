@@ -37,6 +37,7 @@ namespace HousingRepairsOnlineApi
                 new[]
                 {
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
+                    new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
                 });
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
@@ -48,7 +49,6 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
-            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
