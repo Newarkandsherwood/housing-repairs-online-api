@@ -40,7 +40,7 @@ namespace HousingRepairsOnlineApi.Controllers
         {
             try
             {
-                var result = await retrieveRepairsUseCase.Execute(RepairTypeHelper.CommunalRepairType, propertyReference);
+                var result = await retrieveRepairsUseCase.Execute(RepairType.Communal, propertyReference);
                 return Ok(result);
             }
             catch (Exception ex)
