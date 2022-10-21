@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -115,7 +115,6 @@ namespace HousingRepairsOnlineApi
 
             services.AddHousingRepairsOnlineAuthentication(HousingRepairsOnlineApiIssuerId);
             services.AddTransient<ISaveRepairRequestUseCase, SaveRepairRequestUseCase>();
-            services.AddTransient<IRetrieveRepairsUseCase, RetrieveRepairsUseCase>();
             services.AddTransient<IInternalEmailSender, InternalEmailSender>();
 
             var cosmosContainer = GetCosmosContainer();
@@ -125,9 +124,8 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {
                 var idGenerator = s.GetService<IIdGenerator>();
-                var repairQueryHelper = s.GetService<IRepairQueryHelper>();
                 return new CosmosGateway(
-                    cosmosContainer, idGenerator, repairQueryHelper
+                    cosmosContainer, idGenerator
                 );
             });
 
