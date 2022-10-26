@@ -15,13 +15,15 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         private readonly CosmosGateway azureStorageGateway;
         private readonly Mock<Container> mockCosmosContainer;
         private readonly Mock<IIdGenerator> mockIdGenerator;
+        private readonly Mock<IRepairQueryHelper> repairQueryHelper;
 
         public CosmosGatewayTests()
         {
             mockCosmosContainer = new Mock<Container>();
             mockIdGenerator = new Mock<IIdGenerator>();
+            repairQueryHelper = new Mock<IRepairQueryHelper>();
 
-            azureStorageGateway = new CosmosGateway(mockCosmosContainer.Object, mockIdGenerator.Object);
+            azureStorageGateway = new CosmosGateway(mockCosmosContainer.Object, mockIdGenerator.Object, repairQueryHelper.Object);
         }
 
         [Fact]

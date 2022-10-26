@@ -104,7 +104,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRetrieveImageLinkUseCase, RetrieveImageLinkUseCase>(s =>
             {
                 var azureStorageGateway = s.GetService<IBlobStorageGateway>();
-                return new RetrieveImageLinkUseCase(azureStorageGateway, Int32.Parse(daysUntilImageExpiry));
+                return new RetrieveImageLinkUseCase(azureStorageGateway, int.Parse(daysUntilImageExpiry));
             });
 
             services.AddTransient<ISendInternalEmailUseCase, SendInternalEmailUseCase>(s =>
@@ -115,6 +115,7 @@ namespace HousingRepairsOnlineApi
 
             services.AddHousingRepairsOnlineAuthentication(HousingRepairsOnlineApiIssuerId);
             services.AddTransient<ISaveRepairRequestUseCase, SaveRepairRequestUseCase>();
+            services.AddTransient<IRetrieveRepairsUseCase, RetrieveRepairsUseCase>();
             services.AddTransient<IInternalEmailSender, InternalEmailSender>();
 
             var cosmosContainer = GetCosmosContainer();
@@ -124,8 +125,9 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {
                 var idGenerator = s.GetService<IIdGenerator>();
+                var repairQueryHelper = s.GetService<IRepairQueryHelper>();
                 return new CosmosGateway(
-                    cosmosContainer, idGenerator
+                    cosmosContainer, idGenerator, repairQueryHelper
                 );
             });
 
@@ -168,7 +170,7 @@ namespace HousingRepairsOnlineApi
             string storageConnectionString = EnvironmentVariableHelper.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
             string blobContainerName = EnvironmentVariableHelper.GetEnvironmentVariable("STORAGE_CONTAINER_NAME");
 
-            BlobServiceClient blobServiceClient = new BlobServiceClient(storageConnectionString);
+            var blobServiceClient = new BlobServiceClient(storageConnectionString);
             BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
             return blobContainerClient;
         }
@@ -180,7 +182,7 @@ namespace HousingRepairsOnlineApi
             var databaseId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_DATABASE_ID");
             var containerId = EnvironmentVariableHelper.GetEnvironmentVariable("COSMOS_CONTAINER_ID");
 
-            CosmosClient cosmosClient = new CosmosClient(endpointUrl, authorizationKey);
+            var cosmosClient = new CosmosClient(endpointUrl, authorizationKey);
 
             Task<DatabaseResponse> databaseResponseTask = cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
             _ = databaseResponseTask.GetAwaiter().GetResult();

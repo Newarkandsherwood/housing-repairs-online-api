@@ -20,6 +20,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly Mock<ISoREngine> mockSorEngine;
         private readonly Mock<IRepairStorageGateway> mockCosmosGateway;
         private readonly Mock<IBlobStorageGateway> mockAzureStorageGateway;
+        private const string repairType = "Communal";
 
         public SaveRepairRequestUseCaseTests()
         {

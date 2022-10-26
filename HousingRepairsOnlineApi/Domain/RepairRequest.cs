@@ -3,6 +3,7 @@ namespace HousingRepairsOnlineApi.Domain
 {
     public class RepairRequest
     {
+        public string RepairType { get; set; }
         public string Postcode { get; set; }
         public RepairAddress Address { get; set; }
         public RepairLocation Location { get; set; }

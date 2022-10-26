@@ -16,18 +16,38 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IAppointmentConfirmationSender appointmentConfirmationSender;
         private readonly IBookAppointmentUseCase bookAppointmentUseCase;
         private readonly IInternalEmailSender internalEmailSender;
+        private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
+
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
             IInternalEmailSender internalEmailSender,
             IAppointmentConfirmationSender appointmentConfirmationSender,
-            IBookAppointmentUseCase bookAppointmentUseCase
+            IBookAppointmentUseCase bookAppointmentUseCase,
+            IRetrieveRepairsUseCase retrieveRepairsUseCase
         )
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
+            this.retrieveRepairsUseCase = retrieveRepairsUseCase;
+        }
+
+        [HttpGet]
+        [Route("CommunalPropertyRepairs")]
+        public async Task<IActionResult> CommunalPropertyRepairs([FromQuery] string propertyReference)
+        {
+            try
+            {
+                var result = await retrieveRepairsUseCase.Execute(RepairType.Communal, propertyReference);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]

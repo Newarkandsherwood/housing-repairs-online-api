@@ -33,6 +33,7 @@ namespace HousingRepairsOnlineApi.UseCases
                 repairRequest.Issue?.Value);
             var repair = new Repair
             {
+                RepairType = repairType,
                 Address = repairRequest.Address,
                 Postcode = repairRequest.Postcode,
                 Location = repairRequest.Location,
