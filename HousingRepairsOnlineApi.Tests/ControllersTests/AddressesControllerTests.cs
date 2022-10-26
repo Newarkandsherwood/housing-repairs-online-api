@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Controllers;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
@@ -11,6 +12,7 @@ namespace HousingRepairsOnlineApi.Tests
     {
         private AddressesController systemUnderTest;
         private Mock<IRetrieveAddressesUseCase> retrieveAddressesUseCaseMock;
+        private const string TenantRepairType = RepairType.Tenant;
 
         public AddressesControllerTests()
         {
@@ -22,10 +24,10 @@ namespace HousingRepairsOnlineApi.Tests
         public async Task TestEndpoint()
         {
             const string Postcode = "M3 0W";
-            var result = await systemUnderTest.Addresses(Postcode);
+            var result = await systemUnderTest.GetTenantAddresses(Postcode);
 
             GetStatusCode(result).Should().Be(200);
-            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode), Times.Once);
+            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, TenantRepairType), Times.Once);
         }
 
         [Fact]
@@ -33,9 +35,9 @@ namespace HousingRepairsOnlineApi.Tests
         {
             const string Postcode = "M3 0W";
 
-            retrieveAddressesUseCaseMock.Setup(x => x.Execute(It.IsAny<string>())).Throws<System.Exception>();
+            retrieveAddressesUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<string>())).Throws<System.Exception>();
 
-            var result = await systemUnderTest.Addresses(Postcode);
+            var result = await systemUnderTest.GetTenantAddresses(Postcode);
 
             GetStatusCode(result).Should().Be(500);
         }

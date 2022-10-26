@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Mvc;
 using Sentry;
@@ -18,11 +19,12 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Addresses([FromQuery] string postcode)
+        [Route("TenantAddresses")]
+        public async Task<IActionResult> GetTenantAddresses([FromQuery] string postcode)
         {
             try
             {
-                var result = await retrieveAddressesUseCase.Execute(postcode);
+                var result = await retrieveAddressesUseCase.Execute(postcode, RepairType.Tenant);
                 return Ok(result);
             }
             catch (Exception ex)

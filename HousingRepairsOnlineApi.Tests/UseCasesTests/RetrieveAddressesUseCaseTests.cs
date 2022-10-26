@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HACT.Dtos;
 using HousingRepairsOnlineApi.Gateways;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
@@ -16,17 +17,19 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveAddressesUseCase systemUnderTest;
         private readonly Mock<IAddressGateway> addressGatewayMock;
+        private const string TenantRepairType = RepairType.Tenant;
 
         public RetrieveAddressesUseCaseTests()
         {
             addressGatewayMock = new Mock<IAddressGateway>();
             systemUnderTest = new RetrieveAddressesUseCase(addressGatewayMock.Object);
+
         }
 
         [Fact]
         public async Task ReturnsEmptyWhenNoAddressesAreFound()
         {
-            var data = await systemUnderTest.Execute("");
+            var data = await systemUnderTest.Execute("", TenantRepairType);
             data.Should().BeEmpty();
         }
 
@@ -34,17 +37,17 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public void GatewayGetsCalledWithPostCode()
         {
             const string TestPostcode = "M3 0W";
-            systemUnderTest.Execute(postcode: TestPostcode);
-            addressGatewayMock.Verify(x => x.Search(TestPostcode), Times.Once);
+            systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            addressGatewayMock.Verify(x => x.SearchTenants(TestPostcode), Times.Once);
         }
 
         [Fact]
         public async Task DoesNotReturnAnEmptyCollectionOfAddresses()
         {
             const string TestPostcode = "M3 0W";
-            addressGatewayMock.Setup(x => x.Search(It.IsAny<string>()))
+            addressGatewayMock.Setup(x => x.SearchTenants(It.IsAny<string>()))
                 .ReturnsAsync(new List<PropertyAddress>());
-            var data = await systemUnderTest.Execute(postcode: TestPostcode);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
             Assert.Empty(data);
         }
 
@@ -58,9 +61,9 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 PostalCode = TestPostcode,
                 CityName = "New Meow City"
             };
-            addressGatewayMock.Setup(x => x.Search(It.IsAny<string>()))
+            addressGatewayMock.Setup(x => x.SearchTenants(It.IsAny<string>()))
                 .ReturnsAsync(new List<PropertyAddress>() { testAddress });
-            var data = await systemUnderTest.Execute(postcode: TestPostcode);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
             Assert.Equal(data.First().AddressLine1, testAddress.AddressLine.First());
             Assert.Equal(data.First().AddressLine2, testAddress.CityName);
             Assert.Equal(data.First().PostCode, TestPostcode);
@@ -78,11 +81,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 PostalCode = TestPostcode,
                 CityName = "New Meow City"
             };
-            addressGatewayMock.Setup(x => x.Search(It.IsAny<string>()))
+            addressGatewayMock.Setup(x => x.SearchTenants(It.IsAny<string>()))
                 .ReturnsAsync(new List<PropertyAddress>() { testAddress });
 
             // Act
-            var data = await systemUnderTest.Execute(postcode: TestPostcode);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
 
             // Assert
             var actual = data.Single();
@@ -95,7 +98,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void ThrowsNullExceptionWhenPostcodeIsNull()
         {
             const string TestPostcode = null;
-            Func<Task> act = async () => await systemUnderTest.Execute(TestPostcode);
+            Func<Task> act = async () => await systemUnderTest.Execute(TestPostcode, TenantRepairType);
             await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
@@ -103,8 +106,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public void DoesNotCallAddressGatewayWhenPostcodeIsEmpty()
         {
             const string TestPostcode = "";
-            var data = systemUnderTest.Execute(postcode: TestPostcode);
-            addressGatewayMock.Verify(x => x.Search(TestPostcode), Times.Never);
+            var data = systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            addressGatewayMock.Verify(x => x.SearchTenants(TestPostcode), Times.Never);
         }
 
         [Fact]
@@ -112,11 +115,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             // Arrange
             const string postCode = "LN1 3PQ";
-            addressGatewayMock.Setup(x => x.Search(postCode))
+            addressGatewayMock.Setup(x => x.SearchTenants(postCode))
                 .ReturnsAsync(new List<PropertyAddress> { new() { BuildingNumber = "1", PostalCode = postCode } });
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(postCode);
+            Func<Task> act = async () => await systemUnderTest.Execute(postCode, TenantRepairType);
 
             // Assert
             await act.Should().NotThrowAsync();
@@ -128,11 +131,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             // Arrange
             const string postCode = "LN1 3PQ";
             var buildingNumber = "1";
-            addressGatewayMock.Setup(x => x.Search(postCode))
+            addressGatewayMock.Setup(x => x.SearchTenants(postCode))
                 .ReturnsAsync(new List<PropertyAddress> { new() { BuildingNumber = buildingNumber, PostalCode = postCode } });
 
             // Act
-            var actual = await systemUnderTest.Execute(postCode);
+            var actual = await systemUnderTest.Execute(postCode, TenantRepairType);
 
             // Assert
             var actualAddress = actual.First();
@@ -146,11 +149,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             // Arrange
             const string postCode = "LN1 3PQ";
-            addressGatewayMock.Setup(x => x.Search(postCode))
+            addressGatewayMock.Setup(x => x.SearchTenants(postCode))
                 .ReturnsAsync(new List<PropertyAddress> { new() { PostalCode = postCode } });
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(postCode);
+            Func<Task> act = async () => await systemUnderTest.Execute(postCode, TenantRepairType);
 
             // Assert
             await act.Should().NotThrowAsync();
@@ -161,11 +164,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             // Arrange
             const string postCode = "LN1 3PQ";
-            addressGatewayMock.Setup(x => x.Search(postCode))
+            addressGatewayMock.Setup(x => x.SearchTenants(postCode))
                 .ReturnsAsync(new List<PropertyAddress> { new() { PostalCode = postCode } });
 
             // Act
-            var actual = await systemUnderTest.Execute(postCode);
+            var actual = await systemUnderTest.Execute(postCode, TenantRepairType);
 
             // Assert
             var actualAddress = actual.Single();

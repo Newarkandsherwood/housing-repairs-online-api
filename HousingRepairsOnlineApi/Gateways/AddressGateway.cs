@@ -19,10 +19,10 @@ namespace HousingRepairsOnlineApi.Gateways
             this.authenticationIdentifier = authenticationIdentifier;
         }
 
-        public async Task<IEnumerable<PropertyAddress>> Search(string postcode)
+        public async Task<IEnumerable<PropertyAddress>> SearchTenants(string postcode)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                $"/addresses?postcode={postcode}");
+                $"/Addresses/TenantAddresses?postcode={postcode}");
 
             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 
