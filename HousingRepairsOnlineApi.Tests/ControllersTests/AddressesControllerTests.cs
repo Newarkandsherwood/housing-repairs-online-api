@@ -12,7 +12,7 @@ namespace HousingRepairsOnlineApi.Tests
     {
         private AddressesController systemUnderTest;
         private Mock<IRetrieveAddressesUseCase> retrieveAddressesUseCaseMock;
-        private const string TenantRepairType = RepairType.Tenant;
+        private const string Postcode = "M3 0W";
 
         public AddressesControllerTests()
         {
@@ -21,20 +21,27 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task TestEndpoint()
+        public async Task TestGetTenantEndpoint()
         {
-            const string Postcode = "M3 0W";
             var result = await systemUnderTest.GetTenantAddresses(Postcode);
 
             GetStatusCode(result).Should().Be(200);
-            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, TenantRepairType), Times.Once);
+            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, RepairType.Tenant), Times.Once);
         }
+
+        [Fact]
+        public async Task TestCommunalEndpoint()
+        {
+            var result = await systemUnderTest.GetCommunalAddresses(Postcode);
+
+            GetStatusCode(result).Should().Be(200);
+            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, RepairType.Communal), Times.Once);
+        }
+
 
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
-            const string Postcode = "M3 0W";
-
             retrieveAddressesUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<string>())).Throws<System.Exception>();
 
             var result = await systemUnderTest.GetTenantAddresses(Postcode);

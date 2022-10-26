@@ -17,7 +17,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly RetrieveAddressesUseCase systemUnderTest;
         private readonly Mock<IAddressGateway> addressGatewayMock;
-        private const string TenantRepairType = RepairType.Tenant;
 
         public RetrieveAddressesUseCaseTests()
         {
@@ -29,16 +28,24 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         [Fact]
         public async Task ReturnsEmptyWhenNoAddressesAreFound()
         {
-            var data = await systemUnderTest.Execute("", TenantRepairType);
+            var data = await systemUnderTest.Execute("", RepairType.Tenant);
             data.Should().BeEmpty();
         }
 
         [Fact]
-        public void GatewayGetsCalledWithPostCode()
+        public void SearchTenantIsCalledWhenRepairTypeIsTenantAndPostCodeIsGiven()
         {
             const string TestPostcode = "M3 0W";
-            systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            systemUnderTest.Execute(postcode: TestPostcode, RepairType.Tenant);
             addressGatewayMock.Verify(x => x.SearchTenants(TestPostcode), Times.Once);
+        }
+
+        [Fact]
+        public void SearchCommunalIsCalledWhenRepairTypeIsCommunalAndPostCodeIsGiven()
+        {
+            const string TestPostcode = "M3 0W";
+            systemUnderTest.Execute(postcode: TestPostcode, RepairType.Communal);
+            addressGatewayMock.Verify(x => x.SearchCommunal(TestPostcode), Times.Once);
         }
 
         [Fact]
@@ -47,7 +54,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             const string TestPostcode = "M3 0W";
             addressGatewayMock.Setup(x => x.SearchTenants(It.IsAny<string>()))
                 .ReturnsAsync(new List<PropertyAddress>());
-            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, RepairType.Tenant);
             Assert.Empty(data);
         }
 
@@ -63,7 +70,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             };
             addressGatewayMock.Setup(x => x.SearchTenants(It.IsAny<string>()))
                 .ReturnsAsync(new List<PropertyAddress>() { testAddress });
-            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, RepairType.Tenant);
             Assert.Equal(data.First().AddressLine1, testAddress.AddressLine.First());
             Assert.Equal(data.First().AddressLine2, testAddress.CityName);
             Assert.Equal(data.First().PostCode, TestPostcode);
@@ -85,7 +92,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .ReturnsAsync(new List<PropertyAddress>() { testAddress });
 
             // Act
-            var data = await systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            var data = await systemUnderTest.Execute(postcode: TestPostcode, RepairType.Tenant);
 
             // Assert
             var actual = data.Single();
@@ -98,7 +105,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void ThrowsNullExceptionWhenPostcodeIsNull()
         {
             const string TestPostcode = null;
-            Func<Task> act = async () => await systemUnderTest.Execute(TestPostcode, TenantRepairType);
+            Func<Task> act = async () => await systemUnderTest.Execute(TestPostcode, RepairType.Tenant);
             await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
@@ -106,7 +113,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public void DoesNotCallAddressGatewayWhenPostcodeIsEmpty()
         {
             const string TestPostcode = "";
-            var data = systemUnderTest.Execute(postcode: TestPostcode, TenantRepairType);
+            var data = systemUnderTest.Execute(postcode: TestPostcode, RepairType.Tenant);
             addressGatewayMock.Verify(x => x.SearchTenants(TestPostcode), Times.Never);
         }
 
@@ -119,7 +126,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .ReturnsAsync(new List<PropertyAddress> { new() { BuildingNumber = "1", PostalCode = postCode } });
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(postCode, TenantRepairType);
+            Func<Task> act = async () => await systemUnderTest.Execute(postCode, RepairType.Tenant);
 
             // Assert
             await act.Should().NotThrowAsync();
@@ -135,7 +142,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .ReturnsAsync(new List<PropertyAddress> { new() { BuildingNumber = buildingNumber, PostalCode = postCode } });
 
             // Act
-            var actual = await systemUnderTest.Execute(postCode, TenantRepairType);
+            var actual = await systemUnderTest.Execute(postCode, RepairType.Tenant);
 
             // Assert
             var actualAddress = actual.First();
@@ -153,7 +160,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .ReturnsAsync(new List<PropertyAddress> { new() { PostalCode = postCode } });
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(postCode, TenantRepairType);
+            Func<Task> act = async () => await systemUnderTest.Execute(postCode, RepairType.Tenant);
 
             // Assert
             await act.Should().NotThrowAsync();
@@ -168,7 +175,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 .ReturnsAsync(new List<PropertyAddress> { new() { PostalCode = postCode } });
 
             // Act
-            var actual = await systemUnderTest.Execute(postCode, TenantRepairType);
+            var actual = await systemUnderTest.Execute(postCode, RepairType.Tenant);
 
             // Assert
             var actualAddress = actual.Single();

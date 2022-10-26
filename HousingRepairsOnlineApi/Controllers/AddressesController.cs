@@ -33,5 +33,21 @@ namespace HousingRepairsOnlineApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("CommunalAddresses")]
+        public async Task<IActionResult> GetCommunalAddresses([FromQuery] string postcode)
+        {
+            try
+            {
+                var result = await retrieveAddressesUseCase.Execute(postcode, RepairType.Communal);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
