@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HACT.Dtos;
 using HousingRepairsOnlineApi.Gateways;
+using HousingRepairsOnlineApi.Helpers;
 using Address = HousingRepairsOnlineApi.Domain.Address;
 
 namespace HousingRepairsOnlineApi.UseCases
@@ -17,7 +18,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.addressGateway = addressGateway;
         }
 
-        public async Task<IEnumerable<Address>> Execute(string postcode)
+        public async Task<IEnumerable<Address>> Execute(string postcode, string repairType)
         {
             if (postcode == null)
             {
@@ -26,8 +27,11 @@ namespace HousingRepairsOnlineApi.UseCases
             var result = new List<Address>();
             if (!string.IsNullOrEmpty(postcode))
             {
-                var addresses = await addressGateway.Search(postcode);
-                result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
+                if (repairType == RepairType.Tenant)
+                {
+                    var addresses = await addressGateway.SearchTenants(postcode);
+                    result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
+                }
             }
 
             return result;

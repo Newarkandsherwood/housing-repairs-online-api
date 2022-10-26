@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IRetrieveAddressesUseCase
     {
-        Task<IEnumerable<Address>> Execute(string postcode);
+        Task<IEnumerable<Address>> Execute(string postcode, string repairType);
     }
 }

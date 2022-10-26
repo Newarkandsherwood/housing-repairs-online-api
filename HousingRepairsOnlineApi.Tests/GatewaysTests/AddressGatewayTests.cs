@@ -28,28 +28,28 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async void ARequestIsMade()
+        public async void ATenantAddressRequestIsMade()
         {
             // Arrange
             const string Postcode = "M3 OW";
 
-            mockHttp.Expect($"{AddressApiEndpoint}/addresses?postcode={Postcode}")
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/TenantAddresses?postcode={Postcode}")
                 .Respond(HttpStatusCode.OK, x => new StringContent("[]"));
 
             // Act
-            _ = await addressGateway.Search(Postcode);
+            _ = await addressGateway.SearchTenants(Postcode);
 
             // Assert
             mockHttp.VerifyNoOutstandingExpectation();
         }
 
         [Fact]
-        public async Task DataFromApiIsReturned()
+        public async Task TenantAddressDataFromApiIsReturned()
         {
             // Arrange
             const string Postcode = "M3 0W";
 
-            mockHttp.Expect($"{AddressApiEndpoint}/addresses?postcode={Postcode}")
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/TenantAddresses?postcode={Postcode}")
                 .Respond("application/json",
                     "[{ \"UPRN\": \"944225244413\", " +
                     "\"Postbox\": \"null\", " +
@@ -66,7 +66,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                     "\"Type\": \"null\", " +
                     "\"PostalCode\": \"M3 0W\"}]");
             // Act
-            var data = await addressGateway.Search(Postcode);
+            var data = await addressGateway.SearchTenants(Postcode);
 
             // Assert
             mockHttp.VerifyNoOutstandingExpectation();
@@ -75,15 +75,15 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         [Fact]
-        public async Task EmptryIsReturnedWhenApiIsDown()
+        public async Task EmptyAddressesAreReturnedWhenTenantAddressRequestCouldNotBeMade()
         {
             // Arrange
             const string Postcode = "M3 0W";
 
-            mockHttp.Expect($"{AddressApiEndpoint}/addresses?postcode={Postcode}")
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/TenantAddresses?postcode={Postcode}")
                 .Respond(statusCode: (HttpStatusCode)503);
             // Act
-            var data = await addressGateway.Search(Postcode);
+            var data = await addressGateway.SearchTenants(Postcode);
 
             // Assert
             mockHttp.VerifyNoOutstandingExpectation();
