@@ -7,5 +7,6 @@ namespace HousingRepairsOnlineApi.Gateways
     public interface IAddressGateway
     {
         Task<IEnumerable<PropertyAddress>> SearchTenants(string postcode);
+        Task<IEnumerable<PropertyAddress>> SearchCommunal(string postcode);
     }
 }

@@ -27,10 +27,20 @@ namespace HousingRepairsOnlineApi.UseCases
             var result = new List<Address>();
             if (!string.IsNullOrEmpty(postcode))
             {
-                if (repairType == RepairType.Tenant)
+                switch (repairType)
                 {
-                    var addresses = await addressGateway.SearchTenants(postcode);
-                    result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
+                    case RepairType.Tenant:
+                        {
+                            var addresses = await addressGateway.SearchTenants(postcode);
+                            result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
+                            break;
+                        }
+                    case RepairType.Communal:
+                        {
+                            var addresses = await addressGateway.SearchCommunal(postcode);
+                            result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
+                            break;
+                        }
                 }
             }
 

@@ -24,6 +24,19 @@ namespace HousingRepairsOnlineApi.Gateways
             var request = new HttpRequestMessage(HttpMethod.Get,
                 $"/Addresses/TenantAddresses?postcode={postcode}");
 
+            return await SendRequest(request);
+        }
+
+        public async Task<IEnumerable<PropertyAddress>> SearchCommunal(string postcode)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                $"/Addresses/CommunalAddresses?postcode={postcode}");
+
+            return await SendRequest(request);
+        }
+
+        private async Task<IEnumerable<PropertyAddress>> SendRequest(HttpRequestMessage request)
+        {
             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 
             var response = await httpClient.SendAsync(request);
