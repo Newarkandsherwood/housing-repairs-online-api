@@ -17,21 +17,22 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IBookAppointmentUseCase bookAppointmentUseCase;
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
-
+        private readonly IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
             IInternalEmailSender internalEmailSender,
             IAppointmentConfirmationSender appointmentConfirmationSender,
             IBookAppointmentUseCase bookAppointmentUseCase,
-            IRetrieveRepairsUseCase retrieveRepairsUseCase
-        )
+            IRetrieveRepairsUseCase retrieveRepairsUseCase,
+            IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
+            this.retrieveAvailableAppointmentsUseCase = retrieveAvailableAppointmentsUseCase;
         }
 
         [HttpGet]
@@ -69,6 +70,12 @@ namespace HousingRepairsOnlineApi.Controllers
             try
             {
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
+                if (repairType == RepairType.Communal)
+                {
+                    await retrieveAvailableAppointmentsUseCase.Execute(repairType, result.Location.Value,
+                        result.Problem.Value, result.Issue.Value, result.Address.LocationId);
+                }
+
                 await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
                     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
                 appointmentConfirmationSender.Execute(result);

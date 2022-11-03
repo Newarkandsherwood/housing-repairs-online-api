@@ -18,6 +18,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
         private Mock<IInternalEmailSender> internalEmailSender;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
+        private Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
         private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
@@ -39,7 +40,8 @@ namespace HousingRepairsOnlineApi.Tests
             appointmentConfirmationSender = new Mock<IAppointmentConfirmationSender>();
             internalEmailSender = new Mock<IInternalEmailSender>();
             retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSender.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object);
+            retrieveAvailableAppointmentsUseCaseMock = new Mock<IRetrieveAvailableAppointmentsUseCase>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSender.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableAppointmentsUseCaseMock.Object);
         }
 
         [Fact]
@@ -80,7 +82,8 @@ namespace HousingRepairsOnlineApi.Tests
             // Arrange
             var (repairRequest, repair) = CreateRepairRequestAndRepair();
 
-            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>()))
+                .ReturnsAsync(repair);
 
             // Act
             var result = await systemUnderTest.CommunalRepair(repairRequest);
@@ -88,6 +91,9 @@ namespace HousingRepairsOnlineApi.Tests
             // Assert
             GetStatusCode(result).Should().Be(200);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Communal, repairRequest), Times.Once);
+            retrieveAvailableAppointmentsUseCaseMock.Verify(x => x.Execute(RepairType.Communal,
+                repairRequest.Location.Value, repairRequest.Problem.Value, repairRequest.Issue.Value,
+                repairRequest.Address.LocationId, null));
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()
