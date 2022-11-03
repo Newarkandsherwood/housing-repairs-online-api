@@ -16,9 +16,11 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
         private Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
         private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
-        private Mock<IInternalEmailSender> internalEmailSender;
+        private Mock<IInternalEmailSender> internalEmailSenderMock;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
         private Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
+        private Mock<IBookAvailableAppointmentUseCase> bookAvailableAppointmentUseCaseMock;
+
         private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
@@ -38,10 +40,11 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock = new Mock<ISaveRepairRequestUseCase>();
             bookAppointmentUseCaseMock = new Mock<IBookAppointmentUseCase>();
             appointmentConfirmationSender = new Mock<IAppointmentConfirmationSender>();
-            internalEmailSender = new Mock<IInternalEmailSender>();
+            internalEmailSenderMock = new Mock<IInternalEmailSender>();
             retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
             retrieveAvailableAppointmentsUseCaseMock = new Mock<IRetrieveAvailableAppointmentsUseCase>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSender.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableAppointmentsUseCaseMock.Object);
+            bookAvailableAppointmentUseCaseMock = new Mock<IBookAvailableAppointmentUseCase>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableAppointmentsUseCaseMock.Object, bookAvailableAppointmentUseCaseMock.Object);
         }
 
         [Fact]
@@ -51,13 +54,13 @@ namespace HousingRepairsOnlineApi.Tests
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
 
-            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, bookAvailableAppointmentUseCaseMock.Object.Execute);
 
             GetStatusCode(result).Should().Be(200);
 
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
 
-            internalEmailSender.Verify(x => x.Execute(repair), Times.Once);
+            internalEmailSenderMock.Verify(x => x.Execute(repair), Times.Once);
         }
 
         [Fact]
@@ -91,9 +94,9 @@ namespace HousingRepairsOnlineApi.Tests
             // Assert
             GetStatusCode(result).Should().Be(200);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Communal, repairRequest), Times.Once);
-            retrieveAvailableAppointmentsUseCaseMock.Verify(x => x.Execute(RepairType.Communal,
-                repairRequest.Location.Value, repairRequest.Problem.Value, repairRequest.Issue.Value,
-                repairRequest.Address.LocationId, null));
+            bookAvailableAppointmentUseCaseMock.Verify(x => x.Execute(repair.Id,
+                repair.SOR, repair.Priority, repair.Address.LocationId, It.IsAny<DateTime>(), It.IsAny<DateTime>(),
+                repair.Description.Text));
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()
@@ -119,6 +122,7 @@ namespace HousingRepairsOnlineApi.Tests
                 Issue = new RepairIssue { Value = "issue" },
                 SOR = "sor",
                 Time = repairAvailability,
+                Priority = "1"
             };
 
             return (repairRequest, repair);
@@ -131,7 +135,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
-            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, bookAvailableAppointmentUseCaseMock.Object.Execute);
 
             GetStatusCode(result).Should().Be(500);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
@@ -171,7 +175,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Assert
-            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, bookAvailableAppointmentUseCaseMock.Object.Execute);
 
             //Act
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
@@ -212,7 +216,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Act
-            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, bookAvailableAppointmentUseCaseMock.Object.Execute);
 
             //Assert
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);

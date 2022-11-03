@@ -15,7 +15,8 @@ namespace HousingRepairsOnlineApi.UseCases
             this.appointmentsGateway = appointmentsGateway;
         }
 
-        public async Task Execute(string bookingReference, string sorCode, string priority, string locationId, string repairDescriptionText)
+        public async Task Execute(string bookingReference, string sorCode, string priority, string locationId, DateTime startDateTime,
+            DateTime endDateTime, string repairDescriptionText)
         {
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(sorCode));
             Guard.Against.NullOrWhiteSpace(sorCode, nameof(sorCode));

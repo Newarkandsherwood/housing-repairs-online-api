@@ -18,6 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase;
+        private readonly IBookAvailableAppointmentUseCase bookAvailableAppointmentUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -25,7 +26,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IAppointmentConfirmationSender appointmentConfirmationSender,
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
-            IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase)
+            IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase,
+            IBookAvailableAppointmentUseCase bookAvailableAppointmentUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -33,6 +35,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
             this.retrieveAvailableAppointmentsUseCase = retrieveAvailableAppointmentsUseCase;
+            this.bookAvailableAppointmentUseCase = bookAvailableAppointmentUseCase;
         }
 
         [HttpGet]
@@ -55,29 +58,25 @@ namespace HousingRepairsOnlineApi.Controllers
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Tenant, repairRequest);
+            return await SaveRepair(RepairType.Tenant, repairRequest, bookAppointmentUseCase.Execute);
         }
 
         [HttpPost]
         [Route("CommunalRepair")]
         public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Communal, repairRequest);
+            return await SaveRepair(RepairType.Communal, repairRequest, bookAvailableAppointmentUseCase.Execute);
         }
 
-        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, DateTime, DateTime, string, Task> bookAppointment)
         {
             try
             {
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
-                if (repairType == RepairType.Communal)
-                {
-                    await retrieveAvailableAppointmentsUseCase.Execute(repairType, result.Location.Value,
-                        result.Problem.Value, result.Issue.Value, result.Address.LocationId);
-                }
 
-                await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
+                await bookAppointment(result.Id, result.SOR, result.Priority, result.Address.LocationId,
                     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
+
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
                 return Ok(result.Id);
