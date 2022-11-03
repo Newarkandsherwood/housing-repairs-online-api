@@ -67,7 +67,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
 
             // Act
-            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+            var result = await systemUnderTest.TenantRepair(repairRequest);
 
             // Assert
             GetStatusCode(result).Should().Be(200);
