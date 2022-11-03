@@ -43,6 +43,7 @@ namespace HousingRepairsOnlineApi
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
             services.AddTransient(_ => allowedAppointmentSlots);
+            services.AddTransient<IAppointmentSlotsFilter, LargestAppointmentSlotFilter>();
 
             services.AddTransient<IRetrieveAddressesUseCase, RetrieveAddressesUseCase>();
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
