@@ -35,7 +35,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    bookingRef, SorCode, Priority, LocationId,  DateTime.Now, DateTime.Now,  "description"
+                    bookingRef, SorCode, Priority, LocationId, "description"
                 );
             };
 
