@@ -162,8 +162,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
 
             // Act
-            var act = async() => await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
-
+            var act = async () => await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
 
             //Assert
             await act.Should().ThrowExactlyAsync<InvalidOperationException>();
