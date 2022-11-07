@@ -30,17 +30,20 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             systemUnderTest = new BookAvailableAppointmentUseCase(appointmentsGatewayMock.Object, appointmentSlotsFilterMock.Object);
         }
 
-        [Fact]
-        public async void GivenAnEmptyBookingReference_WhenExecuting_ThenExceptionIsThrow()
+        [Theory]
+        [InlineData("", SorCode, Priority, LocationId, "description")]
+        [InlineData(BookingReference, "", Priority, LocationId, "description")]
+        [InlineData(BookingReference, SorCode, "", LocationId, "description")]
+        [InlineData(BookingReference, SorCode, Priority, "", "description")]
+        [InlineData(BookingReference, SorCode, Priority, LocationId, "")]
+        public async void GivenAnEmptyParameter_WhenExecuting_ThenExceptionIsThrow(string bookingReference, string sorCode, string priority, string locationId, string repairDescriptionText)
         {
-            // Arrange
-            var bookingRef = "";
 
             // Act
             Func<Task> act = async () =>
             {
                 await systemUnderTest.Execute(
-                    bookingRef, SorCode, Priority, LocationId, "description"
+                    bookingReference, sorCode, priority, locationId, repairDescriptionText
                 );
             };
 
@@ -102,6 +105,48 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             // Assert
             appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(SorCode, Priority, LocationId, null, appointmentSlotTimeSpans), Times.Once);
+        }
+
+        [Fact]
+        public async void GivenMultipleAppointments_WhenExecuting_ThenBookAppointmentIsCalledWithFirstAppointment()
+        {
+            // Arrange
+            var firstAppointmentEarliestArrivalTime = new DateTime(2022, 01, 01, 8, 0, 0);
+            var firstAppointmentLatestArrivalTime = new DateTime(2022, 01, 01, 12, 0, 0);
+
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(SorCode, Priority, LocationId, null,
+                    It.IsAny<IEnumerable<AppointmentSlotTimeSpan>>()))
+                .ReturnsAsync(new[]
+                {
+                    new Appointment
+                    {
+                        TimeOfDay = new TimeOfDay
+                        {
+                            EarliestArrivalTime = firstAppointmentEarliestArrivalTime,
+                            LatestArrivalTime = firstAppointmentLatestArrivalTime
+                        }
+                    },
+                    new Appointment
+                    {
+                        TimeOfDay = new TimeOfDay
+                        {
+                            EarliestArrivalTime = new DateTime(2023, 01, 01, 8, 0, 0),
+                            LatestArrivalTime = new DateTime(2023, 01, 01, 12, 0, 0)
+                        }
+                    }
+
+                });
+            var appointmentSlotTimeSpans = new[]
+            {
+                new AppointmentSlotTimeSpan { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), }
+            };
+            appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
+
+            // Act
+            await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
+
+            // Assert
+            appointmentsGatewayMock.Verify(x => x.BookAppointment(BookingReference, SorCode, Priority, LocationId, firstAppointmentEarliestArrivalTime, firstAppointmentLatestArrivalTime,  "description"), Times.Once);
         }
     }
 }
