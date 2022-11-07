@@ -146,7 +146,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
 
             // Assert
-            appointmentsGatewayMock.Verify(x => x.BookAppointment(BookingReference, SorCode, Priority, LocationId, firstAppointmentEarliestArrivalTime, firstAppointmentLatestArrivalTime,  "description"), Times.Once);
+            appointmentsGatewayMock.Verify(x => x.BookAppointment(BookingReference, SorCode, Priority, LocationId, firstAppointmentEarliestArrivalTime, firstAppointmentLatestArrivalTime, "description"), Times.Once);
         }
     }
 }
