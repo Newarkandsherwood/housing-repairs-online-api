@@ -29,8 +29,12 @@ namespace HousingRepairsOnlineApi.UseCases
             var allowedAppointmentSlotTimeSpans = appointmentSlotsFilter.Filter();
 
             var appointments = await appointmentsGateway.GetAvailableAppointments(sorCode, priority, locationId, null, allowedAppointmentSlotTimeSpans);
-            // Need to get next available appointment
+
             var appointment = appointments.FirstOrDefault();
+            if (appointment == null)
+            {
+                throw new InvalidOperationException($"No appointments returned from Appointments Gateway");
+            }
             await appointmentsGateway.BookAppointment(bookingReference, sorCode, priority, locationId, appointment.TimeOfDay.EarliestArrivalTime, appointment.TimeOfDay.LatestArrivalTime, repairDescriptionText);
         }
     }

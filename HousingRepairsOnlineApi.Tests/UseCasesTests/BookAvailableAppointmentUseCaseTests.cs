@@ -148,5 +148,25 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             // Assert
             appointmentsGatewayMock.Verify(x => x.BookAppointment(BookingReference, SorCode, Priority, LocationId, firstAppointmentEarliestArrivalTime, firstAppointmentLatestArrivalTime, "description"), Times.Once);
         }
+
+        [Fact]
+        public async void GivenAnNoAppointments_WhenExecute_ThenExceptionIsThrown()
+        {
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(SorCode, Priority, LocationId, null,
+                    It.IsAny<IEnumerable<AppointmentSlotTimeSpan>>()))
+                .ReturnsAsync(Array.Empty<Appointment>());
+            var appointmentSlotTimeSpans = new[]
+            {
+                new AppointmentSlotTimeSpan { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), }
+            };
+            appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
+
+            // Act
+            var act = async() => await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
+
+
+            //Assert
+            await act.Should().ThrowExactlyAsync<InvalidOperationException>();
+        }
     }
 }
