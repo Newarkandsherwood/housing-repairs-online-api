@@ -38,6 +38,7 @@ namespace HousingRepairsOnlineApi
                 {
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
+                    new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Leasehold),
                 });
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
