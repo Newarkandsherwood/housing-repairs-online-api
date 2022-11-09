@@ -34,6 +34,14 @@ namespace HousingRepairsOnlineApi.Controllers
             return await JourneyRepairTriageOptions(RepairType.Communal, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
         }
 
+        [HttpGet]
+        [Route("LeaseholdRepairTriageOptions")]
+        public async Task<IActionResult> LeaseholdRepairTriageOptions(string emergencyValue,
+            string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
+        {
+            return await JourneyRepairTriageOptions(RepairType.Leasehold, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+        }
+
         internal async Task<IActionResult> JourneyRepairTriageOptions(string repairType, string emergencyValue,
             string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
