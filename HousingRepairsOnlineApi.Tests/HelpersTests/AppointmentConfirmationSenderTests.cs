@@ -10,13 +10,15 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     {
         private readonly Mock<ISendAppointmentConfirmationEmailUseCase> sendAppointmentConfirmationEmailUseCaseMock;
         private readonly Mock<ISendAppointmentConfirmationSmsUseCase> sendAppointmentConfirmationSmsUseCaseMock;
+        private Mock<ISendNotificationResolver> sendNotificationResolver;
         private readonly AppointmentConfirmationSender systemUnderTest;
 
         public AppointmentConfirmationSenderTests()
         {
             sendAppointmentConfirmationEmailUseCaseMock = new Mock<ISendAppointmentConfirmationEmailUseCase>();
             sendAppointmentConfirmationSmsUseCaseMock = new Mock<ISendAppointmentConfirmationSmsUseCase>();
-            systemUnderTest = new AppointmentConfirmationSender(sendAppointmentConfirmationEmailUseCaseMock.Object, sendAppointmentConfirmationSmsUseCaseMock.Object);
+            sendNotificationResolver = new Mock<ISendNotificationResolver>();
+            systemUnderTest = new AppointmentConfirmationSender(sendAppointmentConfirmationEmailUseCaseMock.Object, sendAppointmentConfirmationSmsUseCaseMock.Object, sendNotificationResolver.Object);
         }
 
         [Fact]

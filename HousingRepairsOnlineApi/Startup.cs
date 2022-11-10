@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using HousingRepairsOnline.Authentication.DependencyInjection;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
+using HousingRepairsOnlineApi.Helpers.SendNotifications;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +41,21 @@ namespace HousingRepairsOnlineApi
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
                 });
+
+            var sendTenantNotification = new SendTenantNotification(EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
+
+            var sendCommunalNotification = new SendCommunalNotification(EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
+
+            var sendNotificationDictionary = new Dictionary<string, ISendNotification> { { RepairType.Tenant, sendTenantNotification } ,
+                { RepairType.Communal, sendCommunalNotification }};
+
+            services.AddTransient<IDictionary<string, ISendNotification>>(_ => sendNotificationDictionary);
+
+            services.AddTransient<ISendNotificationResolver, SendNotificationResolver>();
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
@@ -79,11 +96,6 @@ namespace HousingRepairsOnlineApi
                     return new NotifyGateway(notifyClient);
                 }
             );
-            var smsConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID");
-
-            var emailConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID");
-
-            var internalEmailConfirmationTemplateId = EnvironmentVariableHelper.GetEnvironmentVariable("INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID");
 
             var internalEmail = EnvironmentVariableHelper.GetEnvironmentVariable("INTERNAL_EMAIL");
 
@@ -92,13 +104,13 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<ISendAppointmentConfirmationSmsUseCase, SendAppointmentConfirmationSmsUseCase>(s =>
             {
                 var notifyGateway = s.GetService<INotifyGateway>();
-                return new SendAppointmentConfirmationSmsUseCase(notifyGateway, smsConfirmationTemplateId);
+                return new SendAppointmentConfirmationSmsUseCase(notifyGateway);
             });
 
             services.AddTransient<ISendAppointmentConfirmationEmailUseCase, SendAppointmentConfirmationEmailUseCase>(s =>
             {
                 var notifyGateway = s.GetService<INotifyGateway>();
-                return new SendAppointmentConfirmationEmailUseCase(notifyGateway, emailConfirmationTemplateId);
+                return new SendAppointmentConfirmationEmailUseCase(notifyGateway);
             });
 
             services.AddTransient<IAppointmentConfirmationSender, AppointmentConfirmationSender>();
@@ -112,7 +124,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<ISendInternalEmailUseCase, SendInternalEmailUseCase>(s =>
             {
                 var notifyGateway = s.GetService<INotifyGateway>();
-                return new SendInternalEmailUseCase(notifyGateway, internalEmailConfirmationTemplateId, internalEmail);
+                return new SendInternalEmailUseCase(notifyGateway, internalEmail);
             });
 
             services.AddHousingRepairsOnlineAuthentication(HousingRepairsOnlineApiIssuerId);

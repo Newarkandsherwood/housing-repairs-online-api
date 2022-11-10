@@ -9,11 +9,13 @@ namespace HousingRepairsOnlineApi.Helpers
     {
         private IRetrieveImageLinkUseCase retrieveImageLinkUseCase;
         private ISendInternalEmailUseCase sendInternalEmailUseCase;
+        private ISendNotificationResolver sendNotificationResolver;
 
-        public InternalEmailSender(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, ISendInternalEmailUseCase sendInternalEmailUseCase)
+        public InternalEmailSender(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, ISendInternalEmailUseCase sendInternalEmailUseCase, ISendNotificationResolver sendNotificationResolver)
         {
             this.retrieveImageLinkUseCase = retrieveImageLinkUseCase;
             this.sendInternalEmailUseCase = sendInternalEmailUseCase;
+            this.sendNotificationResolver = sendNotificationResolver;
         }
 
         public async Task Execute(Repair repair)
@@ -26,7 +28,8 @@ namespace HousingRepairsOnlineApi.Helpers
                     imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
                 });
             }
-            sendInternalEmailUseCase.Execute(repair.Id, repair.Address.LocationId, repair.Address.Display, repair.SOR, repair.Description.Text, repair.ContactDetails?.Value, imageLink);
+            var sendNotification = sendNotificationResolver.Resolve(repair.RepairType);
+            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), imageLink, sendNotification.InternalEmailTemplateId);
         }
     }
 }

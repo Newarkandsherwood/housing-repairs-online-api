@@ -11,27 +11,17 @@ namespace HousingRepairsOnlineApi.UseCases
     public class SendAppointmentConfirmationSmsUseCase : ISendAppointmentConfirmationSmsUseCase
     {
         private readonly INotifyGateway notifyGateway;
-        private readonly string templateId;
 
-        public SendAppointmentConfirmationSmsUseCase(INotifyGateway notifyGateway, string templateId)
+        public SendAppointmentConfirmationSmsUseCase(INotifyGateway notifyGateway)
         {
             this.notifyGateway = notifyGateway;
-            this.templateId = templateId;
         }
 
-        public void Execute(string number, string bookingRef, string appointmentTime)
+        public void Execute(string number, Dictionary<string, dynamic> personalisation, string templateId)
         {
-            Guard.Against.NullOrWhiteSpace(number, nameof(number), "The phone number provided is invalid");
-            Guard.Against.NullOrWhiteSpace(bookingRef, nameof(bookingRef), "The booking reference provided is invalid");
-            Guard.Against.NullOrWhiteSpace(appointmentTime, nameof(appointmentTime), "The appointment time provided is invalid");
+            Guard.Against.NullOrWhiteSpace(number, nameof(number), "The email provided is invalid");
+
             ValidatePhoneNumber(number);
-
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"repair_ref", bookingRef},
-                {"appointment_time", appointmentTime}
-            };
-
             notifyGateway.SendSms(number, templateId, personalisation);
         }
 
