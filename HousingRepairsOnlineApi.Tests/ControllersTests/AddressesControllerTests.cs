@@ -38,6 +38,15 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, RepairType.Communal), Times.Once);
         }
 
+        [Fact]
+        public async Task TestGetLeaseholdEndpoint()
+        {
+            var result = await systemUnderTest.GetLeaseholdAddresses(Postcode);
+
+            GetStatusCode(result).Should().Be(200);
+            retrieveAddressesUseCaseMock.Verify(x => x.Execute(Postcode, RepairType.Leasehold), Times.Once);
+        }
+
 
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
