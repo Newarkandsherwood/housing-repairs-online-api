@@ -6,13 +6,13 @@ namespace HousingRepairsOnlineApi.Helpers;
 
 public class NotificationConfigurationResolver : INotificationConfigurationResolver
 {
-    private readonly IDictionary<string, INotificationConfigurationProvider> sendNotifications;
+    private readonly IDictionary<string, INotificationConfigurationProvider> notificationConfigurationProviders;
 
-    public NotificationConfigurationResolver(IDictionary<string, INotificationConfigurationProvider> sendNotifications)
+    public NotificationConfigurationResolver(IDictionary<string, INotificationConfigurationProvider> notificationConfigurationProviders)
     {
-        Guard.Against.Null(sendNotifications, nameof(sendNotifications));
+        Guard.Against.Null(notificationConfigurationProviders, nameof(notificationConfigurationProviders));
 
-        this.sendNotifications = sendNotifications;
+        this.notificationConfigurationProviders = notificationConfigurationProviders;
     }
 
     public INotificationConfigurationProvider Resolve(string repairType)
@@ -21,7 +21,7 @@ public class NotificationConfigurationResolver : INotificationConfigurationResol
         Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
 
         INotificationConfigurationProvider result;
-        if (!sendNotifications.TryGetValue(repairType, out result))
+        if (!notificationConfigurationProviders.TryGetValue(repairType, out result))
         {
             throw new NotSupportedException($"Repair Type '{repairType}' not configured");
         }
