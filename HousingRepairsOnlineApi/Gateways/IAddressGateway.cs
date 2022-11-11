@@ -8,5 +8,6 @@ namespace HousingRepairsOnlineApi.Gateways
     {
         Task<IEnumerable<PropertyAddress>> SearchTenants(string postcode);
         Task<IEnumerable<PropertyAddress>> SearchCommunal(string postcode);
+        Task<IEnumerable<PropertyAddress>> SearchLeasehold(string postcode);
     }
 }

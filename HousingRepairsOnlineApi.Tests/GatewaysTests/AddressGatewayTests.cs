@@ -142,6 +142,63 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             Assert.Empty(data);
         }
 
+        [Fact]
+        public async void ALeaseholdAddressRequestIsMade()
+        {
+            // Arrange
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/LeaseholdAddresses?postcode={Postcode}")
+                .Respond(HttpStatusCode.OK, x => new StringContent("[]"));
+
+            // Act
+            _ = await addressGateway.SearchLeasehold(Postcode);
+
+            // Assert
+            mockHttp.VerifyNoOutstandingExpectation();
+        }
+
+        [Fact]
+        public async Task LeaseholdAddressDataFromApiIsReturned()
+        {
+            // Arrange
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/LeaseholdAddresses?postcode={Postcode}")
+                .Respond("application/json",
+                    "[{ \"UPRN\": \"944225244413\", " +
+                    "\"Postbox\": \"null\", " +
+                    "\"Room\": \"null\", " +
+                    "\"Department\": \"null\", " +
+                    "\"Floor\": \"null\", " +
+                    "\"Plot\": \"null\", " +
+                    "\"BuildingNumber\": \"123\", " +
+                    "\"BuildingName\": \"null\", " +
+                    "\"ComplexName\": \"null\", " +
+                    "\"StreetName\": \"Cute Street\", " +
+                    "\"CityName\": \"New Meow City\", " +
+                    "\"AddressLine\": [\"123 Cute Street\"], " +
+                    "\"Type\": \"null\", " +
+                    "\"PostalCode\": \"M3 0W\"}]");
+            // Act
+            var data = await addressGateway.SearchLeasehold(Postcode);
+
+            // Assert
+            mockHttp.VerifyNoOutstandingExpectation();
+            Assert.Single(data);
+            Assert.Equal(Postcode, data.First().PostalCode);
+        }
+
+        [Fact]
+        public async Task EmptyAddressesAreReturnedWhenLeaseholdAddressRequestCouldNotBeMade()
+        {
+            // Arrange
+            mockHttp.Expect($"{AddressApiEndpoint}/Addresses/LeaseholdAddresses?postcode={Postcode}")
+                .Respond(statusCode: (HttpStatusCode)503);
+            // Act
+            var data = await addressGateway.SearchLeasehold(Postcode);
+
+            // Assert
+            mockHttp.VerifyNoOutstandingExpectation();
+            Assert.Empty(data);
+        }
+
         public void Dispose()
         {
             mockHttp.Dispose();
