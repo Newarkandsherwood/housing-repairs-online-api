@@ -11,15 +11,30 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     {
         private readonly Mock<ISendAppointmentConfirmationEmailUseCase> sendAppointmentConfirmationEmailUseCaseMock;
         private readonly Mock<ISendAppointmentConfirmationSmsUseCase> sendAppointmentConfirmationSmsUseCaseMock;
-        private Mock<INotificationConfigurationResolver> sendNotificationResolver;
+        private Mock<INotificationConfigurationResolver> notificationConfigurationResolver;
+        private Mock<INotificationConfigurationProvider> notificationConfigurationProvider;
         private readonly AppointmentConfirmationSender systemUnderTest;
-
+        private readonly Dictionary<string, dynamic> personalisation = new()
+        {
+            {"repair_ref", "2"},
+            {"appointment_time", ""}
+        };
+        private readonly string emailTemplateId = "123";
+        private readonly string smsTemplateId = "456";
         public AppointmentConfirmationSenderTests()
         {
             sendAppointmentConfirmationEmailUseCaseMock = new Mock<ISendAppointmentConfirmationEmailUseCase>();
             sendAppointmentConfirmationSmsUseCaseMock = new Mock<ISendAppointmentConfirmationSmsUseCase>();
-            sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
-            systemUnderTest = new AppointmentConfirmationSender(sendAppointmentConfirmationEmailUseCaseMock.Object, sendAppointmentConfirmationSmsUseCaseMock.Object, sendNotificationResolver.Object);
+            notificationConfigurationResolver = new Mock<INotificationConfigurationResolver>();
+            notificationConfigurationProvider = new Mock<INotificationConfigurationProvider>();
+            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForEmailTemplate(It.IsAny<Repair>())).Returns(personalisation);
+            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForSMSTemplate(It.IsAny<Repair>())).Returns(personalisation);
+            notificationConfigurationProvider.Setup(x => x.ConfirmationEmailTemplateId).Returns(emailTemplateId);
+            notificationConfigurationProvider.Setup(x => x.ConfirmationSmsTemplateId).Returns(smsTemplateId);
+
+            notificationConfigurationResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(notificationConfigurationProvider.Object);
+
+            systemUnderTest = new AppointmentConfirmationSender(sendAppointmentConfirmationEmailUseCaseMock.Object, sendAppointmentConfirmationSmsUseCaseMock.Object, notificationConfigurationResolver.Object);
         }
 
         [Fact]

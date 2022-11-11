@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.UseCases;
@@ -62,8 +63,16 @@ public class TenantNotificationConfigurationProvider: INotificationConfiguration
         };
     }
 
-    public string GetImageLink(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, Repair repair)
+    public async Task<string> GetImageLink(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, Repair repair)
     {
-        throw new System.NotImplementedException();
+        var imageLink = "None";
+        if (!string.IsNullOrEmpty(repair.Description?.PhotoUrl))
+        {
+            await Task.Run(() =>
+            {
+                imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
+            });
+        }
+        return imageLink;
     }
 }
