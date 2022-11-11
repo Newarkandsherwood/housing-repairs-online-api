@@ -21,6 +21,7 @@ namespace HousingRepairsOnlineApi.UseCases
             {
                 { RepairType.Tenant, addressGateway.SearchTenants },
                 { RepairType.Communal, addressGateway.SearchCommunal },
+                { RepairType.Leasehold, addressGateway.SearchLeasehold },
             };
         }
 

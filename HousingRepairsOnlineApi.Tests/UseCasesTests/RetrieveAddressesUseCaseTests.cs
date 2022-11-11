@@ -49,6 +49,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
+        public void SearchLeaseholdIsCalledWhenRepairTypeIsLeaseholdAndPostCodeIsGiven()
+        {
+            const string TestPostcode = "M3 0W";
+            systemUnderTest.Execute(postcode: TestPostcode, RepairType.Leasehold);
+            addressGatewayMock.Verify(x => x.SearchLeasehold(TestPostcode), Times.Once);
+        }
+
+        [Fact]
         public async Task DoesNotReturnAnEmptyCollectionOfAddresses()
         {
             const string TestPostcode = "M3 0W";
