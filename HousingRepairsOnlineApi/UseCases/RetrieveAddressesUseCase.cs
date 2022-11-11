@@ -12,10 +12,16 @@ namespace HousingRepairsOnlineApi.UseCases
     public class RetrieveAddressesUseCase : IRetrieveAddressesUseCase
     {
         private readonly IAddressGateway addressGateway;
+        private Dictionary<string, Func<string, Task<IEnumerable<PropertyAddress>>>> repairTypeSearchMethods;
 
         public RetrieveAddressesUseCase(IAddressGateway addressGateway)
         {
             this.addressGateway = addressGateway;
+            repairTypeSearchMethods = new Dictionary<string, Func<string, Task<IEnumerable<PropertyAddress>>>>
+            {
+                { RepairType.Tenant, addressGateway.SearchTenants },
+                { RepairType.Communal, addressGateway.SearchCommunal },
+            };
         }
 
         public async Task<IEnumerable<Address>> Execute(string postcode, string repairType)
@@ -25,23 +31,11 @@ namespace HousingRepairsOnlineApi.UseCases
                 throw new ArgumentNullException(nameof(postcode));
             }
             var result = new List<Address>();
-            if (!string.IsNullOrEmpty(postcode))
+            if (!string.IsNullOrEmpty(postcode)
+                && repairTypeSearchMethods.TryGetValue(repairType, out var addressSearchFunction))
             {
-                switch (repairType)
-                {
-                    case RepairType.Tenant:
-                        {
-                            var addresses = await addressGateway.SearchTenants(postcode);
-                            result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
-                            break;
-                        }
-                    case RepairType.Communal:
-                        {
-                            var addresses = await addressGateway.SearchCommunal(postcode);
-                            result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
-                            break;
-                        }
-                }
+                var addresses = await addressSearchFunction(postcode);
+                result.AddRange(addresses.Select(ConvertToHactPropertyAddress));
             }
 
             return result;
