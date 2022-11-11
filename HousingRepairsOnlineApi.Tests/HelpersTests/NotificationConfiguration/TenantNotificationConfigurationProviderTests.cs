@@ -10,10 +10,10 @@ using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
-    public class CommunalNotificationConfigurationProviderTests
+    public class TenantNotificationConfigurationProviderTests
     {
         private readonly Mock<IRetrieveImageLinkUseCase> retrieveImageLinkUseCase;
-        private readonly CommunalNotificationConfigurationProvider systemUnderTest;
+        private readonly TenantNotificationConfigurationProvider systemUnderTest;
 
         private readonly string confirmationSmsTemplateId = "confirmationSmsTemplateId";
         private readonly string confirmationEmailTemplateId = "confirmationEmailTemplateId";
@@ -52,12 +52,12 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             }
         };
 
-        public CommunalNotificationConfigurationProviderTests()
+        public TenantNotificationConfigurationProviderTests()
         {
             retrieveImageLinkUseCase = new Mock<IRetrieveImageLinkUseCase>();
             retrieveImageLinkUseCase.Setup(x => x.Execute(It.IsAny<string>())).Returns(imageLink);
 
-            systemUnderTest = new CommunalNotificationConfigurationProvider(confirmationSmsTemplateId, confirmationEmailTemplateId, internalEmailTemplateId);
+            systemUnderTest = new TenantNotificationConfigurationProvider(confirmationSmsTemplateId, confirmationEmailTemplateId, internalEmailTemplateId);
         }
 
         [Fact]

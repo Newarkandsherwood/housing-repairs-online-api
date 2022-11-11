@@ -6,7 +6,7 @@ using HousingRepairsOnlineApi.UseCases;
 
 namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
 
-public class CommunalNotificationConfigurationProvider: INotificationConfigurationProvider
+public class CommunalNotificationConfigurationProvider : INotificationConfigurationProvider
 {
     public string ConfirmationSmsTemplateId { get; set; }
     public string ConfirmationEmailTemplateId { get; set; }

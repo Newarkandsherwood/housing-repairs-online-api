@@ -6,7 +6,7 @@ using HousingRepairsOnlineApi.UseCases;
 
 namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
 
-public class TenantNotificationConfigurationProvider: INotificationConfigurationProvider
+public class TenantNotificationConfigurationProvider : INotificationConfigurationProvider
 {
     public string ConfirmationSmsTemplateId { get; set; }
     public string ConfirmationEmailTemplateId { get; set; }
