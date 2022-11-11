@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
+using HousingRepairsOnlineApi.UseCases;
 
 namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
 
-public class SendTenantNotification: ISendNotification
+public class CommunalNotificationConfigurationProvider: INotificationConfigurationProvider
 {
     public string ConfirmationSmsTemplateId { get; set; }
     public string ConfirmationEmailTemplateId { get; set; }
     public string InternalEmailTemplateId { get; set; }
 
-    public SendTenantNotification(string confirmationSmsTemplateId, string confirmationEmailTemplateId,
+    public CommunalNotificationConfigurationProvider(string confirmationSmsTemplateId, string confirmationEmailTemplateId,
         string internalEmailTemplateId)
     {
         this.ConfirmationSmsTemplateId = confirmationSmsTemplateId;
@@ -59,5 +60,10 @@ public class SendTenantNotification: ISendNotification
             {"repair_ref", repair.Id},
             {"appointment_time", repair.Time.Display}
         };
+    }
+
+    public string GetImageLink(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, Repair repair)
+    {
+        throw new System.NotImplementedException();
     }
 }

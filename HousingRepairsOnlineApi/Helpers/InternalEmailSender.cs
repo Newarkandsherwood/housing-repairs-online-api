@@ -9,13 +9,13 @@ namespace HousingRepairsOnlineApi.Helpers
     {
         private IRetrieveImageLinkUseCase retrieveImageLinkUseCase;
         private ISendInternalEmailUseCase sendInternalEmailUseCase;
-        private ISendNotificationResolver sendNotificationResolver;
+        private INotificationConfigurationResolver notificationConfigurationResolver;
 
-        public InternalEmailSender(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, ISendInternalEmailUseCase sendInternalEmailUseCase, ISendNotificationResolver sendNotificationResolver)
+        public InternalEmailSender(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, ISendInternalEmailUseCase sendInternalEmailUseCase, INotificationConfigurationResolver notificationConfigurationResolver)
         {
             this.retrieveImageLinkUseCase = retrieveImageLinkUseCase;
             this.sendInternalEmailUseCase = sendInternalEmailUseCase;
-            this.sendNotificationResolver = sendNotificationResolver;
+            this.notificationConfigurationResolver = notificationConfigurationResolver;
         }
 
         public async Task Execute(Repair repair)
@@ -28,8 +28,8 @@ namespace HousingRepairsOnlineApi.Helpers
                     imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
                 });
             }
-            var sendNotification = sendNotificationResolver.Resolve(repair.RepairType);
-            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), imageLink, sendNotification.InternalEmailTemplateId);
+            var sendNotification = notificationConfigurationResolver.Resolve(repair.RepairType);
+            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), sendNotification.GetImageLink(retrieveImageLinkUseCase, repair), sendNotification.InternalEmailTemplateId);
         }
     }
 }

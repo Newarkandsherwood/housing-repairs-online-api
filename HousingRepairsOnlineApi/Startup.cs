@@ -42,20 +42,20 @@ namespace HousingRepairsOnlineApi
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
                 });
 
-            var sendTenantNotification = new SendTenantNotification(EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
+            var sendTenantNotification = new TenantNotificationConfigurationProvider(EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
                 EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
                 EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
 
-            var sendCommunalNotification = new SendCommunalNotification(EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
+            var sendCommunalNotification = new CommunalNotificationConfigurationProvider(EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
                 EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
                 EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
 
-            var sendNotificationDictionary = new Dictionary<string, ISendNotification> { { RepairType.Tenant, sendTenantNotification } ,
+            var sendNotificationDictionary = new Dictionary<string, INotificationConfigurationProvider> { { RepairType.Tenant, sendTenantNotification } ,
                 { RepairType.Communal, sendCommunalNotification }};
 
-            services.AddTransient<IDictionary<string, ISendNotification>>(_ => sendNotificationDictionary);
+            services.AddTransient<IDictionary<string, INotificationConfigurationProvider>>(_ => sendNotificationDictionary);
 
-            services.AddTransient<ISendNotificationResolver, SendNotificationResolver>();
+            services.AddTransient<INotificationConfigurationResolver, NotificationConfigurationResolver>();
 
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);

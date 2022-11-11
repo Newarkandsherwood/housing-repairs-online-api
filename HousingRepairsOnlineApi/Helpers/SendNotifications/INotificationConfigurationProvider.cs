@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using HousingRepairsOnlineApi.Domain;
+using HousingRepairsOnlineApi.UseCases;
 
 namespace HousingRepairsOnlineApi.Helpers
 {
-    public interface ISendNotification
+    public interface INotificationConfigurationProvider
     {
         public string ConfirmationSmsTemplateId { get; set; }
         public string ConfirmationEmailTemplateId { get; set; }
@@ -12,5 +13,6 @@ namespace HousingRepairsOnlineApi.Helpers
         public Dictionary<string, dynamic> GetPersonalisationForInternalEmailTemplate(Repair repair);
         public Dictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair);
         public Dictionary<string, dynamic> GetPersonalisationForSMSTemplate(Repair repair);
+        public string GetImageLink(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, Repair repair);
     }
 }

@@ -9,18 +9,18 @@ namespace HousingRepairsOnlineApi.Helpers
     {
         private readonly ISendAppointmentConfirmationEmailUseCase sendAppointmentConfirmationEmailUseCase;
         private readonly ISendAppointmentConfirmationSmsUseCase sendAppointmentConfirmationSmsUseCase;
-        private readonly ISendNotificationResolver sendNotificationResolver;
+        private readonly INotificationConfigurationResolver notificationConfigurationResolver;
 
-        public AppointmentConfirmationSender(ISendAppointmentConfirmationEmailUseCase sendAppointmentConfirmationEmailUseCase, ISendAppointmentConfirmationSmsUseCase sendAppointmentConfirmationSmsUseCase, ISendNotificationResolver sendNotificationResolver)
+        public AppointmentConfirmationSender(ISendAppointmentConfirmationEmailUseCase sendAppointmentConfirmationEmailUseCase, ISendAppointmentConfirmationSmsUseCase sendAppointmentConfirmationSmsUseCase, INotificationConfigurationResolver notificationConfigurationResolver)
         {
             this.sendAppointmentConfirmationEmailUseCase = sendAppointmentConfirmationEmailUseCase;
             this.sendAppointmentConfirmationSmsUseCase = sendAppointmentConfirmationSmsUseCase;
-            this.sendNotificationResolver = sendNotificationResolver;
+            this.notificationConfigurationResolver = notificationConfigurationResolver;
         }
 
         public void Execute(Repair repair)
         {
-            var sendNotification = sendNotificationResolver.Resolve(repair.RepairType);
+            var sendNotification = notificationConfigurationResolver.Resolve(repair.RepairType);
             switch (repair?.ContactDetails?.Type)
             {
                 case AppointmentConfirmationSendingTypes.Email:
