@@ -20,16 +20,9 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public async Task Execute(Repair repair)
         {
-            var imageLink = "None";
-            if (!String.IsNullOrEmpty(repair.Description?.PhotoUrl))
-            {
-                await Task.Run(() =>
-                {
-                    imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
-                });
-            }
             var sendNotification = notificationConfigurationResolver.Resolve(repair.RepairType);
-            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), sendNotification.GetImageLink(retrieveImageLinkUseCase, repair), sendNotification.InternalEmailTemplateId);
+            var imageLink = await sendNotification.GetImageLink(retrieveImageLinkUseCase, repair);
+            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), imageLink, sendNotification.InternalEmailTemplateId);
         }
     }
 }
