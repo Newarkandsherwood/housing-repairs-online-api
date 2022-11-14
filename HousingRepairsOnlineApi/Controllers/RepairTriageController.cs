@@ -23,7 +23,7 @@ namespace HousingRepairsOnlineApi.Controllers
         public async Task<IActionResult> TenantRepairTriageOptions(string emergencyValue,
             string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
-            return await JourneyRepairTriageOptions(RepairType.Tenant, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+            return await JourneyRepairTriageOptions(RepairType.Tenant, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
         }
 
         [HttpGet]
@@ -31,7 +31,7 @@ namespace HousingRepairsOnlineApi.Controllers
         public async Task<IActionResult> CommunalRepairTriageOptions(string emergencyValue,
             string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
-            return await JourneyRepairTriageOptions(RepairType.Communal, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+            return await JourneyRepairTriageOptions(RepairType.Communal, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
         }
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace HousingRepairsOnlineApi.Controllers
         public async Task<IActionResult> LeaseholdRepairTriageOptions(string emergencyValue,
             string notEligibleNonEmergencyValue, string unableToBookValue, string contactUsValue)
         {
-            return await JourneyRepairTriageOptions(RepairType.Leasehold, contactUsValue, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue);
+            return await JourneyRepairTriageOptions(RepairType.Leasehold, emergencyValue, notEligibleNonEmergencyValue, unableToBookValue, contactUsValue);
         }
 
         internal async Task<IActionResult> JourneyRepairTriageOptions(string repairType, string emergencyValue,
