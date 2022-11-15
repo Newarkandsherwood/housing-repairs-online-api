@@ -74,6 +74,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         {
             yield return new object[] { new ArgumentNullException(), null };
             yield return new object[] { new ArgumentException(), "" };
+            yield return new object[] { new ArgumentException(), " " };
         }
 
         [Theory]

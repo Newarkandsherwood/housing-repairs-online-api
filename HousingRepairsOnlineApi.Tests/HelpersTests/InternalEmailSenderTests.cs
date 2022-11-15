@@ -28,7 +28,6 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public InternalEmailSenderTests()
         {
             retrieveImageLinkUseCase = new Mock<IRetrieveImageLinkUseCase>();
-            //internalEmailSender = new Mock<IInternalEmailSender>();
             sendInternalEmailUseCase = new Mock<ISendInternalEmailUseCase>();
             notificationConfigurationResolver = new Mock<INotificationConfigurationResolver>();
             notificationConfigurationProvider = new Mock<INotificationConfigurationProvider>();
@@ -38,14 +37,12 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             notificationConfigurationProvider.Setup(x => x.GetImageLink(retrieveImageLinkUseCase.Object, It.IsAny<Repair>())).Returns(Task.FromResult(imgUrl));
             notificationConfigurationProvider.Setup(x => x.InternalEmailTemplateId).Returns(templateId);
 
-
             notificationConfigurationResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(notificationConfigurationProvider.Object);
         }
 
         [Fact]
         public async Task GivenARetrieveImageLink_WhenExecute_ThenSendInternalEmailUseCaseIsCalled()
         {
-
             var repair = new Repair
             {
                 Id = "1AB2C3D4",

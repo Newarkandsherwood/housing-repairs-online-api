@@ -29,10 +29,18 @@ public class NotificationConfigurationResolverTests
     [Fact]
     public void GivenInvalidRepairType_WhenResolving_ThenExceptionIsReturned()
     {
+        // Act
+        Action actual = () => systemUnderTest.Resolve("INVALIDTYPE");
 
+        // Assert
+        actual.Should().ThrowExactly<ArgumentException>();
+    }
+
+    [Fact]
+    public void GivenUnregisteredRepairType_WhenResolving_ThenExceptionIsReturned()
+    {
         // Act
         Action actual = () => systemUnderTest.Resolve("COMMUNAL");
-
 
         // Assert
         actual.Should().ThrowExactly<NotSupportedException>();
@@ -41,7 +49,6 @@ public class NotificationConfigurationResolverTests
     [Fact]
     public void GivenValidRepairType_WhenResolving_ThenTenantNotificationConfigurationProviderIsReturned()
     {
-
         // Act
         var actual = systemUnderTest.Resolve("TENANT");
 
