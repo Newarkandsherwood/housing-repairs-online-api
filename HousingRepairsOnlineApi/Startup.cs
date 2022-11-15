@@ -124,6 +124,9 @@ namespace HousingRepairsOnlineApi
             var cosmosContainer = GetCosmosContainer();
 
             services.AddTransient<IIdGenerator, IdGenerator>();
+            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>(s => new RepairQueryHelper(
+                cosmosContainer
+            ));
 
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {
