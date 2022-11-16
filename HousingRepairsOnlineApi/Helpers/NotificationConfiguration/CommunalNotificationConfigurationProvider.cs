@@ -19,7 +19,7 @@ public class CommunalNotificationConfigurationProvider : INotificationConfigurat
         this.ConfirmationEmailTemplateId = confirmationEmailTemplateId;
         this.InternalEmailTemplateId = internalEmailTemplateId;
     }
-    public Dictionary<string, dynamic> GetPersonalisationForInternalEmailTemplate(Repair repair)
+    public Dictionary<string, dynamic> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The repair reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Address.LocationId, nameof(repair.Address.LocationId), "The uprn provided is invalid");
@@ -27,7 +27,7 @@ public class CommunalNotificationConfigurationProvider : INotificationConfigurat
         Guard.Against.NullOrWhiteSpace(repair.SOR, nameof(repair.SOR), "The sor provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Description.Text, nameof(repair.Description.Text), "The repairDescription provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.ContactDetails?.Value, nameof(repair.ContactDetails.Value), "The contact number provided is invalid");
-
+        var imageLink = GetImageLink(repair, retrieveImageLinkUseCase);
         return new Dictionary<string, dynamic>
         {
             {"repair_ref", repair.Id},
@@ -35,7 +35,8 @@ public class CommunalNotificationConfigurationProvider : INotificationConfigurat
             {"address", repair.Address.Display},
             {"sor", repair.SOR},
             {"repair_desc", repair.Description.Text},
-            {"contact_no", repair.ContactDetails?.Value}
+            {"contact_no", repair.ContactDetails?.Value},
+            {"image_1", imageLink}
         };
     }
 
@@ -63,7 +64,7 @@ public class CommunalNotificationConfigurationProvider : INotificationConfigurat
         };
     }
 
-    public async Task<string> GetImageLink(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, Repair repair)
+    public async Task<string> GetImageLink(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
     {
         var imageLink = "None";
         if (!string.IsNullOrEmpty(repair.Description?.PhotoUrl))

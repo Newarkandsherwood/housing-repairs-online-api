@@ -21,8 +21,7 @@ namespace HousingRepairsOnlineApi.Helpers
         public async Task Execute(Repair repair)
         {
             var sendNotification = notificationConfigurationResolver.Resolve(repair.RepairType);
-            var imageLink = await sendNotification.GetImageLink(retrieveImageLinkUseCase, repair);
-            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair), imageLink, sendNotification.InternalEmailTemplateId);
+            sendInternalEmailUseCase.Execute(sendNotification.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase), sendNotification.InternalEmailTemplateId);
         }
     }
 }

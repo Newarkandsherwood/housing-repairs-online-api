@@ -15,12 +15,9 @@ namespace HousingRepairsOnlineApi.UseCases
             this.notifyGateway = notifyGateway;
             this.internalEmail = internalEmail;
         }
-        public void Execute(Dictionary<string, dynamic> personalisation, string imagelink, string templateId)
+        public void Execute(Dictionary<string, dynamic> personalisation, string templateId)
         {
             ValidateEmail(internalEmail);
-
-            personalisation.Add("image_1", imagelink);
-
             notifyGateway.SendEmail(internalEmail, templateId, personalisation);
         }
 

@@ -168,7 +168,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             //Arrange
             repair.Description.PhotoUrl = string.Empty;
             //Act
-            var act = systemUnderTest.GetImageLink(retrieveImageLinkUseCase.Object, repair);
+            var act = systemUnderTest.GetImageLink(repair, retrieveImageLinkUseCase.Object);
             //Assert
             act.Result.Should().BeEquivalentTo("None");
         }
@@ -177,7 +177,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public void GivenPhotoURL_WhenGetImageLink_ThenImageLinkIsReturned()
         {
             //Act
-            var act = systemUnderTest.GetImageLink(retrieveImageLinkUseCase.Object, repair);
+            var act = systemUnderTest.GetImageLink(repair, retrieveImageLinkUseCase.Object);
             //Assert
             act.Result.Should().BeEquivalentTo(imageLink);
         }

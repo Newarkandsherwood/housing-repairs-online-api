@@ -33,8 +33,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             notificationConfigurationProvider = new Mock<INotificationConfigurationProvider>();
 
             systemUnderTest = new InternalEmailSender(retrieveImageLinkUseCase.Object, sendInternalEmailUseCase.Object, notificationConfigurationResolver.Object);
-            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForInternalEmailTemplate(It.IsAny<Repair>())).Returns(personalisation);
-            notificationConfigurationProvider.Setup(x => x.GetImageLink(retrieveImageLinkUseCase.Object, It.IsAny<Repair>())).Returns(Task.FromResult(imgUrl));
+            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForInternalEmailTemplate(It.IsAny<Repair>(), It.IsAny<IRetrieveImageLinkUseCase>())).Returns(personalisation);
             notificationConfigurationProvider.Setup(x => x.InternalEmailTemplateId).Returns(templateId);
 
             notificationConfigurationResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(notificationConfigurationProvider.Object);
@@ -57,10 +56,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
             await systemUnderTest.Execute(repair);
 
-            sendInternalEmailUseCase.Verify(x => x.Execute(
-                    personalisation,
-                    imgUrl, templateId),
-                Times.Once);
+            sendInternalEmailUseCase.Verify(x => x.Execute(personalisation, templateId), Times.Once);
         }
     }
 }

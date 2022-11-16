@@ -5,7 +5,7 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface ISendInternalEmailUseCase
     {
-        public void Execute(Dictionary<string, dynamic> personalisation, string imagelink, string templateId);
+        public void Execute(Dictionary<string, dynamic> personalisation, string templateId);
 
     }
 }
