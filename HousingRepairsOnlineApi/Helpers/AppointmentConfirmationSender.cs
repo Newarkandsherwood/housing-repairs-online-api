@@ -27,7 +27,7 @@ namespace HousingRepairsOnlineApi.Helpers
                     sendAppointmentConfirmationEmailUseCase.Execute(repair.ContactDetails.Value, sendNotification.GetPersonalisationForEmailTemplate(repair), sendNotification.ConfirmationEmailTemplateId);
                     break;
                 case AppointmentConfirmationSendingTypes.Sms:
-                    sendAppointmentConfirmationSmsUseCase.Execute(repair.ContactDetails.Value, sendNotification.GetPersonalisationForSMSTemplate(repair), sendNotification.ConfirmationSmsTemplateId);
+                    sendAppointmentConfirmationSmsUseCase.Execute(repair.ContactDetails.Value, sendNotification.GetPersonalisationForSmsTemplate(repair), sendNotification.ConfirmationSmsTemplateId);
                     break;
                 default:
                     throw new Exception($"Invalid contact type: {repair?.ContactDetails?.Type}");

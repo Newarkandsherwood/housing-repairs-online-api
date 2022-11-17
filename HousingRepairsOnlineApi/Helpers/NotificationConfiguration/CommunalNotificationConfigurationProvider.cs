@@ -46,7 +46,7 @@ public class CommunalNotificationConfigurationProvider : BaseNotificationConfigu
         };
     }
 
-    public Dictionary<string, dynamic> GetPersonalisationForSMSTemplate(Repair repair)
+    public Dictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The booking reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Time.Display, nameof(repair.Time.Display), "The appointment time provided is invalid");

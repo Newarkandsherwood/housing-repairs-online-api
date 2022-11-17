@@ -127,7 +127,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         {
             this.repair.Id = invalidStr;
             //Act
-            Action act = () => systemUnderTest.GetPersonalisationForSMSTemplate(repair);
+            Action act = () => systemUnderTest.GetPersonalisationForSmsTemplate(repair);
 
             //Assert
             act.Should().ThrowExactly<T>();
@@ -141,7 +141,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         {
             repair.Time.Display = invalidStr;
             //Act
-            Action act = () => systemUnderTest.GetPersonalisationForSMSTemplate(repair);
+            Action act = () => systemUnderTest.GetPersonalisationForSmsTemplate(repair);
 
             //Assert
             act.Should().ThrowExactly<T>();
@@ -157,7 +157,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                 {"appointment_time", repair.Time.Display}
             };
             //Act
-            var act = systemUnderTest.GetPersonalisationForSMSTemplate(repair);
+            var act = systemUnderTest.GetPersonalisationForSmsTemplate(repair);
             //Assert
             act.Should().BeEquivalentTo(personalisation);
         }

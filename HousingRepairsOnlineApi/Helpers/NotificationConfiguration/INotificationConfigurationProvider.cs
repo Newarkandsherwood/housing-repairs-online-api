@@ -12,6 +12,6 @@ namespace HousingRepairsOnlineApi.Helpers
         public string InternalEmailTemplateId { get; set; }
         public Task<Dictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase);
         public Dictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair);
-        public Dictionary<string, dynamic> GetPersonalisationForSMSTemplate(Repair repair);
+        public Dictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair);
     }
 }

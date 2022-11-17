@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             notificationConfigurationResolver = new Mock<INotificationConfigurationResolver>();
             notificationConfigurationProvider = new Mock<INotificationConfigurationProvider>();
             notificationConfigurationProvider.Setup(x => x.GetPersonalisationForEmailTemplate(It.IsAny<Repair>())).Returns(personalisation);
-            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForSMSTemplate(It.IsAny<Repair>())).Returns(personalisation);
+            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForSmsTemplate(It.IsAny<Repair>())).Returns(personalisation);
             notificationConfigurationProvider.Setup(x => x.ConfirmationEmailTemplateId).Returns(emailTemplateId);
             notificationConfigurationProvider.Setup(x => x.ConfirmationSmsTemplateId).Returns(smsTemplateId);
 
