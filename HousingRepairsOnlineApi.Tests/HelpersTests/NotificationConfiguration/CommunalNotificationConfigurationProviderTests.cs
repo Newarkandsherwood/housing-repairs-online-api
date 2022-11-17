@@ -163,23 +163,23 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Fact]
-        public void GivenNullPhotoURL_WhenGetImageLink_ThenDefaultIsReturned()
+        public void GivenNullPhotoURL_WhenGetPersonalisationForInternalEmailTemplate_ThenDefaultIsReturned()
         {
             //Arrange
             repair.Description.PhotoUrl = string.Empty;
             //Act
-            var act = systemUnderTest.GetImageLink(repair, retrieveImageLinkUseCase.Object);
+            var act = systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
             //Assert
-            act.Result.Should().BeEquivalentTo("None");
+            Assert.Equal(act.Result["image_1"], "None");
         }
 
         [Fact]
-        public void GivenPhotoURL_WhenGetImageLink_ThenImageLinkIsReturned()
+        public void GivenPhotoURL_WhenGetPersonalisationForInternalEmailTemplate_ThenImageLinkIsReturned()
         {
             //Act
-            var act = systemUnderTest.GetImageLink(repair, retrieveImageLinkUseCase.Object);
+            var act = systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
             //Assert
-            act.Result.Should().BeEquivalentTo(imageLink);
+            Assert.Equal(act.Result["image_1"], imageLink);
         }
     }
 }

@@ -6,20 +6,15 @@ using HousingRepairsOnlineApi.UseCases;
 
 namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
 
-public class TenantNotificationConfigurationProvider : INotificationConfigurationProvider
+public class TenantNotificationConfigurationProvider : BaseNotificationConfigurationProvider, INotificationConfigurationProvider
 {
-    public string ConfirmationSmsTemplateId { get; set; }
-    public string ConfirmationEmailTemplateId { get; set; }
-    public string InternalEmailTemplateId { get; set; }
-
     public TenantNotificationConfigurationProvider(string confirmationSmsTemplateId, string confirmationEmailTemplateId,
-        string internalEmailTemplateId)
+        string internalEmailTemplateId) : base(confirmationSmsTemplateId, confirmationEmailTemplateId,
+        internalEmailTemplateId)
     {
-        this.ConfirmationSmsTemplateId = confirmationSmsTemplateId;
-        this.ConfirmationEmailTemplateId = confirmationEmailTemplateId;
-        this.InternalEmailTemplateId = internalEmailTemplateId;
     }
-    public Dictionary<string, dynamic> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
+
+    public async Task<Dictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The repair reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Address.LocationId, nameof(repair.Address.LocationId), "The uprn provided is invalid");
@@ -27,7 +22,7 @@ public class TenantNotificationConfigurationProvider : INotificationConfiguratio
         Guard.Against.NullOrWhiteSpace(repair.SOR, nameof(repair.SOR), "The sor provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Description.Text, nameof(repair.Description.Text), "The repairDescription provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.ContactDetails?.Value, nameof(repair.ContactDetails.Value), "The contact number provided is invalid");
-        var imageLink = GetImageLink(repair, retrieveImageLinkUseCase);
+        var imageLink = await GetImageLink(repair, retrieveImageLinkUseCase);
 
         return new Dictionary<string, dynamic>
         {
@@ -63,18 +58,5 @@ public class TenantNotificationConfigurationProvider : INotificationConfiguratio
             {"repair_ref", repair.Id},
             {"appointment_time", repair.Time.Display}
         };
-    }
-
-    public async Task<string> GetImageLink(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
-    {
-        var imageLink = "None";
-        if (!string.IsNullOrEmpty(repair.Description?.PhotoUrl))
-        {
-            await Task.Run(() =>
-            {
-                imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
-            });
-        }
-        return imageLink;
     }
 }
