@@ -31,7 +31,7 @@ namespace HousingRepairsOnlineApi.Tests
         };
 
         private Task BookCommunalAppointment(string bookingReference, string sorCode, string priority, string locationId,
-            DateTime startDateTime, DateTime endDateTime, string repairDescriptionText) =>
+            RepairAvailability appointmentTime, string repairDescriptionText) =>
             bookAvailableAppointmentUseCaseMock.Object.Execute(bookingReference, sorCode, priority, locationId, repairDescriptionText);
 
         private readonly RepairAddress repairAddress = new()
