@@ -40,6 +40,7 @@ namespace HousingRepairsOnlineApi
                 {
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Tenant),
                     new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Communal),
+                    new EnvironmentVariableRepairTypeSorConfigurationProvider(RepairType.Leasehold),
                 });
 
             var sendTenantNotification = new TenantNotificationConfigurationProvider(EnvironmentVariableHelper.GetEnvironmentVariable("TENANT_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
@@ -135,6 +136,9 @@ namespace HousingRepairsOnlineApi
             var cosmosContainer = GetCosmosContainer();
 
             services.AddTransient<IIdGenerator, IdGenerator>();
+            services.AddTransient<IRepairQueryHelper, RepairQueryHelper>(s => new RepairQueryHelper(
+                cosmosContainer
+            ));
 
             services.AddTransient<IRepairStorageGateway, CosmosGateway>(s =>
             {

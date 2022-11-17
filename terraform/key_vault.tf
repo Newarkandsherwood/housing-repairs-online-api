@@ -166,6 +166,12 @@ resource "azurerm_key_vault_secret" "sor-configuration-communal-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "sor-configuration-leasehold-staging" {
+  name         = "sor-configuration-leasehold-staging"
+  value        = var.sor_configuration_leasehold_staging
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 resource "azurerm_key_vault_secret" "allowed-appointment-slots-staging" {
   name         = "allowed-appointment-slots-staging"
   value        = var.allowed_appointment_slots_staging
@@ -244,6 +250,12 @@ resource "azurerm_key_vault_secret" "sor-configuration-tenant-production" {
 resource "azurerm_key_vault_secret" "sor-configuration-communal-production" {
   name         = "sor-configuration-communal-production"
   value        = var.sor_configuration_communal_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "sor-configuration-leasehold-production" {
+  name         = "sor-configuration-leasehold-production"
+  value        = var.sor_configuration_leasehold_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 

@@ -35,6 +35,14 @@ namespace HousingRepairsOnlineApi.Gateways
             return await SendRequest(request);
         }
 
+        public async Task<IEnumerable<PropertyAddress>> SearchLeasehold(string postcode)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                $"/Addresses/LeaseholdAddresses?postcode={postcode}");
+
+            return await SendRequest(request);
+        }
+
         private async Task<IEnumerable<PropertyAddress>> SendRequest(HttpRequestMessage request)
         {
             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);

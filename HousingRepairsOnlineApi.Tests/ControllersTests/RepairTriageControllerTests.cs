@@ -66,6 +66,20 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
                 x => x.Execute(RepairType.Communal, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
+        [Fact]
+        public async Task TestLeaseholdEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var result = await systemUnderTest.LeaseholdRepairTriageOptions(emergencyArgument, notEligibleNonEmergencyArgument, unableToBookArgument, contactUsArgument);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            retrieveTriageJourneyOptionsMock.Verify(
+                x => x.Execute(RepairType.Leasehold, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
         [Theory]
         [MemberData(nameof(InvalidParameterValueData))]
         public async Task
