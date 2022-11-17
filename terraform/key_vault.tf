@@ -38,21 +38,57 @@ resource "azurerm_key_vault_secret" "azure-storage-connection-string" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "confirmation-email-notify-template-id" {
-  name         = "confirmation-email-notify-template-id"
-  value        = var.confirmation_email_notify_template_id
+resource "azurerm_key_vault_secret" "tenant-confirmation-email-notify-template-id" {
+  name         = "tenant-confirmation-email-notify-template-id"
+  value        = var.tenant_confirmation_email_notify_template_id
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "confirmation-sms-notify-template-id" {
-  name         = "confirmation-sms-notify-template-id"
-  value        = var.confirmation_sms_notify_template_id
+resource "azurerm_key_vault_secret" "tenant-confirmation-sms-notify-template-id" {
+  name         = "tenant-confirmation-sms-notify-template-id"
+  value        = var.tenant_confirmation_sms_notify_template_id
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "internal-email-notify-template-id" {
-  name         = "internal-email-notify-template-id"
-  value        = var.internal_email_notify_template_id
+resource "azurerm_key_vault_secret" "tenant-internal-email-notify-template-id" {
+  name         = "tenant-internal-email-notify-template-id"
+  value        = var.tenant_internal_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "communal-confirmation-email-notify-template-id" {
+  name         = "communal-confirmation-email-notify-template-id"
+  value        = var.communal_confirmation_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "communal-confirmation-sms-notify-template-id" {
+  name         = "communal-confirmation-sms-notify-template-id"
+  value        = var.communal_confirmation_sms_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "communal-internal-email-notify-template-id" {
+  name         = "communal-internal-email-notify-template-id"
+  value        = var.communal_internal_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "leasehold-confirmation-email-notify-template-id" {
+  name         = "leasehold-confirmation-email-notify-template-id"
+  value        = var.leasehold_confirmation_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "leasehold-confirmation-sms-notify-template-id" {
+  name         = "leasehold-confirmation-sms-notify-template-id"
+  value        = var.leasehold_confirmation_sms_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "leasehold-internal-email-notify-template-id" {
+  name         = "leasehold-internal-email-notify-template-id"
+  value        = var.leasehold_internal_email_notify_template_id
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
