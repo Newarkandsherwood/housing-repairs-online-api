@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface ISendAppointmentConfirmationSmsUseCase
     {
-        public void Execute(string number, Dictionary<string, dynamic> personalisation, string templateId);
+        public void Execute(string number, IDictionary<string, dynamic> personalisation, string templateId);
     }
 }

@@ -17,12 +17,12 @@ namespace HousingRepairsOnlineApi.UseCases
             this.notifyGateway = notifyGateway;
         }
 
-        public void Execute(string number, Dictionary<string, dynamic> personalisation, string templateId)
+        public void Execute(string number, IDictionary<string, dynamic> personalisation, string templateId)
         {
             Guard.Against.NullOrWhiteSpace(number, nameof(number), "The email provided is invalid");
 
             ValidatePhoneNumber(number);
-            notifyGateway.SendSms(number, templateId, personalisation);
+            notifyGateway.SendSms(number, templateId, new Dictionary<string, dynamic>(personalisation));
         }
 
         private static bool ValidatePhoneNumber(string number)
