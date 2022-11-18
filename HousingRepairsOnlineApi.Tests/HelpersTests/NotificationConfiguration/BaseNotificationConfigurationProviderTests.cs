@@ -1,4 +1,4 @@
-﻿using HousingRepairsOnlineApi.Helpers.SendNotifications;
+﻿using HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.HelpersTests

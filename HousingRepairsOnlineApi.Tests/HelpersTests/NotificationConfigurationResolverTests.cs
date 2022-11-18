@@ -4,7 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
-using HousingRepairsOnlineApi.Helpers.SendNotifications;
+using HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 using Moq;
 using Xunit;
 

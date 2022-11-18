@@ -4,7 +4,7 @@ using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.UseCases;
 
-namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
+namespace HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 
 public class TenantNotificationConfigurationProvider : BaseNotificationConfigurationProvider, INotificationConfigurationProvider
 {
@@ -22,7 +22,7 @@ public class TenantNotificationConfigurationProvider : BaseNotificationConfigura
         Guard.Against.NullOrWhiteSpace(repair.SOR, nameof(repair.SOR), "The sor provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Description.Text, nameof(repair.Description.Text), "The repairDescription provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.ContactDetails?.Value, nameof(repair.ContactDetails.Value), "The contact number provided is invalid");
-        var imageLink = await GetImageLink(repair, retrieveImageLinkUseCase);
+        var imageLink = await repair.GetImageLink(retrieveImageLinkUseCase);
 
         return new Dictionary<string, dynamic>
         {

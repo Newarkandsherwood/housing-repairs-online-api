@@ -4,13 +4,13 @@ using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.UseCases;
 
-namespace HousingRepairsOnlineApi.Helpers.SendNotifications;
+namespace HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 
-public class BaseNotificationConfigurationProvider
+public abstract class BaseNotificationConfigurationProvider
 {
-    public string ConfirmationSmsTemplateId { get; set; }
-    public string ConfirmationEmailTemplateId { get; set; }
-    public string InternalEmailTemplateId { get; set; }
+    public string ConfirmationSmsTemplateId { get; init; }
+    public string ConfirmationEmailTemplateId { get; init; }
+    public string InternalEmailTemplateId { get; init; }
 
     protected BaseNotificationConfigurationProvider(string confirmationSmsTemplateId, string confirmationEmailTemplateId,
         string internalEmailTemplateId)
@@ -18,18 +18,5 @@ public class BaseNotificationConfigurationProvider
         ConfirmationSmsTemplateId = confirmationSmsTemplateId;
         ConfirmationEmailTemplateId = confirmationEmailTemplateId;
         InternalEmailTemplateId = internalEmailTemplateId;
-    }
-
-    protected async Task<string> GetImageLink(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
-    {
-        var imageLink = "None";
-        if (!string.IsNullOrEmpty(repair.Description?.PhotoUrl))
-        {
-            await Task.Run(() =>
-            {
-                imageLink = retrieveImageLinkUseCase.Execute(repair.Description?.PhotoUrl);
-            });
-        }
-        return imageLink;
     }
 }

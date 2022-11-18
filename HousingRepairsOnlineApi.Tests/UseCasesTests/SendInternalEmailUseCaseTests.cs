@@ -39,7 +39,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public void GivenNoImage_WhenExecute_ThenGovNotifyGateWayIsCalled()
         {
             //Act
-            //const string Base64Img = "";
 
             systemUnderTest.Execute(personalisation, templateId);
 

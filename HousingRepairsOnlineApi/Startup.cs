@@ -6,7 +6,7 @@ using Azure.Storage.Blobs;
 using HousingRepairsOnline.Authentication.DependencyInjection;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
-using HousingRepairsOnlineApi.Helpers.SendNotifications;
+using HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 using HousingRepairsOnlineApi.UseCases;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

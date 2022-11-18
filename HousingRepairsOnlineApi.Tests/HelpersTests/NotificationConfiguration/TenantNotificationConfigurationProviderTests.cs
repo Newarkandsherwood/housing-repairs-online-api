@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
-using HousingRepairsOnlineApi.Helpers.SendNotifications;
+using HousingRepairsOnlineApi.Helpers.NotificationConfiguration;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
