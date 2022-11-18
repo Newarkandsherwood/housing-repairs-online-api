@@ -21,6 +21,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
         private Mock<IBookAvailableAppointmentUseCase> bookAvailableAppointmentUseCaseMock;
 
+        private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
@@ -48,6 +49,7 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
             retrieveAvailableAppointmentsUseCaseMock = new Mock<IRetrieveAvailableAppointmentsUseCase>();
             bookAvailableAppointmentUseCaseMock = new Mock<IBookAvailableAppointmentUseCase>();
+            sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableAppointmentsUseCaseMock.Object, bookAvailableAppointmentUseCaseMock.Object);
         }
 

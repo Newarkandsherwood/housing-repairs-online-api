@@ -13,10 +13,18 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly Mock<INotifyGateway> govNotifyGatewayMock;
         private readonly SendAppointmentConfirmationSmsUseCase systemUnderTest;
+        private readonly Dictionary<string, dynamic> personalisation = new()
+        {
+            {"repair_ref", "2"},
+            {"appointment_time", ""}
+        };
+        private readonly string templateId = "456";
+        private readonly string phoneNumber = "07415300544";
+
         public SendAppointmentConfirmationSmsUseCaseTests()
         {
             govNotifyGatewayMock = new Mock<INotifyGateway>();
-            systemUnderTest = new SendAppointmentConfirmationSmsUseCase(govNotifyGatewayMock.Object, "templateId");
+            systemUnderTest = new SendAppointmentConfirmationSmsUseCase(govNotifyGatewayMock.Object);
         }
 
         //Arrange
@@ -34,7 +42,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 #pragma warning restore xUnit1026
         {
             //Act
-            Action act = () => systemUnderTest.Execute(number, "bookingRef", "08:00am");
+            Action act = () => systemUnderTest.Execute(number, personalisation, templateId);
 
             //Assert
             act.Should().ThrowExactly<T>();
@@ -47,47 +55,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             yield return new object[] { new ArgumentException(), "" };
         }
 
-        [Theory]
-        [MemberData(nameof(InvalidBookingRefArgumentTestData))]
-#pragma warning disable xUnit1026
-        public void GivenAnInvalidBookingRef_WhenExecute_ThenExceptionIsThrown<T>(T exception, string bookingRef) where T : Exception
-#pragma warning restore xUnit1026
-        {
-            //Act
-            Action act = () => systemUnderTest.Execute("number", bookingRef, "08:00am");
-
-            //Assert
-            act.Should().ThrowExactly<T>();
-        }
-
-        //Arrange
-        public static IEnumerable<object[]> InvalidAppointmentTimeArgumentTestData()
-        {
-            yield return new object[] { new ArgumentNullException(), null };
-            yield return new object[] { new ArgumentException(), "" };
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidAppointmentTimeArgumentTestData))]
-#pragma warning disable xUnit1026
-        public void GivenAnInvalidAppointmentTime_WhenExecute_ThenExceptionIsThrown<T>(T exception, string appointmentTime) where T : Exception
-#pragma warning restore xUnit1026
-        {
-            //Act
-            Action act = () => systemUnderTest.Execute("number", "bookingRef", appointmentTime);
-
-            //Assert
-            act.Should().ThrowExactly<T>();
-        }
-
         [Fact]
         public void GivenValidParameters_WhenExecute_ThenGovNotifyGateWayIsCalled()
         {
             //Act
-            systemUnderTest.Execute("07415300544", "bookingRef", "10:00am");
+            systemUnderTest.Execute(phoneNumber, personalisation, templateId);
 
             //Assert
-            govNotifyGatewayMock.Verify(x => x.SendSms("07415300544", "templateId", It.IsAny<Dictionary<string, dynamic>>()), Times.Once);
+            govNotifyGatewayMock.Verify(x => x.SendSms(phoneNumber, templateId, It.IsAny<Dictionary<string, dynamic>>()), Times.Once);
         }
     }
 }

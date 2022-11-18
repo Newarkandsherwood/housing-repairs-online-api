@@ -43,13 +43,31 @@ variable "internal_email_production" {
 variable "internal_email_staging" {
   type = string
 }
-variable "confirmation_email_notify_template_id" {
+variable "tenant_confirmation_email_notify_template_id" {
   type = string
 }
-variable "confirmation_sms_notify_template_id" {
+variable "tenant_confirmation_sms_notify_template_id" {
   type = string
 }
-variable "internal_email_notify_template_id" {
+variable "tenant_internal_email_notify_template_id" {
+  type = string
+}
+variable "communal_confirmation_email_notify_template_id" {
+  type = string
+}
+variable "communal_confirmation_sms_notify_template_id" {
+  type = string
+}
+variable "communal_internal_email_notify_template_id" {
+  type = string
+}
+variable "leasehold_confirmation_email_notify_template_id" {
+  type = string
+}
+variable "leasehold_confirmation_sms_notify_template_id" {
+  type = string
+}
+variable "leasehold_internal_email_notify_template_id" {
   type = string
 }
 variable "days_until_image_expiry_production" {
