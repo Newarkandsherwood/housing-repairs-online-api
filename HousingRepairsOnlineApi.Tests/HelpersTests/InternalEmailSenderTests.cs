@@ -31,7 +31,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             notificationConfigurationProvider = new Mock<INotificationConfigurationProvider>();
 
             systemUnderTest = new InternalEmailSender(retrieveImageLinkUseCase.Object, sendInternalEmailUseCase.Object, notificationConfigurationResolver.Object);
-            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForInternalEmailTemplate(It.IsAny<Repair>(), It.IsAny<IRetrieveImageLinkUseCase>())).Returns(Task.FromResult<Dictionary<string, dynamic>>(personalisation));
+            notificationConfigurationProvider.Setup(x => x.GetPersonalisationForInternalEmailTemplate(It.IsAny<Repair>(), It.IsAny<IRetrieveImageLinkUseCase>())).Returns(Task.FromResult<IDictionary<string, dynamic>>(personalisation));
             notificationConfigurationProvider.Setup(x => x.InternalEmailTemplateId).Returns(templateId);
 
             notificationConfigurationResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(notificationConfigurationProvider.Object);

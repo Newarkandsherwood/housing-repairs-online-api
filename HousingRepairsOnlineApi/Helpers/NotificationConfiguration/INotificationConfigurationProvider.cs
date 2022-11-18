@@ -10,8 +10,8 @@ namespace HousingRepairsOnlineApi.Helpers
         public string ConfirmationSmsTemplateId { get; }
         public string ConfirmationEmailTemplateId { get; }
         public string InternalEmailTemplateId { get; }
-        public Task<Dictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase);
-        public Dictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair);
-        public Dictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair);
+        public Task<IDictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase);
+        public IDictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair);
+        public IDictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair);
     }
 }

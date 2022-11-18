@@ -14,7 +14,7 @@ public class TenantNotificationConfigurationProvider : BaseNotificationConfigura
     {
     }
 
-    public async Task<Dictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
+    public async Task<IDictionary<string, dynamic>> GetPersonalisationForInternalEmailTemplate(Repair repair, IRetrieveImageLinkUseCase retrieveImageLinkUseCase)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The repair reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Address.LocationId, nameof(repair.Address.LocationId), "The uprn provided is invalid");
@@ -36,7 +36,7 @@ public class TenantNotificationConfigurationProvider : BaseNotificationConfigura
         };
     }
 
-    public Dictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair)
+    public IDictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The booking reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Time.Display, nameof(repair.Time.Display), "The appointment time provided is invalid");
@@ -48,7 +48,7 @@ public class TenantNotificationConfigurationProvider : BaseNotificationConfigura
         };
     }
 
-    public Dictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair)
+    public IDictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The booking reference provided is invalid");
         Guard.Against.NullOrWhiteSpace(repair.Time.Display, nameof(repair.Time.Display), "The appointment time provided is invalid");
