@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.UseCases;
 
-
-namespace HousingRepairsOnlineApi.Helpers
+namespace HousingRepairsOnlineApi.Domain
 {
     public static class RepairExtensions
     {
