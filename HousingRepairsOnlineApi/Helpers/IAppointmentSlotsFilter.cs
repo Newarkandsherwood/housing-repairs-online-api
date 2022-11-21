@@ -5,5 +5,5 @@ namespace HousingRepairsOnlineApi.Helpers;
 
 public interface IAppointmentSlotsFilter
 {
-    IEnumerable<AppointmentSlotTimeSpan> Filter();
+    IEnumerable<AppointmentSlotTimeSpan> Filter(IEnumerable<AppointmentSlotTimeSpan> appointmentSlotTimeSpans);
 }
