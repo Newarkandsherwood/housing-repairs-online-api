@@ -18,13 +18,14 @@ namespace HousingRepairsOnlineApi.UseCases
             this.appointmentSlotsFilter = appointmentSlotsFilter;
         }
 
-        public async Task Execute(string bookingReference, string sorCode, string priority, string locationId, string repairDescriptionText)
+        public async Task Execute(string bookingReference, string sorCode, string priority, string locationId, string repairDescriptionText, string repairDescriptionLocation)
         {
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(sorCode));
             Guard.Against.NullOrWhiteSpace(sorCode, nameof(sorCode));
             Guard.Against.NullOrWhiteSpace(priority, nameof(priority));
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
             Guard.Against.NullOrWhiteSpace(repairDescriptionText, nameof(repairDescriptionText));
+            Guard.Against.NullOrWhiteSpace(repairDescriptionLocation, nameof(repairDescriptionLocation));
 
             var allowedAppointmentSlotTimeSpans = appointmentSlotsFilter.Filter();
 
@@ -35,7 +36,13 @@ namespace HousingRepairsOnlineApi.UseCases
             {
                 throw new InvalidOperationException($"No appointments returned from Appointments Gateway");
             }
-            await appointmentsGateway.BookAppointment(bookingReference, sorCode, priority, locationId, appointment.TimeOfDay.EarliestArrivalTime, appointment.TimeOfDay.LatestArrivalTime, repairDescriptionText);
+
+            var communalRepairCommentText = repairDescriptionText + " " + repairDescriptionLocation;
+            if (communalRepairCommentText.Length > 255)
+            {
+                throw new Exception("Order comments length exceeds 255 character limit");
+            }
+            await appointmentsGateway.BookAppointment(bookingReference, sorCode, priority, locationId, appointment.TimeOfDay.EarliestArrivalTime, appointment.TimeOfDay.LatestArrivalTime, communalRepairCommentText);
         }
     }
 }

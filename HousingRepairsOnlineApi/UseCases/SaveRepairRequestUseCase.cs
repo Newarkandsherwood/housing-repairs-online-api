@@ -45,6 +45,7 @@ namespace HousingRepairsOnlineApi.UseCases
                 Description = new RepairDescription
                 {
                     Text = repairRequest.Description.Text,
+                    Location = repairRequest.Description.Location
                 },
                 SOR = repairTriageDetails.ScheduleOfRateCode,
                 Priority = repairTriageDetails.Priority,
@@ -60,9 +61,9 @@ namespace HousingRepairsOnlineApi.UseCases
 
             }
 
-            var savedRequest = await cosmosGateway.AddRepair(repair);
+            // var savedRequest = await cosmosGateway.AddRepair(repair);
 
-            return savedRequest;
+            return repair;
         }
     }
 }

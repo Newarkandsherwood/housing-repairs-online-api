@@ -113,7 +113,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 },
                 Description = new RepairDescriptionRequest()
                 {
-                    Text = "Lorem ipsum"
+                    Text = "Lorem ipsum",
+                    Location = "Location"
                 }
 
             };

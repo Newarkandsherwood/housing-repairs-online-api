@@ -65,11 +65,23 @@ namespace HousingRepairsOnlineApi.Controllers
         [Route("CommunalRepair")]
         public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Communal, repairRequest, BookCommunalAppointment);
+            try
+            {
+                var result = await saveRepairRequestUseCase.Execute(RepairType.Communal, repairRequest);
 
-            Task BookCommunalAppointment(string bookingReference, string sorCode, string priority, string locationId,
-                DateTime startDateTime, DateTime endDateTime, string repairDescriptionText) =>
-                bookAvailableAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, repairDescriptionText);
+                await bookAvailableAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
+                     result.Description.Text, result.Description.Location);
+
+                appointmentConfirmationSender.Execute(result);
+                await internalEmailSender.Execute(result);
+                return Ok(result.Id);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, DateTime, DateTime, string, Task> bookAppointment)
