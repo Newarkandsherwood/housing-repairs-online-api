@@ -12,7 +12,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly Mock<INotifyGateway> govNotifyGatewayMock;
         private readonly SendInternalEmailUseCase systemUnderTest;
-        private Dictionary<string, dynamic> personalisation = new Dictionary<string, dynamic>
+        private readonly Dictionary<string, dynamic> personalisation = new Dictionary<string, dynamic>
         {
             {"repair_ref", "1"},
             {"uprn", "uprn"},

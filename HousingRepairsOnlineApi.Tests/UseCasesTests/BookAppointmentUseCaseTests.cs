@@ -16,7 +16,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private const string Priority = "priority";
         private const string LocationId = "locationId";
 
-        private Mock<IAppointmentsGateway> appointmentsGatewayMock;
+        private readonly Mock<IAppointmentsGateway> appointmentsGatewayMock;
         private readonly BookAppointmentUseCase systemUnderTest;
 
         public BookAppointmentUseCaseTests()

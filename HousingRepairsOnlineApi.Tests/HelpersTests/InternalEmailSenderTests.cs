@@ -10,15 +10,15 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class InternalEmailSenderTests
     {
-        private InternalEmailSender systemUnderTest;
-        private Mock<IRetrieveImageLinkUseCase> retrieveImageLinkUseCase;
-        private Mock<ISendInternalEmailUseCase> sendInternalEmailUseCase;
-        private Mock<INotificationConfigurationResolver> notificationConfigurationResolver;
-        private Mock<INotificationConfigurationProvider> notificationConfigurationProvider;
+        private readonly InternalEmailSender systemUnderTest;
+        private readonly Mock<IRetrieveImageLinkUseCase> retrieveImageLinkUseCase;
+        private readonly Mock<ISendInternalEmailUseCase> sendInternalEmailUseCase;
+        private readonly Mock<INotificationConfigurationResolver> notificationConfigurationResolver;
+        private readonly Mock<INotificationConfigurationProvider> notificationConfigurationProvider;
         private readonly Dictionary<string, dynamic> personalisation = new()
         {
-            {"repair_ref", "2"},
-            {"appointment_time", ""}
+            { "repair_ref", "2" },
+            { "appointment_time", "" }
         };
 
         private readonly string templateId = "123";

@@ -21,7 +21,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.sorEngineResolver = sorEngineResolver;
         }
 
-        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
+        public Task<Repair> Execute(string repairType, RepairRequest repairRequest)
         {
             Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
             Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
@@ -63,7 +63,7 @@ namespace HousingRepairsOnlineApi.UseCases
 
             // var savedRequest = await cosmosGateway.AddRepair(repair);
 
-            return repair;
+            return Task.FromResult(repair);
         }
     }
 }

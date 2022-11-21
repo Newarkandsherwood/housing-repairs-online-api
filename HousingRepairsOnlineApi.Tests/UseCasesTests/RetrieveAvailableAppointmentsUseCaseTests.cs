@@ -19,10 +19,10 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly Mock<IAppointmentsGateway> appointmentsGatewayMock;
         private readonly Mock<ISorEngineResolver> sorEngineResolverMock;
         private readonly Mock<ISoREngine> sorEngineMock;
-        const string repairType = RepairType.Tenant;
-        const string kitchen = "kitchen";
-        const string cupboards = "cupboards";
-        const string doorHangingOff = "doorHangingOff";
+        private const string repairType = RepairType.Tenant;
+        private const string kitchen = "kitchen";
+        private const string cupboards = "cupboards";
+        private const string doorHangingOff = "doorHangingOff";
 
         public RetrieveAvailableAppointmentsUseCaseTests()
         {

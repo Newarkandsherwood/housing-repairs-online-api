@@ -12,7 +12,7 @@ namespace HousingRepairsOnlineApi.UseCases
     public class RetrieveAddressesUseCase : IRetrieveAddressesUseCase
     {
         private readonly IAddressGateway addressGateway;
-        private Dictionary<string, Func<string, Task<IEnumerable<PropertyAddress>>>> repairTypeSearchMethods;
+        private readonly Dictionary<string, Func<string, Task<IEnumerable<PropertyAddress>>>> repairTypeSearchMethods;
 
         public RetrieveAddressesUseCase(IAddressGateway addressGateway)
         {

@@ -12,18 +12,16 @@ namespace HousingRepairsOnlineApi.Tests
 {
     public class RepairRequestsControllerTests : ControllerTests
     {
-        private RepairController systemUnderTest;
-        private Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
-        private Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
-        private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
-        private Mock<IInternalEmailSender> internalEmailSenderMock;
-        private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
-        private Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
-        private Mock<IBookAvailableAppointmentUseCase> bookAvailableAppointmentUseCaseMock;
+        private readonly RepairController systemUnderTest;
+        private readonly Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
+        private readonly Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
+        private readonly Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
+        private readonly Mock<IInternalEmailSender> internalEmailSenderMock;
+        private readonly Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
+        private readonly Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
+        private readonly Mock<IBookAvailableAppointmentUseCase> bookAvailableAppointmentUseCaseMock;
 
-        private Mock<INotificationConfigurationResolver> sendNotificationResolver;
-        private readonly string repairTypeArgument = RepairType.Tenant;
-
+        private readonly Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly RepairAvailability repairAvailability = new()
         {
             Display = "Displayed Time",
@@ -103,7 +101,7 @@ namespace HousingRepairsOnlineApi.Tests
                 Id = "1AB2C3D4",
                 ContactDetails = new RepairContactDetails { Value = "07465087654" },
                 Address = new RepairAddress { Display = "address", LocationId = "uprn" },
-                Description = new RepairDescription { Text = "repair description", Base64Image = "image", PhotoUrl = "x/Url.png", Location = "location"},
+                Description = new RepairDescription { Text = "repair description", Base64Image = "image", PhotoUrl = "x/Url.png", Location = "location" },
                 Location = new RepairLocation { Value = "location" },
                 Problem = new RepairProblem { Value = "problem" },
                 Issue = new RepairIssue { Value = "issue" },
@@ -118,7 +116,7 @@ namespace HousingRepairsOnlineApi.Tests
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
-            RepairRequest repairRequest = new RepairRequest();
+            var repairRequest = new RepairRequest();
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
@@ -132,7 +130,7 @@ namespace HousingRepairsOnlineApi.Tests
         public async Task GivenEmailContact_WhenRepair_ThenSendAppointmentConfirmationEmailUseCaseIsCalled()
         {
             //Arrange
-            RepairRequest repairRequest = new RepairRequest
+            var repairRequest = new RepairRequest
             {
                 ContactDetails = new RepairContactDetails
                 {

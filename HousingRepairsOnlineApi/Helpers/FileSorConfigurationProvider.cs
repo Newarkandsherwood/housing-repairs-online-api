@@ -7,8 +7,8 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public class FileSorConfigurationProvider : ISorConfigurationProvider
     {
-        private string sorConfigPath;
-        private IFileSystem fileSystem;
+        private readonly string sorConfigPath;
+        private readonly IFileSystem fileSystem;
 
         public FileSorConfigurationProvider(string sorConfigPath, IFileSystem fileSystem = null)
         {
