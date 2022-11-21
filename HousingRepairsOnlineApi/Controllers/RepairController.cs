@@ -55,11 +55,7 @@ namespace HousingRepairsOnlineApi.Controllers
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Tenant, repairRequest, BookAppointment);
-
-            Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId,
-                RepairAvailability appointmentTime, string repairDescriptionText) =>
-                bookAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, appointmentTime.StartDateTime, appointmentTime.EndDateTime, repairDescriptionText);
+            return await SaveRepair(RepairType.Tenant, repairRequest);
         }
 
         [HttpPost]
@@ -74,11 +70,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 return StatusCode(500, statusMessage);
             }
 
-            return await SaveRepair(RepairType.Communal, repairRequest, BookAppointment);
-
-            Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId,
-                RepairAvailability appointmentTime, string repairDescriptionText) =>
-                bookAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, appointmentTime.StartDateTime, appointmentTime.EndDateTime, repairDescriptionText);
+            return await SaveRepair(RepairType.Communal, repairRequest);
         }
 
         private async Task<bool> UpdateRepairRequestWithCommunalAppointment(RepairRequest repairRequest)
@@ -100,14 +92,14 @@ namespace HousingRepairsOnlineApi.Controllers
             return appointmentFound;
         }
 
-        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, RepairAvailability, string, Task> bookAppointment)
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
         {
             try
             {
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
 
-                await bookAppointment(result.Id, result.SOR, result.Priority, result.Address.LocationId,
-                    result.Time, result.Description.Text);
+                await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
+                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);

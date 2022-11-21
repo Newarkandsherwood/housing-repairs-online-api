@@ -30,10 +30,6 @@ namespace HousingRepairsOnlineApi.Tests
             EndDateTime = new DateTime(2022, 01, 01, 12, 0, 0),
         };
 
-        private Task BookCommunalAppointment(string bookingReference, string sorCode, string priority, string locationId,
-            RepairAvailability appointmentTime, string repairDescriptionText) =>
-            bookAppointmentUseCaseMock.Object.Execute(bookingReference, sorCode, priority, locationId, repairAvailability.StartDateTime, repairAvailability.EndDateTime, repairDescriptionText);
-
         private readonly RepairAddress repairAddress = new()
         {
             LocationId = "Location Id",
@@ -58,7 +54,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
 
-            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, BookCommunalAppointment);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             GetStatusCode(result).Should().Be(200);
 
@@ -141,7 +137,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
-            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, BookCommunalAppointment);
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             GetStatusCode(result).Should().Be(500);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest), Times.Once);
@@ -181,7 +177,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Assert
-            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, BookCommunalAppointment);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Act
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
@@ -222,7 +218,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), repairRequest)).ReturnsAsync(repair);
 
             //Act
-            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest, BookCommunalAppointment);
+            await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
 
             //Assert
             appointmentConfirmationSender.Verify(x => x.Execute(repair), Times.Once);
