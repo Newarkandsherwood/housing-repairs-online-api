@@ -17,8 +17,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IBookAppointmentUseCase bookAppointmentUseCase;
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
-        private readonly IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase;
-        private readonly IBookAvailableAppointmentUseCase bookAvailableAppointmentUseCase;
+        private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -26,16 +25,14 @@ namespace HousingRepairsOnlineApi.Controllers
             IAppointmentConfirmationSender appointmentConfirmationSender,
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
-            IRetrieveAvailableAppointmentsUseCase retrieveAvailableAppointmentsUseCase,
-            IBookAvailableAppointmentUseCase bookAvailableAppointmentUseCase)
+            IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
-            this.retrieveAvailableAppointmentsUseCase = retrieveAvailableAppointmentsUseCase;
-            this.bookAvailableAppointmentUseCase = bookAvailableAppointmentUseCase;
+            this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
         }
 
         [HttpGet]
@@ -69,11 +66,38 @@ namespace HousingRepairsOnlineApi.Controllers
         [Route("CommunalRepair")]
         public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Communal, repairRequest, BookCommunalAppointment);
+            var updateSuccessful = await UpdateRepairRequestWithCommunalAppointment(repairRequest);
+            if (!updateSuccessful)
+            {
+                var statusMessage = "No available appointment found";
+                SentrySdk.CaptureMessage(statusMessage);
+                return StatusCode(500, statusMessage);
+            }
 
-            Task BookCommunalAppointment(string bookingReference, string sorCode, string priority, string locationId,
+            return await SaveRepair(RepairType.Communal, repairRequest, BookAppointment);
+
+            Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId,
                 RepairAvailability appointmentTime, string repairDescriptionText) =>
-                bookAvailableAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, repairDescriptionText);
+                bookAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, appointmentTime.StartDateTime, appointmentTime.EndDateTime, repairDescriptionText);
+        }
+
+        private async Task<bool> UpdateRepairRequestWithCommunalAppointment(RepairRequest repairRequest)
+        {
+            var appointment = await retrieveAvailableCommunalAppointmentUseCase.Execute(
+                repairRequest.Location.Value,
+                repairRequest.Problem.Value, repairRequest.Issue.Value, repairRequest.Address.LocationId);
+
+            var appointmentFound = appointment != null;
+            if (appointmentFound)
+            {
+                repairRequest.Time = new RepairAvailability
+                {
+                    StartDateTime = appointment.StartTime,
+                    EndDateTime = appointment.EndTime,
+                };
+            }
+
+            return appointmentFound;
         }
 
         internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, RepairAvailability, string, Task> bookAppointment)
