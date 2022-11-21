@@ -73,7 +73,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
 
             // Assert
-            appointmentSlotsFilterMock.Verify(x => x.Filter(), Times.Once);
+            appointmentSlotsFilterMock.Verify(x => x.Filter(null), Times.Once);
         }
 
 
@@ -98,7 +98,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             {
                 new AppointmentSlotTimeSpan { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), }
             };
-            appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
+            appointmentSlotsFilterMock.Setup(x => x.Filter(null)).Returns(appointmentSlotTimeSpans);
 
             // Act
             await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
@@ -140,7 +140,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             {
                 new AppointmentSlotTimeSpan { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), }
             };
-            appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
+            appointmentSlotsFilterMock.Setup(x => x.Filter(null)).Returns(appointmentSlotTimeSpans);
 
             // Act
             await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");
@@ -159,7 +159,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             {
                 new AppointmentSlotTimeSpan { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0), }
             };
-            appointmentSlotsFilterMock.Setup(x => x.Filter()).Returns(appointmentSlotTimeSpans);
+            appointmentSlotsFilterMock.Setup(x => x.Filter(null)).Returns(appointmentSlotTimeSpans);
 
             // Act
             var act = async () => await systemUnderTest.Execute(BookingReference, SorCode, Priority, LocationId, "description");

@@ -14,10 +14,10 @@ public class LargestAppointmentSlotResolverTests
     public void GivenNoAppointmentSlots_WhenResolving_ThenNoAppointmentSlotsAreReturned()
     {
         // Arrange
-        var systemUnderTest = new LargestAppointmentSlotFilter(Enumerable.Empty<AppointmentSlotTimeSpan>());
+        var systemUnderTest = new LargestAppointmentSlotFilter();
 
         // Act
-        var actual = systemUnderTest.Filter();
+        var actual = systemUnderTest.Filter(Enumerable.Empty<AppointmentSlotTimeSpan>());
 
         // Assert
         Assert.Empty(actual);
@@ -31,10 +31,10 @@ public class LargestAppointmentSlotResolverTests
         {
             new AppointmentSlotTimeSpan { StartTime = new TimeSpan(1), EndTime = new TimeSpan(2) }
         };
-        var systemUnderTest = new LargestAppointmentSlotFilter(appointmentSlots);
+        var systemUnderTest = new LargestAppointmentSlotFilter();
 
         // Act
-        var actual = systemUnderTest.Filter();
+        var actual = systemUnderTest.Filter(appointmentSlots);
 
         // Assert
         actual.Should().BeEquivalentTo(appointmentSlots);
@@ -45,10 +45,10 @@ public class LargestAppointmentSlotResolverTests
     public void GivenMultipleVaryingSizeAppointmentSlots_WhenResolving_ThenSingleLargestAppointmentSlotIsReturned(IEnumerable<AppointmentSlotTimeSpan> appointmentSlots, AppointmentSlotTimeSpan expected)
     {
         // Arrange
-        var systemUnderTest = new LargestAppointmentSlotFilter(appointmentSlots);
+        var systemUnderTest = new LargestAppointmentSlotFilter();
 
         // Act
-        var actual = systemUnderTest.Filter();
+        var actual = systemUnderTest.Filter(appointmentSlots);
 
         // Assert
         actual.Should().BeEquivalentTo(new[]

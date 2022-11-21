@@ -26,7 +26,8 @@ namespace HousingRepairsOnlineApi.UseCases
             Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
             Guard.Against.NullOrWhiteSpace(repairDescriptionText, nameof(repairDescriptionText));
 
-            var allowedAppointmentSlotTimeSpans = appointmentSlotsFilter.Filter();
+            // TODO: null not a valid parameter value
+            var allowedAppointmentSlotTimeSpans = appointmentSlotsFilter.Filter(null);
 
             var appointments = await appointmentsGateway.GetAvailableAppointments(sorCode, priority, locationId, null, allowedAppointmentSlotTimeSpans);
 

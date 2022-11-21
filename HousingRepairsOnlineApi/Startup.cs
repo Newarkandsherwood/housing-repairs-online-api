@@ -62,6 +62,11 @@ namespace HousingRepairsOnlineApi
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
             services.AddTransient(_ => allowedAppointmentSlots);
             services.AddTransient<IAppointmentSlotsFilter, LargestAppointmentSlotFilter>();
+            services.AddTransient<IDictionary<string, IAppointmentSlotsFilter>>(_ => new Dictionary<string, IAppointmentSlotsFilter>
+            {
+                { RepairType.Communal, new LargestAppointmentSlotFilter() }
+            });
+            services.AddTransient<IAllowedAppointmentsFactory, AllowedAppointmentsFactory>();
 
             services.AddTransient<IRetrieveAddressesUseCase, RetrieveAddressesUseCase>();
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
