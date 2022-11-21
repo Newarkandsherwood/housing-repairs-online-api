@@ -58,7 +58,11 @@ namespace HousingRepairsOnlineApi.Controllers
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
-            return await SaveRepair(RepairType.Tenant, repairRequest, bookAppointmentUseCase.Execute);
+            return await SaveRepair(RepairType.Tenant, repairRequest, BookAppointment);
+
+            Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId,
+                RepairAvailability appointmentTime, string repairDescriptionText) =>
+                bookAppointmentUseCase.Execute(bookingReference, sorCode, priority, locationId, appointmentTime.StartDateTime, appointmentTime.EndDateTime, repairDescriptionText);
         }
 
         [HttpPost]
@@ -84,14 +88,14 @@ namespace HousingRepairsOnlineApi.Controllers
 
         }
 
-        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, DateTime, DateTime, string, Task> bookAppointment)
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest, Func<string, string, string, string, RepairAvailability, string, Task> bookAppointment)
         {
             try
             {
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
 
                 await bookAppointment(result.Id, result.SOR, result.Priority, result.Address.LocationId,
-                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
+                    result.Time, result.Description.Text);
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
