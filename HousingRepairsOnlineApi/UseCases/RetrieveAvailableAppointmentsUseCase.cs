@@ -19,6 +19,9 @@ namespace HousingRepairsOnlineApi.UseCases
 
         public RetrieveAvailableAppointmentsUseCase(IAppointmentsGateway appointmentsGateway, ISorEngineResolver sorEngineResolver, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
         {
+            Guard.Against.Null(appointmentsGateway, nameof(appointmentsGateway));
+            Guard.Against.Null(sorEngineResolver, nameof(sorEngineResolver));
+
             this.appointmentsGateway = appointmentsGateway;
             this.sorEngineResolver = sorEngineResolver;
             this.allowedAppointmentSlots = allowedAppointmentSlots;

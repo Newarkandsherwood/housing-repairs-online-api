@@ -33,6 +33,30 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineResolverMock.Object);
         }
 
+        [Fact]
+        public void GivenNullAppointmentsGateway_WhenConstructing_ThenArgumentNullExceptionIsThrown()
+        {
+            // Arrange
+
+            // Act
+            Action act = () => new RetrieveAvailableAppointmentsUseCase(null, sorEngineResolverMock.Object, allowedAppointmentsFactoryMock.Object);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void GivenNullSorEngineResolver_WhenConstructing_ThenArgumentNullExceptionIsThrown()
+        {
+            // Arrange
+
+            // Act
+            Action act = () => new RetrieveAvailableAppointmentsUseCase(new Mock<IAppointmentsGateway>().Object, null, allowedAppointmentsFactoryMock.Object);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
         [Theory]
         [MemberData(nameof(InvalidArgumentTestData))]
 #pragma warning disable xUnit1026
