@@ -1,10 +1,10 @@
-﻿using System;
+﻿
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
-using Microsoft.Extensions.Logging;
+
 
 namespace HousingRepairsOnlineApi.UseCases
 {
@@ -21,7 +21,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.sorEngineResolver = sorEngineResolver;
         }
 
-        public Task<Repair> Execute(string repairType, RepairRequest repairRequest)
+        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
         {
             Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
             Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
@@ -61,9 +61,9 @@ namespace HousingRepairsOnlineApi.UseCases
 
             }
 
-            // var savedRequest = await cosmosGateway.AddRepair(repair);
+            var savedRequest = await cosmosGateway.AddRepair(repair);
 
-            return Task.FromResult(repair);
+            return savedRequest;
         }
     }
 }
