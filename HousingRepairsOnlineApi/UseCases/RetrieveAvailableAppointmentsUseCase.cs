@@ -15,16 +15,17 @@ namespace HousingRepairsOnlineApi.UseCases
     {
         private readonly IAppointmentsGateway appointmentsGateway;
         private readonly ISorEngineResolver sorEngineResolver;
-        private readonly IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots;
+        private readonly IAllowedAppointmentsFactory allowedAppointmentsFactory;
 
-        public RetrieveAvailableAppointmentsUseCase(IAppointmentsGateway appointmentsGateway, ISorEngineResolver sorEngineResolver, IEnumerable<AppointmentSlotTimeSpan> allowedAppointmentSlots = default)
+        public RetrieveAvailableAppointmentsUseCase(IAppointmentsGateway appointmentsGateway, ISorEngineResolver sorEngineResolver, IAllowedAppointmentsFactory allowedAppointmentsFactory)
         {
             Guard.Against.Null(appointmentsGateway, nameof(appointmentsGateway));
             Guard.Against.Null(sorEngineResolver, nameof(sorEngineResolver));
+            Guard.Against.Null(allowedAppointmentsFactory, nameof(allowedAppointmentsFactory));
 
             this.appointmentsGateway = appointmentsGateway;
             this.sorEngineResolver = sorEngineResolver;
-            this.allowedAppointmentSlots = allowedAppointmentSlots;
+            this.allowedAppointmentsFactory = allowedAppointmentsFactory;
         }
 
         public async Task<List<ApplicationTime>> Execute(string repairType, string repairLocation, string repairProblem,
@@ -38,6 +39,8 @@ namespace HousingRepairsOnlineApi.UseCases
 
             var sorEngine = sorEngineResolver.Resolve(repairType);
             var repairCode = sorEngine.MapToRepairTriageDetails(repairLocation, repairProblem, repairIssue);
+
+            var allowedAppointmentSlots = allowedAppointmentsFactory.CreateAllowedAppointments(repairType);
 
             var result = await appointmentsGateway.GetAvailableAppointments(repairCode.ScheduleOfRateCode, repairCode.Priority, locationId, fromDate, allowedAppointmentSlots);
             var convertedResults = result.Select(ConvertToHactAppointment).ToList();

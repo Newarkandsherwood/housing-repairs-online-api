@@ -19,6 +19,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly Mock<IAppointmentsGateway> appointmentsGatewayMock;
         private readonly Mock<ISorEngineResolver> sorEngineResolverMock;
         private readonly Mock<ISoREngine> sorEngineMock;
+        private readonly Mock<IAllowedAppointmentsFactory> allowedAppointmentsFactoryMock;
         const string repairType = RepairType.Tenant;
         const string kitchen = "kitchen";
         const string cupboards = "cupboards";
@@ -30,7 +31,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             sorEngineResolverMock = new Mock<ISorEngineResolver>();
             sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
             appointmentsGatewayMock = new Mock<IAppointmentsGateway>();
-            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineResolverMock.Object);
+            allowedAppointmentsFactoryMock = new Mock<IAllowedAppointmentsFactory>();
+            systemUnderTest = new RetrieveAvailableAppointmentsUseCase(appointmentsGatewayMock.Object, sorEngineResolverMock.Object, allowedAppointmentsFactoryMock.Object);
         }
 
         [Fact]
@@ -52,6 +54,18 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             // Act
             Action act = () => new RetrieveAvailableAppointmentsUseCase(new Mock<IAppointmentsGateway>().Object, null, allowedAppointmentsFactoryMock.Object);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void GivenNullAllowedAppointmentsFactory_WhenConstructing_ThenArgumentNullExceptionIsThrown()
+        {
+            // Arrange
+
+            // Act
+            Action act = () => new RetrieveAvailableAppointmentsUseCase(new Mock<IAppointmentsGateway>().Object, new Mock<ISorEngineResolver>().Object, null);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>();
@@ -183,7 +197,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = repairCode, Priority = priority };
             sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
             await systemUnderTest.Execute(repairType, kitchen, cupboards, doorHangingOff, "uprn");
-            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null), Times.Once);
+            appointmentsGatewayMock.Verify(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, It.IsAny<IEnumerable<AppointmentSlotTimeSpan>>()), Times.Once);
         }
 
         [Fact]
@@ -197,7 +211,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             sorEngineMock.Setup(x => x.MapToRepairTriageDetails(kitchen, cupboards, doorHangingOff)).Returns(repairTriageDetails);
 
-            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, null))
+            appointmentsGatewayMock.Setup(x => x.GetAvailableAppointments(repairCode, priority, "uprn", null, It.IsAny<IEnumerable<AppointmentSlotTimeSpan>>()))
                 .ReturnsAsync(new List<Appointment> { new()
                 {
                     TimeOfDay = new TimeOfDay
