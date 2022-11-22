@@ -61,6 +61,22 @@ namespace HousingRepairsOnlineApi.Helpers
             return result;
         }
 
+
+        public static IEnumerable<RepairDuration> ParseRepairDurationConfigurationJson(string RepairDurationConfigurationValueJson)
+        {
+            RepairDuration[] result;
+            try
+            {
+                result = JsonConvert.DeserializeObject<RepairDuration[]>(RepairDurationConfigurationValueJson);
+            }
+            catch (JsonException e)
+            {
+                throw new InvalidOperationException($"Contents of Repair Duration Mapping configuration value is malformed JSON.", e);
+            }
+
+            return result;
+        }
+
         public static IEnumerable<AppointmentSlotTimeSpan> ParseAppointmentSlotsConfigurationJson(string appointmentSlotsConfigurationValue)
         {
             var appointmentSlotTimeSpanSchema = GetJsonSchemaForType<AppointmentSlotTimeSpan>();

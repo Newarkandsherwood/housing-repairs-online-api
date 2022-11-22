@@ -18,6 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
+        private readonly IRepairDurationHelper repairDurationHelper;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -25,14 +26,15 @@ namespace HousingRepairsOnlineApi.Controllers
             IAppointmentConfirmationSender appointmentConfirmationSender,
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
-            IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase)
+            IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
+            IRepairDurationHelper repairDurationHelper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
-            this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
+            this.repairDurationHelper = repairDurationHelper;
         }
 
         [HttpGet]
@@ -103,7 +105,9 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
-                return Ok(result.Id);
+                var daysForRepair = repairDurationHelper.GetDaysForRepair(result);
+                var repairBookingResult = new RepairBookingResult() { Id = result.Id, DaysForRepair = daysForRepair };
+                return Ok(repairBookingResult);
             }
             catch (Exception ex)
             {
