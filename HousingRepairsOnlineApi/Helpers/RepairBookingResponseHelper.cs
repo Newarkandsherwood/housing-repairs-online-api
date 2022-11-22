@@ -14,17 +14,17 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairBookingResponseHelper(IRepairDayWindowHelper repairDayWindowHelper)
         {
-             this.repairDayWindowHelper = repairDayWindowHelper;
+            this.repairDayWindowHelper = repairDayWindowHelper;
         }
 
-        public dynamic GetRepairBookingResponse (Repair repair)
+        public dynamic GetRepairBookingResponse(Repair repair)
         {
             if (repair.RepairType == RepairType.Communal)
             {
                 var daysForRepair = repairDayWindowHelper.GetDaysForRepair(repair);
                 return new RepairCommunalBookingResponse() { Id = repair.Id, DaysForRepair = daysForRepair };
             }
-            return new RepairBookingResponse() { Id = repair.Id};
+            return new RepairBookingResponse() { Id = repair.Id };
         }
     }
 }

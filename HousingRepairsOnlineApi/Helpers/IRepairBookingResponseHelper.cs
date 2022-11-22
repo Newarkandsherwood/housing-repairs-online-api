@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public interface IRepairBookingResponseHelper
     {
-        dynamic GetRepairBookingResponse (Repair repair);
+        dynamic GetRepairBookingResponse(Repair repair);
     }
 }

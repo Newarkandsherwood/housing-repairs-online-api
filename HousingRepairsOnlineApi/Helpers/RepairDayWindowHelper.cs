@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairDayWindowHelper(IEnumerable<RepairDayWindow> repairDayWindows)
         {
-             this._repairDayWindows = repairDayWindows;
+            this._repairDayWindows = repairDayWindows;
         }
 
         public int GetDaysForRepair(Repair repair)
