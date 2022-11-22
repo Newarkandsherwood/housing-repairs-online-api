@@ -59,6 +59,13 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
+        [Route("LeaseholdRepair")]
+        public async Task<IActionResult> LeaseholdRepair([FromBody] RepairRequest repairRequest)
+        {
+            return await SaveRepair(RepairType.Leasehold, repairRequest);
+        }
+
+        [HttpPost]
         [Route("CommunalRepair")]
         public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
