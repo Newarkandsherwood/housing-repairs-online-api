@@ -35,6 +35,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
             this.repairDurationHelper = repairDurationHelper;
+            this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
         }
 
         [HttpGet]
