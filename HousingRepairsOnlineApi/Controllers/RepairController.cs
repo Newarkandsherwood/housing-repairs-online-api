@@ -18,7 +18,8 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
-        private readonly IRepairDurationHelper repairDurationHelper;
+        private readonly IRepairBookingResponseHelper repairBookingResponseHelper;
+
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -27,14 +28,14 @@ namespace HousingRepairsOnlineApi.Controllers
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
-            IRepairDurationHelper repairDurationHelper)
+            IRepairBookingResponseHelper repairBookingResponseHelper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
-            this.repairDurationHelper = repairDurationHelper;
+            this.repairBookingResponseHelper = repairBookingResponseHelper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
         }
 
@@ -106,9 +107,10 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
-                var daysForRepair = repairDurationHelper.GetDaysForRepair(result);
-                var repairBookingResult = new RepairBookingResult() { Id = result.Id, DaysForRepair = daysForRepair };
-                return Ok(repairBookingResult);
+
+                var repairBookingResponse = repairBookingResponseHelper.GetRepairBookingResponse(result);
+
+                return Ok(repairBookingResponse);
             }
             catch (Exception ex)
             {

@@ -62,12 +62,12 @@ namespace HousingRepairsOnlineApi.Helpers
         }
 
 
-        public static IEnumerable<RepairDuration> ParseRepairDurationConfigurationJson(string RepairDurationConfigurationValueJson)
+        public static IEnumerable<RepairDayWindow> ParseRepairDaysConfigurationJson(string RepairDurationConfigurationValueJson)
         {
-            RepairDuration[] result;
+            RepairDayWindow[] result;
             try
             {
-                result = JsonConvert.DeserializeObject<RepairDuration[]>(RepairDurationConfigurationValueJson);
+                result = JsonConvert.DeserializeObject<RepairDayWindow[]>(RepairDurationConfigurationValueJson);
             }
             catch (JsonException e)
             {

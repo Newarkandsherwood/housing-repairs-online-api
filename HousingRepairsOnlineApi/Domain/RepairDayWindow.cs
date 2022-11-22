@@ -1,6 +1,6 @@
 ﻿namespace HousingRepairsOnlineApi.Domain
 {
-    public class RepairDuration
+    public class RepairDayWindow
     {
         public string Priority { get; set; }
 

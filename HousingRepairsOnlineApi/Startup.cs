@@ -67,10 +67,11 @@ namespace HousingRepairsOnlineApi
                 { RepairType.Communal, new LargestAppointmentSlotFilter() }
             });
 
-            var repairDurationMapping = EnvironmentVariableHelper.GetEnvironmentVariable("REPAIR_DURATION_MAPPING");
-            var repairDurations = ServiceCollectionExtensions.ParseRepairDurationConfigurationJson(repairDurationMapping);
-            services.AddTransient(_ => repairDurations);
-            services.AddTransient<IRepairDurationHelper, RepairDurationHelper>();
+            var repairDaysMapping = EnvironmentVariableHelper.GetEnvironmentVariable("REPAIR_DAYS_MAPPING");
+            var repairDays = ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(repairDaysMapping);
+            services.AddTransient(_ => repairDays);
+            services.AddTransient<IRepairDayWindowHelper, RepairDayWindowHelper>();
+            services.AddTransient<IRepairBookingResponseHelper, RepairBookingResponseHelper>();
 
             services.AddTransient<IAllowedAppointmentsFactory, AllowedAppointmentsFactory>();
 
