@@ -37,24 +37,24 @@ public class CommunalNotificationConfigurationProvider : BaseNotificationConfigu
     public IDictionary<string, dynamic> GetPersonalisationForEmailTemplate(Repair repair)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The booking reference provided is invalid");
-        Guard.Against.NullOrWhiteSpace(repair.Time.Display, nameof(repair.Time.Display), "The appointment time provided is invalid");
+        Guard.Against.NullOrWhiteSpace(repair.Address.Display, nameof(repair.Address.Display), "The appointment time provided is invalid");
 
         return new Dictionary<string, dynamic>
         {
             {"repair_ref", repair.Id},
-            {"appointment_time", repair.Time.Display}
+            {"address", repair.Address.Display}
         };
     }
 
     public IDictionary<string, dynamic> GetPersonalisationForSmsTemplate(Repair repair)
     {
         Guard.Against.NullOrWhiteSpace(repair.Id, nameof(repair.Id), "The booking reference provided is invalid");
-        Guard.Against.NullOrWhiteSpace(repair.Time.Display, nameof(repair.Time.Display), "The appointment time provided is invalid");
+        Guard.Against.NullOrWhiteSpace(repair.Address.Display, nameof(repair.Address.Display), "The appointment time provided is invalid");
 
         return new Dictionary<string, dynamic>
         {
             {"repair_ref", repair.Id},
-            {"appointment_time", repair.Time.Display}
+            {"address", repair.Address.Display}
         };
     }
 }

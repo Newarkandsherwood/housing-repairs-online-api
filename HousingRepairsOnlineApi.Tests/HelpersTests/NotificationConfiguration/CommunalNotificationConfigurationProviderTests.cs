@@ -94,10 +94,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidStringArgumentTestData))]
 #pragma warning disable xUnit1026
-        public void GivenAnInvalidTime_WhenGetPersonalisationForEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+        public void GivenAnAddress_WhenGetPersonalisationForEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            repair.Time.Display = invalidStr;
+            repair.Address.Display = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForEmailTemplate(repair);
 
@@ -112,7 +112,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             Dictionary<string, dynamic> personalisation = new()
             {
                 {"repair_ref", repair.Id},
-                {"appointment_time", repair.Time.Display}
+                {"address", repair.Address.Display}
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForEmailTemplate(repair);
@@ -136,10 +136,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidStringArgumentTestData))]
 #pragma warning disable xUnit1026
-        public void GivenAnInvalidTime_WhenGetPersonalisationForSMSTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+        public void GivenAnInvalidAddress_WhenGetPersonalisationForSMSTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            repair.Time.Display = invalidStr;
+            repair.Address.Display = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForSmsTemplate(repair);
 
@@ -154,7 +154,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             Dictionary<string, dynamic> personalisation = new()
             {
                 {"repair_ref", repair.Id},
-                {"appointment_time", repair.Time.Display}
+                {"address", repair.Address.Display}
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForSmsTemplate(repair);
