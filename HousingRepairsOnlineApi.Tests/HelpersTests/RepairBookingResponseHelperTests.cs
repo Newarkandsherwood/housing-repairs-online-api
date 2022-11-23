@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public RepairBookingResponseHelperTests()
         {
             var repairDayWindowHelperMock = new Mock<IRepairDayWindowHelper>();
-            repairDayWindowHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>()) ).Returns(_daysForRepair);
+            repairDayWindowHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(_daysForRepair);
             _repair.Id = "repairId";
             _systemUnderTest = new RepairBookingResponseHelper(repairDayWindowHelperMock.Object);
         }
@@ -32,7 +32,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id );
+            Assert.Equal(result.Id, _repair.Id);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id );
+            Assert.Equal(result.Id, _repair.Id);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
             // Assert
             Assert.IsType<CommunalRepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id );
+            Assert.Equal(result.Id, _repair.Id);
             Assert.Equal(result.DaysForRepair, _daysForRepair);
         }
     }

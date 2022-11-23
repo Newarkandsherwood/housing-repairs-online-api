@@ -101,7 +101,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             _repair.Priority = "2";
 
             // Act
-            Action act = () => _= systemUnderTest.GetDaysForRepair(null);
+            Action act = () => _ = systemUnderTest.GetDaysForRepair(null);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>();
