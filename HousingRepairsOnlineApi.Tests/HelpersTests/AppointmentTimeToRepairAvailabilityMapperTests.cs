@@ -49,4 +49,19 @@ public class AppointmentTimeToRepairAvailabilityMapperTests
         // Assert
         actual.EndDateTime.Should().Be(endTime);
     }
+
+    [Fact]
+    public void GivenAppointmentTimeWithStartAndEndTime_WhenMapping_ThenReturnedRepairAvailabilityDisplayIsSet()
+    {
+        // Arrange
+        var startTime = new DateTime(2022, 11, 23, 8, 0, 0);
+        var endTime = new DateTime(2022, 11, 23, 12, 0, 0);
+        var appointmentTime = new AppointmentTime { StartTime = startTime, EndTime = endTime, };
+
+        // Act
+        var actual = systemUnderTest.Map(appointmentTime);
+
+        // Assert
+        actual.Display.Should().Be("23 November 2022 between 8:00AM to 12:00PM");
+    }
 }

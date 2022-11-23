@@ -13,6 +13,7 @@ public class AppointmentTimeToRepairAvailabilityMapper : IAppointmentTimeToRepai
         {
             StartDateTime = appointmentTime.StartTime,
             EndDateTime = appointmentTime.EndTime,
+            Display = $"{appointmentTime.StartTime.Date.ToString("dd MMMM yyyy")} between {appointmentTime.StartTime.ToString("h:mmtt")} to {appointmentTime.EndTime.ToString("h:mmtt")}",
         };
     }
 }
