@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
@@ -112,6 +113,22 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
 
         [Theory]
+        [MemberData(nameof(InvalidJsonRepairDaysMappingConfigTestData))]
+#pragma warning disable xUnit1026
+        public void GivenInvalidJsonConfig_WhenParsingRepairDaysConfigurationJson_ThenExceptionIsThrown<T>(T exception,
+            string configJson) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+
+            // Act
+            Action act = () => ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(configJson);
+
+            // Assert
+            act.Should().Throw<InvalidOperationException>().WithInnerException<T>();
+        }
+
+        [Theory]
         [MemberData(nameof(InvalidAgainstSchemaJsonAppointmentSlotConfigTestData))]
         [MemberData(nameof(InvalidJsonAppointmentSlotConfigTestData))]
 #pragma warning disable xUnit1026
@@ -209,6 +226,30 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                             ""display"": ""Bath taps"",
                             ""sorCode"": ""SoR Code 1""
                         }]
+                    }]
+                }]"
+                },
+            };
+        }
+
+        public static TheoryData<JsonException, string> InvalidJsonRepairDaysMappingConfigTestData()
+        {
+            return new TheoryData<JsonException, string>
+            {
+                { new JsonSerializationException(), @"{" },
+                { new JsonReaderException(), @"}" },
+                {
+                    new JsonSerializationException(), @"{
+                        ""Priority"": {
+                    }"
+                },
+                {
+                    new JsonReaderException(), @"[{
+                    ""Priority"": ""2"",
+                    ""NumberOfDays"": ""20"",
+                    {
+                    ""Priority"": ""2"",
+                    ""NumberOfDays"": ""20"",
                     }]
                 }]"
                 },
@@ -444,6 +485,60 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     }
                 },
             };
+        }
+
+        [Fact]
+#pragma warning disable CA1707
+        public void GivenNullConfig_WhenCallingParseRepairDaysConfigurationJson_throwsException()
+#pragma warning restore CA1707
+        {
+            // Arrange
+
+            // Act
+            Action act = () => _ = ServiceCollectionExtensions. ParseRepairDaysConfigurationJson(null);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [Fact]
+#pragma warning disable CA1707
+        public void GivenEmptyConfig_WhenCallingParseRepairDaysConfigurationJson_throwsException()
+#pragma warning restore CA1707
+        {
+            // Arrange
+
+            // Act
+            Action act = () => _ = ServiceCollectionExtensions. ParseRepairDaysConfigurationJson(string.Empty);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentException>();
+        }
+
+        [Fact]
+#pragma warning disable CA1707
+        public void GivenValidConfig_WhenCallingParseRepairDaysConfigurationJson_returnsArray()
+#pragma warning restore CA1707
+        {
+            // Arrange
+            var configData = @"[
+                        {
+                          ""Priority"": ""2"",
+                          ""NumberOfDays"": ""30""
+                        },
+                        {
+                          ""Priority"": ""3"",
+                          ""NumberOfDays"": ""130""
+                        }
+                    ]";
+
+            // Act
+            var act = ServiceCollectionExtensions. ParseRepairDaysConfigurationJson(configData);
+
+            // Assert
+            Assert.Equal(2, act.Count());
+            Assert.Equal(30, act.First().NumberOfDays);
+            Assert.Equal("2", act.First().Priority);
         }
     }
 }
