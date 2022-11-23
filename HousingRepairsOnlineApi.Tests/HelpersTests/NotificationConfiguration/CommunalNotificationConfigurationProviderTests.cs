@@ -181,5 +181,100 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             //Assert
             Assert.Equal(act.Result["image_1"], imageLink);
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidId_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.Id = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidAddressLocationId_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.Address.LocationId = invalidStr;
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidDisplayAddress_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.Address.Display = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidSor_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.SOR = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidDescriptionText_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.Description.Text = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
+        public async void GivenAnInvalidContactDetailsValue_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.ContactDetails.Value = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
     }
 }
