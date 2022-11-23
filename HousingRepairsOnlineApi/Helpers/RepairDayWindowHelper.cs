@@ -19,6 +19,8 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public int GetDaysForRepair(Repair repair)
         {
+            Guard.Against.Null(repair, nameof(repair));
+
             var result = 0;
             if (_repairDayWindows != null && _repairDayWindows.Any())
             {

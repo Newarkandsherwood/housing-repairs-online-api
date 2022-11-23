@@ -22,7 +22,7 @@ namespace HousingRepairsOnlineApi.Helpers
             if (repair.RepairType == RepairType.Communal)
             {
                 var daysForRepair = repairDayWindowHelper.GetDaysForRepair(repair);
-                return new RepairCommunalBookingResponse() { Id = repair.Id, DaysForRepair = daysForRepair };
+                return new CommunalRepairBookingResponse() { Id = repair.Id, DaysForRepair = daysForRepair };
             }
             return new RepairBookingResponse() { Id = repair.Id };
         }
