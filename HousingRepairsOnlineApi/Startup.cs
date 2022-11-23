@@ -51,8 +51,16 @@ namespace HousingRepairsOnlineApi
                 EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
                 EnvironmentVariableHelper.GetEnvironmentVariable("COMMUNAL_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
 
-            var sendNotificationDictionary = new Dictionary<string, INotificationConfigurationProvider> { { RepairType.Tenant, sendTenantNotification } ,
-                { RepairType.Communal, sendCommunalNotification }};
+            var sendLeaseholdNotification = new LeaseholdNotificationConfigurationProvider(EnvironmentVariableHelper.GetEnvironmentVariable("LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID"),
+                EnvironmentVariableHelper.GetEnvironmentVariable("LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID"));
+
+            var sendNotificationDictionary = new Dictionary<string, INotificationConfigurationProvider>
+            {
+                { RepairType.Tenant, sendTenantNotification },
+                { RepairType.Communal, sendCommunalNotification },
+                { RepairType.Leasehold, sendLeaseholdNotification },
+            };
 
             services.AddTransient<IDictionary<string, INotificationConfigurationProvider>>(_ => sendNotificationDictionary);
 
