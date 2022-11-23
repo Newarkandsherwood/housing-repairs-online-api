@@ -72,6 +72,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRetrieveAvailableAppointmentsUseCase, RetrieveAvailableAppointmentsUseCase>();
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
             services.AddTransient<IRetrieveAvailableCommunalAppointmentUseCase, RetrieveAvailableCommunalAppointmentUseCase>();
+            services.AddTransient<IAppointmentTimeToRepairAvailabilityMapper, AppointmentTimeToRepairAvailabilityMapper>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
 
