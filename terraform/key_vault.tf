@@ -184,6 +184,12 @@ resource "azurerm_key_vault_secret" "storage-container-name-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "repair-days-mapping-staging" {
+  name         = "repair-days-mapping-staging"
+  value        = var.repair_days_mapping_staging
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 #=================================
 #====== Production Secrets
 
@@ -268,5 +274,11 @@ resource "azurerm_key_vault_secret" "allowed-appointment-slots-production" {
 resource "azurerm_key_vault_secret" "storage-container-name-production" {
   name         = "storage-container-name-production"
   value        = var.storage_container_name_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "repair-days-mapping-production" {
+  name         = "repair-days-mapping-production"
+  value        = var.repair_days_mapping_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }

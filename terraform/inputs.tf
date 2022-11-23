@@ -125,3 +125,9 @@ variable "azure_ad_tenant_id" {
   type      = string
   sensitive = true
 }
+variable "repair_days_mapping_staging" {
+  type = string
+}
+variable "repair_days_mapping_production" {
+  type = string
+}
