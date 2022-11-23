@@ -18,6 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
+        private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -25,7 +26,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IAppointmentConfirmationSender appointmentConfirmationSender,
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
-            IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase)
+            IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
+            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -33,6 +35,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
+            this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
         }
 
         [HttpGet]
@@ -89,11 +92,7 @@ namespace HousingRepairsOnlineApi.Controllers
             var appointmentFound = appointment != null;
             if (appointmentFound)
             {
-                repairRequest.Time = new RepairAvailability
-                {
-                    StartDateTime = appointment.StartTime,
-                    EndDateTime = appointment.EndTime,
-                };
+                repairRequest.Time = appointmentTimeToRepairAvailabilityMapper.Map(appointment);
             }
 
             return appointmentFound;

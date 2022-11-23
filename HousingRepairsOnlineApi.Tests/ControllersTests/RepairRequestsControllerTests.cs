@@ -19,6 +19,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IInternalEmailSender> internalEmailSenderMock;
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
+        private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -44,7 +45,10 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
             retrieveAvailableCommunalAppointmentUseCaseMock = new Mock<IRetrieveAvailableCommunalAppointmentUseCase>();
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object);
+            appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
+                appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
+                retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, appointmentTimeToRepairAvailabilityMapperMock.Object);
         }
 
         [Fact]
