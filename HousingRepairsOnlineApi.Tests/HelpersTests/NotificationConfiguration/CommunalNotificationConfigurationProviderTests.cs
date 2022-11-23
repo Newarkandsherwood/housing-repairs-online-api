@@ -201,6 +201,22 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidStringArgumentTestData))]
 #pragma warning disable xUnit1026
+        public async void GivenAnInvalidDisplayTime_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+#pragma warning restore xUnit1026
+        {
+            // Arrange
+            repair.Time.Display = invalidStr;
+
+            // Act
+            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<T>();
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidStringArgumentTestData))]
+#pragma warning disable xUnit1026
         public async void GivenAnInvalidAddressLocationId_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
