@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using HACT.Dtos;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
@@ -67,5 +69,29 @@ namespace HousingRepairsOnlineApi.Gateways
             return repairs;
         }
 
+        public async Task<IEnumerable<RepairRequestSummary>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string postcode, string repairId)
+        {
+            Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
+            Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));
+            Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
+
+            using var queryResultSetIterator = repairQueryHelper.GetRepairSearchIterator(repairTypes, postcode, repairId);
+            IEnumerable<RepairRequestSummary> repairs = Array.Empty<RepairRequestSummary>();
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                var currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                repairs = currentResultSet.Select(repair => new RepairRequestSummary
+                {
+                    Address = repair.Address,
+                    Description = repair.Description,
+                    Issue = repair.Issue,
+                    Location = repair.Location,
+                    Problem = repair.Problem
+                });
+            }
+
+            return repairs;
+        }
     }
 }
