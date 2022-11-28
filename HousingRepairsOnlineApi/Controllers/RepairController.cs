@@ -18,7 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
-        private readonly IRepairToRepairBookingResponseMapper _repairToRepairBookingResponseMapper;
+        private readonly IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
 
         public RepairController(
@@ -36,7 +36,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
-            this._repairToRepairBookingResponseMapper = repairToRepairBookingResponseMapper;
+            this.repairToRepairBookingResponseMapper = repairToRepairBookingResponseMapper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
         }
@@ -114,7 +114,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
 
-                var repairBookingResponse = _repairToRepairBookingResponseMapper.MapRepairBookingResponse(result, includeDays);
+                var repairBookingResponse = repairToRepairBookingResponseMapper.MapRepairBookingResponse(result, includeDays);
 
                 return Ok(repairBookingResponse);
             }
