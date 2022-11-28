@@ -12,13 +12,13 @@ namespace HousingRepairsOnlineApi.UseCases
     {
         private readonly IRepairStorageGateway cosmosGateway;
         private readonly IBlobStorageGateway storageGateway;
-        private readonly ISorEngineResolver sorEngineResolver;
+        private readonly IRepairRequestToRepairMapper repairRequestToRepairMapper;
 
-        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, ISorEngineResolver sorEngineResolver)
+        public SaveRepairRequestUseCase(IRepairStorageGateway cosmosGateway, IBlobStorageGateway storageGateway, IRepairRequestToRepairMapper repairRequestToRepairMapper)
         {
             this.cosmosGateway = cosmosGateway;
             this.storageGateway = storageGateway;
-            this.sorEngineResolver = sorEngineResolver;
+            this.repairRequestToRepairMapper = repairRequestToRepairMapper;
         }
 
         public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
@@ -26,29 +26,7 @@ namespace HousingRepairsOnlineApi.UseCases
             Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
             Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
 
-            var sorEngine = sorEngineResolver.Resolve(repairType);
-            var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
-                repairRequest.Location.Value,
-                repairRequest.Problem.Value,
-                repairRequest.Issue?.Value);
-            var repair = new Repair
-            {
-                RepairType = repairType,
-                Address = repairRequest.Address,
-                Postcode = repairRequest.Postcode,
-                Location = repairRequest.Location,
-                ContactDetails = repairRequest.ContactDetails,
-                Problem = repairRequest.Problem,
-                Issue = repairRequest.Issue,
-                ContactPersonNumber = repairRequest.ContactPersonNumber,
-                Time = repairRequest.Time,
-                Description = new RepairDescription
-                {
-                    Text = repairRequest.Description.Text,
-                },
-                SOR = repairTriageDetails.ScheduleOfRateCode,
-                Priority = repairTriageDetails.Priority,
-            };
+            var repair = repairRequestToRepairMapper.Map(repairRequest, repairType);
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))
             {
