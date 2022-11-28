@@ -12,15 +12,16 @@ namespace HousingRepairsOnlineApi.Tests
 {
     public class RepairRequestsControllerTests : ControllerTests
     {
-        private readonly RepairController systemUnderTest;
-        private readonly Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
-        private readonly Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
-        private readonly Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
-        private readonly Mock<IInternalEmailSender> internalEmailSenderMock;
-        private readonly Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
-        private readonly Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
+        private RepairController systemUnderTest;
+        private Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
+        private Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
+        private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
+        private Mock<IInternalEmailSender> internalEmailSenderMock;
+        private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
+        private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
+        private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
 
-        private readonly Mock<INotificationConfigurationResolver> sendNotificationResolver;
+        private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
@@ -44,7 +45,10 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock = new Mock<IRetrieveRepairsUseCase>();
             retrieveAvailableCommunalAppointmentUseCaseMock = new Mock<IRetrieveAvailableCommunalAppointmentUseCase>();
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object);
+            appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
+                appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
+                retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, appointmentTimeToRepairAvailabilityMapperMock.Object);
         }
 
         [Fact]
@@ -77,6 +81,23 @@ namespace HousingRepairsOnlineApi.Tests
             // Assert
             GetStatusCode(result).Should().Be(200);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Tenant, repairRequest), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task TestLeaseholdEndpoint()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.LeaseholdRepair(repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Leasehold, repairRequest), Times.Once);
         }
 
         [Fact]
@@ -133,7 +154,7 @@ namespace HousingRepairsOnlineApi.Tests
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
-            var repairRequest = new RepairRequest();
+            RepairRequest repairRequest = new RepairRequest();
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
@@ -147,7 +168,7 @@ namespace HousingRepairsOnlineApi.Tests
         public async Task GivenEmailContact_WhenRepair_ThenSendAppointmentConfirmationEmailUseCaseIsCalled()
         {
             //Arrange
-            var repairRequest = new RepairRequest
+            RepairRequest repairRequest = new RepairRequest
             {
                 ContactDetails = new RepairContactDetails
                 {

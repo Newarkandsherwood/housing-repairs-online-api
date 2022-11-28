@@ -59,6 +59,19 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         }
 
         [Fact]
+        public async Task TestLeaseholdEndpoint()
+        {
+            // Arrange
+
+            // Act
+            _ = await systemUndertest.AvailableLeaseholdAppointments(RepairLocation, RepairProblem, RepairIssue, LocationId);
+
+            // Assert
+            availableAppointmentsUseCaseMock.Verify(
+                x => x.Execute(RepairType.Leasehold, RepairLocation, RepairProblem, RepairIssue, LocationId, null), Times.Once);
+        }
+
+        [Fact]
         public async Task GivenAFromDate_WhenRequestingAvailableAppointments_ThenResultsAreReturned()
         {
             // Arrange
