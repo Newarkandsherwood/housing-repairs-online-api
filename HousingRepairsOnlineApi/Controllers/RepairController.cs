@@ -54,6 +54,29 @@ namespace HousingRepairsOnlineApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("TenantOrLeaseholdPropertyRepair")]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepair([FromQuery] string postcode, [FromQuery] string repairId)
+        {
+            try
+            {
+                var result = await retrieveRepairsUseCase.Execute(
+                    new[] { RepairType.Tenant, RepairType.Leasehold },
+                    postcode, repairId);
+
+                if (result == null)
+                {
+                    return NotFound("Repair request not found for postcode and repairId provided.");
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
