@@ -8,12 +8,12 @@ using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
 
-namespace HousingRepairsOnlineApi.Tests.HelpersTests
+namespace HousingRepairsOnlineApi.Tests.HelpersTests.NotificationConfiguration
 {
-    public class CommunalNotificationConfigurationProviderTests
+    public class LeaseholdNotificationConfigurationProviderTests
     {
         private readonly Mock<IRetrieveImageLinkUseCase> retrieveImageLinkUseCase;
-        private readonly CommunalNotificationConfigurationProvider systemUnderTest;
+        private readonly LeaseholdNotificationConfigurationProvider systemUnderTest;
 
         private readonly string confirmationSmsTemplateId = "confirmationSmsTemplateId";
         private readonly string confirmationEmailTemplateId = "confirmationEmailTemplateId";
@@ -52,12 +52,12 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             }
         };
 
-        public CommunalNotificationConfigurationProviderTests()
+        public LeaseholdNotificationConfigurationProviderTests()
         {
             retrieveImageLinkUseCase = new Mock<IRetrieveImageLinkUseCase>();
             retrieveImageLinkUseCase.Setup(x => x.Execute(It.IsAny<string>())).Returns(imageLink);
 
-            systemUnderTest = new CommunalNotificationConfigurationProvider(confirmationSmsTemplateId, confirmationEmailTemplateId, internalEmailTemplateId);
+            systemUnderTest = new LeaseholdNotificationConfigurationProvider(confirmationSmsTemplateId, confirmationEmailTemplateId, internalEmailTemplateId);
         }
 
         [Fact]
@@ -94,10 +94,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidStringArgumentTestData))]
 #pragma warning disable xUnit1026
-        public void GivenAnAddress_WhenGetPersonalisationForEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+        public void GivenAnInvalidTime_WhenGetPersonalisationForEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            repair.Address.Display = invalidStr;
+            repair.Time.Display = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForEmailTemplate(repair);
 
@@ -112,7 +112,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             Dictionary<string, dynamic> personalisation = new()
             {
                 {"repair_ref", repair.Id},
-                {"address", repair.Address.Display}
+                {"appointment_time", repair.Time.Display}
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForEmailTemplate(repair);
@@ -136,10 +136,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         [Theory]
         [MemberData(nameof(InvalidStringArgumentTestData))]
 #pragma warning disable xUnit1026
-        public void GivenAnInvalidAddress_WhenGetPersonalisationForSMSTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
+        public void GivenAnInvalidTime_WhenGetPersonalisationForSMSTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            repair.Address.Display = invalidStr;
+            repair.Time.Display = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForSmsTemplate(repair);
 
@@ -154,7 +154,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             Dictionary<string, dynamic> personalisation = new()
             {
                 {"repair_ref", repair.Id},
-                {"address", repair.Address.Display}
+                {"appointment_time", repair.Time.Display}
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForSmsTemplate(repair);
@@ -190,22 +190,6 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         {
             // Arrange
             repair.Id = invalidStr;
-
-            // Act
-            var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);
-
-            // Assert
-            await act.Should().ThrowExactlyAsync<T>();
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidStringArgumentTestData))]
-#pragma warning disable xUnit1026
-        public async void GivenAnInvalidDisplayTime_WhenGetPersonalisationForInternalEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
-#pragma warning restore xUnit1026
-        {
-            // Arrange
-            repair.Time.Display = invalidStr;
 
             // Act
             var act = async () => await systemUnderTest.GetPersonalisationForInternalEmailTemplate(repair, retrieveImageLinkUseCase.Object);

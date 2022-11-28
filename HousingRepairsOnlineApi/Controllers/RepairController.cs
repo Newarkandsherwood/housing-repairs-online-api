@@ -19,7 +19,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
         private readonly IRepairBookingResponseHelper repairBookingResponseHelper;
-
+        private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -28,7 +28,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
-            IRepairBookingResponseHelper repairBookingResponseHelper)
+            IRepairBookingResponseHelper repairBookingResponseHelper,
+            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -37,6 +38,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
             this.repairBookingResponseHelper = repairBookingResponseHelper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
+            this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
         }
 
         [HttpGet]
@@ -63,6 +65,13 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
+        [Route("LeaseholdRepair")]
+        public async Task<IActionResult> LeaseholdRepair([FromBody] RepairRequest repairRequest)
+        {
+            return await SaveRepair(RepairType.Leasehold, repairRequest);
+        }
+
+        [HttpPost]
         [Route("CommunalRepair")]
         public async Task<IActionResult> CommunalRepair([FromBody] RepairRequest repairRequest)
         {
@@ -86,11 +95,7 @@ namespace HousingRepairsOnlineApi.Controllers
             var appointmentFound = appointment != null;
             if (appointmentFound)
             {
-                repairRequest.Time = new RepairAvailability
-                {
-                    StartDateTime = appointment.StartTime,
-                    EndDateTime = appointment.EndTime,
-                };
+                repairRequest.Time = appointmentTimeToRepairAvailabilityMapper.Map(appointment);
             }
 
             return appointmentFound;

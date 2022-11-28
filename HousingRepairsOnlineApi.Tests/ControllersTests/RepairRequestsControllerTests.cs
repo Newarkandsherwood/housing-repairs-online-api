@@ -20,6 +20,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
         private Mock<IRepairBookingResponseHelper> repairBookingResponseHelper;
+        private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -46,7 +47,8 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveAvailableCommunalAppointmentUseCaseMock = new Mock<IRetrieveAvailableCommunalAppointmentUseCase>();
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             repairBookingResponseHelper = new Mock<IRepairBookingResponseHelper>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, repairBookingResponseHelper.Object);
+            appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, repairBookingResponseHelper.Object, appointmentTimeToRepairAvailabilityMapperMock.Object);
         }
 
         [Fact]
@@ -79,6 +81,23 @@ namespace HousingRepairsOnlineApi.Tests
             // Assert
             GetStatusCode(result).Should().Be(200);
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Tenant, repairRequest), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task TestLeaseholdEndpoint()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.LeaseholdRepair(repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Leasehold, repairRequest), Times.Once);
         }
 
         [Fact]
