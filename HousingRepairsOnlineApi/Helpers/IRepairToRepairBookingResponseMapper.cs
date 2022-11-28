@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public interface IRepairToRepairBookingResponseMapper
     {
-        dynamic GetRepairBookingResponse(Repair repair, bool includeDays);
+        dynamic MapRepairBookingResponse(Repair repair, bool includeDays);
     }
 }

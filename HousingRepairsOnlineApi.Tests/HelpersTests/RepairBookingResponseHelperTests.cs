@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Tenant;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair, false);
+            var result = systemUnderTest.MapRepairBookingResponse(repair, false);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -44,7 +44,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Leasehold;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair, false);
+            var result = systemUnderTest.MapRepairBookingResponse(repair, false);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -60,7 +60,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Communal;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair, true);
+            var result = systemUnderTest.MapRepairBookingResponse(repair, true);
 
             // Assert
             Assert.IsType<RepairBookingResponseWithDays>(result);

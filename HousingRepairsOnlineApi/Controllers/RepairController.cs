@@ -114,7 +114,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
 
-                var repairBookingResponse = _repairToRepairBookingResponseMapper.GetRepairBookingResponse(result, includeDays);
+                var repairBookingResponse = _repairToRepairBookingResponseMapper.MapRepairBookingResponse(result, includeDays);
 
                 return Ok(repairBookingResponse);
             }
