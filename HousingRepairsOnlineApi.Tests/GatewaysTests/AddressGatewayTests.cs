@@ -16,7 +16,6 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         private const string AddressApiEndpoint = "https://our-porxy-UH.api";
         private const string Postcode = "M3 0W";
         private readonly AddressGateway addressGateway;
-        private readonly Mock<HttpClient> httpClientMock;
         private readonly MockHttpMessageHandler mockHttp;
 
         public AddressGatewayTests()

@@ -15,8 +15,8 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly SendAppointmentConfirmationSmsUseCase systemUnderTest;
         private readonly Dictionary<string, dynamic> personalisation = new()
         {
-            {"repair_ref", "2"},
-            {"appointment_time", ""}
+            { "repair_ref", "2" },
+            { "appointment_time", "" }
         };
         private readonly string templateId = "456";
         private readonly string phoneNumber = "07415300544";

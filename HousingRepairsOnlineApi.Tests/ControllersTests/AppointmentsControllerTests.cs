@@ -16,8 +16,8 @@ namespace HousingRepairsOnlineApi.Tests.ControllersTests
         private const string RepairIssue = "doorHangingOff";
         private const string LocationId = "location ID";
 
-        private AppointmentsController systemUndertest;
-        private Mock<IRetrieveAvailableAppointmentsUseCase> availableAppointmentsUseCaseMock;
+        private readonly AppointmentsController systemUndertest;
+        private readonly Mock<IRetrieveAvailableAppointmentsUseCase> availableAppointmentsUseCaseMock;
         public AppointmentsControllerTests()
         {
             availableAppointmentsUseCaseMock = new Mock<IRetrieveAvailableAppointmentsUseCase>();

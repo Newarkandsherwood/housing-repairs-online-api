@@ -10,9 +10,9 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class RepairQueryHelperTests
     {
-        private RepairQueryHelper systemUnderTest;
-        private Mock<ContainerResponse> containerMock;
-        private Mock<FeedIterator<Repair>> feedIteratorMock;
+        private readonly RepairQueryHelper systemUnderTest;
+        private readonly Mock<ContainerResponse> containerMock;
+        private readonly Mock<FeedIterator<Repair>> feedIteratorMock;
         private const string MockPropertyRef = "1234";
         private const string RepairType = "Communal";
 

@@ -12,15 +12,15 @@ namespace HousingRepairsOnlineApi.Tests
 {
     public class RepairRequestsControllerTests : ControllerTests
     {
-        private RepairController systemUnderTest;
-        private Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
-        private Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
-        private Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
-        private Mock<IInternalEmailSender> internalEmailSenderMock;
-        private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
-        private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
+        private readonly RepairController systemUnderTest;
+        private readonly Mock<ISaveRepairRequestUseCase> saveRepairRequestUseCaseMock;
+        private readonly Mock<IRetrieveRepairsUseCase> retrieveRepairsUseCaseMock;
+        private readonly Mock<IBookAppointmentUseCase> bookAppointmentUseCaseMock;
+        private readonly Mock<IInternalEmailSender> internalEmailSenderMock;
+        private readonly Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
+        private readonly Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
 
-        private Mock<INotificationConfigurationResolver> sendNotificationResolver;
+        private readonly Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
 
         private readonly RepairAvailability repairAvailability = new()
@@ -133,7 +133,7 @@ namespace HousingRepairsOnlineApi.Tests
         [Fact]
         public async Task ReturnsErrorWhenFailsToSave()
         {
-            RepairRequest repairRequest = new RepairRequest();
+            var repairRequest = new RepairRequest();
 
             saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>())).Throws<System.Exception>();
 
@@ -147,7 +147,7 @@ namespace HousingRepairsOnlineApi.Tests
         public async Task GivenEmailContact_WhenRepair_ThenSendAppointmentConfirmationEmailUseCaseIsCalled()
         {
             //Arrange
-            RepairRequest repairRequest = new RepairRequest
+            var repairRequest = new RepairRequest
             {
                 ContactDetails = new RepairContactDetails
                 {

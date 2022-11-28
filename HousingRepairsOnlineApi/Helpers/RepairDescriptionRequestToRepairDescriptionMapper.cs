@@ -3,7 +3,7 @@ using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.Helpers;
 
-public class RepairDescriptionRequestToRepairDescriptionMapper: IRepairDescriptionRequestToRepairDescriptionMapper
+public class RepairDescriptionRequestToRepairDescriptionMapper : IRepairDescriptionRequestToRepairDescriptionMapper
 {
     public RepairDescription Map(RepairDescriptionRequest repairRequest, string repairType)
     {

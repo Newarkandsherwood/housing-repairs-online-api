@@ -41,14 +41,14 @@ public class RepairRequestToRepairMapperTests
         {
             Location = new RepairLocation { Value = Location },
             Problem = new RepairProblem { Value = Problem },
-            Issue = new  RepairIssue { Value = Issue },
-            Description = new RepairDescriptionRequest { Text = "Text", LocationDescription = "Location"}
+            Issue = new RepairIssue { Value = Issue },
+            Description = new RepairDescriptionRequest { Text = "Text", LocationDescription = "Location" }
         };
 
         mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
             .Returns(repairTriageDetails);
         mockRepairDescriptionRequestToRepairDescriptionMapper.Setup(x =>
-            x.Map(It.IsAny<RepairDescriptionRequest>(), It.IsAny<string>())).Returns(new RepairDescription(){Text = "Location Text"});
+            x.Map(It.IsAny<RepairDescriptionRequest>(), It.IsAny<string>())).Returns(new RepairDescription() { Text = "Location Text" });
 
         var repair = systemUnderTest.Map(repairRequest, repairType);
 
@@ -56,8 +56,8 @@ public class RepairRequestToRepairMapperTests
 
         Assert.Equal("Location Text", repair.Description.Text);
         Assert.Equal(Location, repair.Location.Value);
-        Assert.Equal(Problem , repair.Problem.Value);
-        Assert.Equal( Issue ,repair.Issue.Value);
+        Assert.Equal(Problem, repair.Problem.Value);
+        Assert.Equal(Issue, repair.Issue.Value);
 
     }
 
@@ -77,8 +77,8 @@ public class RepairRequestToRepairMapperTests
         {
             Location = new RepairLocation { Value = Location },
             Problem = new RepairProblem { Value = Problem },
-            Issue = new  RepairIssue { Value = Issue },
-            Description = new RepairDescriptionRequest { Text = "Text"}
+            Issue = new RepairIssue { Value = Issue },
+            Description = new RepairDescriptionRequest { Text = "Text" }
         };
 
         mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
@@ -86,7 +86,7 @@ public class RepairRequestToRepairMapperTests
 
         systemUnderTest.Map(repairRequest, repairType);
 
-        mockRepairDescriptionRequestToRepairDescriptionMapper.Verify(x=>x.Map(repairRequest.Description, repairType), Times.Once);
+        mockRepairDescriptionRequestToRepairDescriptionMapper.Verify(x => x.Map(repairRequest.Description, repairType), Times.Once);
         mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
 
     }

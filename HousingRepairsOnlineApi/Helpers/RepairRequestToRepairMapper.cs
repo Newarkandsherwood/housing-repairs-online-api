@@ -9,7 +9,7 @@ public class RepairRequestToRepairMapper : IRepairRequestToRepairMapper
     private readonly IRepairDescriptionRequestToRepairDescriptionMapper
         repairDescriptionRequestToRepairDescriptionMapper;
 
-    public RepairRequestToRepairMapper( ISorEngineResolver sorEngineResolver, IRepairDescriptionRequestToRepairDescriptionMapper repairDescriptionRequestToRepairDescriptionMapper)
+    public RepairRequestToRepairMapper(ISorEngineResolver sorEngineResolver, IRepairDescriptionRequestToRepairDescriptionMapper repairDescriptionRequestToRepairDescriptionMapper)
     {
         this.sorEngineResolver = sorEngineResolver;
         this.repairDescriptionRequestToRepairDescriptionMapper = repairDescriptionRequestToRepairDescriptionMapper;
