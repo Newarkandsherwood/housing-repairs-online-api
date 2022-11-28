@@ -2,7 +2,7 @@
 
 namespace HousingRepairsOnlineApi.Helpers
 {
-    public interface IRepairDayWindowHelper
+    public interface IRepairPriorityDaysHelper
     {
         int GetDaysForRepair(Repair repair);
     }

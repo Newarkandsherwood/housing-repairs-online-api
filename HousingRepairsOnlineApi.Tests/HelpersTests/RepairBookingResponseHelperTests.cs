@@ -7,16 +7,16 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class RepairBookingResponseHelperTests
     {
-        private readonly RepairBookingResponseHelper _systemUnderTest;
+        private readonly RepairBookingResponseHelper systemUnderTest;
         private readonly Repair _repair = new();
         private readonly int _daysForRepair = 30;
 
         public RepairBookingResponseHelperTests()
         {
-            var repairDayWindowHelperMock = new Mock<IRepairDayWindowHelper>();
-            repairDayWindowHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(_daysForRepair);
+            var RepairPriorityDaysHelperMock = new Mock<IRepairPriorityDaysHelper>();
+            RepairPriorityDaysHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(_daysForRepair);
             _repair.Id = "repairId";
-            _systemUnderTest = new RepairBookingResponseHelper(repairDayWindowHelperMock.Object);
+            systemUnderTest = new RepairBookingResponseHelper(RepairPriorityDaysHelperMock.Object);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             _repair.RepairType = RepairType.Tenant;
 
             // Act
-            var result = _systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(_repair);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -44,7 +44,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             _repair.RepairType = RepairType.Leasehold;
 
             // Act
-            var result = _systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(_repair);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -60,7 +60,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             _repair.RepairType = RepairType.Communal;
 
             // Act
-            var result = _systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(_repair);
 
             // Assert
             Assert.IsType<CommunalRepairBookingResponse>(result);

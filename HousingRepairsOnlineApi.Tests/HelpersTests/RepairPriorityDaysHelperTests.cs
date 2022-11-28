@@ -7,25 +7,25 @@ using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
-    public class RepairDayWindowHelperTests
+    public class RepairPriorityDaysHelperTests
     {
-        private RepairDayWindowHelper systemUnderTest;
+        private RepairPriorityDaysHelper systemUnderTest;
 
         private readonly Repair _repair = new();
 
-        public RepairDayWindowHelperTests()
+        public RepairPriorityDaysHelperTests()
         {
-            IEnumerable<RepairDayWindow> repairDayWindows = new List<RepairDayWindow>()
+            IEnumerable<RepairPriorityDays> RepairPriorityDays = new List<RepairPriorityDays>()
             {
                 new() { NumberOfDays = 3, Priority = "2" },
                 new() { NumberOfDays = 30, Priority = "3" }
             };
-            systemUnderTest = new RepairDayWindowHelper(repairDayWindows);
+            systemUnderTest = new RepairPriorityDaysHelper(RepairPriorityDays);
         }
 
         [Fact]
 #pragma warning disable CA1707
-        public void GivenRepairDayWindows_WhenCallingGetDaysForRepair_ReturnsCorrectDays()
+        public void GivenRepairDayPrioritys_WhenCallingGetDaysForRepair_ReturnsCorrectDays()
 #pragma warning restore CA1707
         {
             // Arrange
@@ -40,7 +40,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         [Fact]
 #pragma warning disable CA1707
-        public void GivenRepairDayWindows_WhenCallingGetDaysForRepairForSecondWindow_ReturnsCorrectDays()
+        public void GivenRepairDayPrioritys_WhenCallingGetDaysForRepairForSecondPriority_ReturnsCorrectDays()
 #pragma warning restore CA1707
         {
             // Arrange
@@ -55,18 +55,18 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         [Fact]
 #pragma warning disable CA1707
-        public void GivenRepairDayWindows_WhenCallingGetDaysForRepairForSecondWindowWithManyResults_ReturnsFirstCorrectDays()
+        public void GivenRepairDayPrioritys_WhenCallingGetDaysForRepairForSecondPriorityWithManyResults_ReturnsFirstCorrectDays()
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairDayWindowHelper repairDayWindowHelper = new RepairDayWindowHelper(new List<RepairDayWindow>()
+            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>()
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });
             _repair.Priority = "2";
 
             // Act
-            var result = repairDayWindowHelper.GetDaysForRepair(_repair);
+            var result = repairPriorityDaysHelper.GetDaysForRepair(_repair);
 
             // Assert
             Assert.Equal(3, result);
@@ -74,15 +74,15 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         [Fact]
 #pragma warning disable CA1707
-        public void GivenNoRepairDayWindows_WhenCallingGetDaysForRepairForSecondWindowWithManyResults_Returns0()
+        public void GivenNoRepairDayPrioritys_WhenCallingGetDaysForRepairForSecondPriorityWithManyResults_Returns0()
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairDayWindowHelper repairDayWindowHelper = new RepairDayWindowHelper(new List<RepairDayWindow>());
+            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>());
             _repair.Priority = "2";
 
             // Act
-            var result = repairDayWindowHelper.GetDaysForRepair(_repair);
+            var result = repairPriorityDaysHelper.GetDaysForRepair(_repair);
 
             // Assert
             Assert.Equal(0, result);
@@ -94,7 +94,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairDayWindowHelper repairDayWindowHelper = new RepairDayWindowHelper(new List<RepairDayWindow>()
+            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>()
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });

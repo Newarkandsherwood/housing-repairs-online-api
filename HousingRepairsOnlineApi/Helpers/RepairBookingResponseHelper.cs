@@ -10,18 +10,18 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public class RepairBookingResponseHelper : IRepairBookingResponseHelper
     {
-        private IRepairDayWindowHelper repairDayWindowHelper;
+        private IRepairPriorityDaysHelper _repairPriorityDaysHelper;
 
-        public RepairBookingResponseHelper(IRepairDayWindowHelper repairDayWindowHelper)
+        public RepairBookingResponseHelper(IRepairPriorityDaysHelper repairPriorityDaysHelper)
         {
-            this.repairDayWindowHelper = repairDayWindowHelper;
+            this._repairPriorityDaysHelper = repairPriorityDaysHelper;
         }
 
         public dynamic GetRepairBookingResponse(Repair repair)
         {
             if (repair.RepairType == RepairType.Communal)
             {
-                var daysForRepair = repairDayWindowHelper.GetDaysForRepair(repair);
+                var daysForRepair = _repairPriorityDaysHelper.GetDaysForRepair(repair);
                 return new CommunalRepairBookingResponse() { Id = repair.Id, DaysForRepair = daysForRepair };
             }
             return new RepairBookingResponse() { Id = repair.Id };

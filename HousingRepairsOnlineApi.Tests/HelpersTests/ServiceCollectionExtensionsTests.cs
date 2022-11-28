@@ -122,7 +122,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Arrange
 
             // Act
-            Action act = () => ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(configJson);
+            Action act = () => ServiceCollectionExtensions.ParseRepairPriorityToDaysConfigurationJson(configJson);
 
             // Assert
             act.Should().Throw<InvalidOperationException>().WithInnerException<T>();
@@ -495,7 +495,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Arrange
 
             // Act
-            Action act = () => _ = ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(null);
+            Action act = () => _ = ServiceCollectionExtensions.ParseRepairPriorityToDaysConfigurationJson(null);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>();
@@ -509,7 +509,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Arrange
 
             // Act
-            Action act = () => _ = ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(string.Empty);
+            Action act = () => _ = ServiceCollectionExtensions.ParseRepairPriorityToDaysConfigurationJson(string.Empty);
 
             // Assert
             act.Should().ThrowExactly<ArgumentException>();
@@ -533,7 +533,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
                     ]";
 
             // Act
-            var act = ServiceCollectionExtensions.ParseRepairDaysConfigurationJson(configData);
+            var act = ServiceCollectionExtensions.ParseRepairPriorityToDaysConfigurationJson(configData);
 
             // Assert
             Assert.Equal(2, act.Count());

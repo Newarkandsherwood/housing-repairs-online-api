@@ -8,13 +8,13 @@ using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.Helpers
 {
-    public class RepairDayWindowHelper : IRepairDayWindowHelper
+    public class RepairPriorityDaysHelper : IRepairPriorityDaysHelper
     {
-        private IEnumerable<RepairDayWindow> _repairDayWindows;
+        private IEnumerable<RepairPriorityDays> repairPriorityDays;
 
-        public RepairDayWindowHelper(IEnumerable<RepairDayWindow> repairDayWindows)
+        public RepairPriorityDaysHelper(IEnumerable<RepairPriorityDays> repairPriorityDays)
         {
-            this._repairDayWindows = repairDayWindows;
+            this.repairPriorityDays = repairPriorityDays;
         }
 
         public int GetDaysForRepair(Repair repair)
@@ -22,9 +22,9 @@ namespace HousingRepairsOnlineApi.Helpers
             Guard.Against.Null(repair, nameof(repair));
 
             var result = 0;
-            if (_repairDayWindows != null && _repairDayWindows.Any())
+            if (repairPriorityDays != null && repairPriorityDays.Any())
             {
-                result = _repairDayWindows.First(r => r.Priority == repair.Priority).NumberOfDays;
+                result = repairPriorityDays.First(r => r.Priority == repair.Priority).NumberOfDays;
             }
             return result;
         }
