@@ -92,7 +92,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         }
         [Fact]
 #pragma warning disable CA1707
-        public void GivenNoRepairDayPrioritys_WhenCallingGetDaysForRepairForSecondPriorityWithManyResults_Returns0()
+        public void GivenNoRepairDayPriorities_WhenCallingGetDaysForRepair_Returns0()
 #pragma warning restore CA1707
         {
             // Arrange
@@ -108,15 +108,28 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         [Fact]
 #pragma warning disable CA1707
+        public void GivenNoMatchingRepairDayPriorities_WhenCallingGetDaysForRepair_Returns0()
+#pragma warning restore CA1707
+        {
+            // Arrange
+            var repairPriorityDaysHelper = new RepairPriorityDaysHelper(new RepairPriorityDays[]
+            {
+                new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 130, Priority = "4" }
+            });
+            repair.Priority = "5";
+
+            // Act
+            var result = repairPriorityDaysHelper.GetDaysForRepair(repair);
+
+            // Assert
+            Assert.Equal(0, result);
+        }
+        [Fact]
+#pragma warning disable CA1707
         public void GivenNullRepair_WhenCallingGetDaysForRepair_throwsException()
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new RepairPriorityDays[]
-            {
-                new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
-            });
-            repair.Priority = "2";
 
             // Act
             Action act = () => _ = systemUnderTest.GetDaysForRepair(null);

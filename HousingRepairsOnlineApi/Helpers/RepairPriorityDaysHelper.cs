@@ -24,7 +24,11 @@ namespace HousingRepairsOnlineApi.Helpers
             var result = 0;
             if (repairPriorityDays != null && repairPriorityDays.Any())
             {
-                result = repairPriorityDays.First(r => r.Priority == repair.Priority).NumberOfDays;
+                var repairPriorityDay = repairPriorityDays.FirstOrDefault(r => r.Priority == repair.Priority);
+                if (repairPriorityDay != null)
+                {
+                    result = repairPriorityDay.NumberOfDays;
+                }
             }
             return result;
         }
