@@ -62,6 +62,6 @@ public class AppointmentTimeToRepairAvailabilityMapperTests
         var actual = systemUnderTest.Map(appointmentTime);
 
         // Assert
-        actual.Display.Should().Be("23 November 2022 between 8:00am to 12:00pm");
+        actual.Display.Should().Be("23 November 2022 between 8:00AM to 12:00PM");
     }
 }
