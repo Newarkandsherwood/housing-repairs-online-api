@@ -11,7 +11,7 @@ namespace HousingRepairsOnlineApi.Helpers
             this.repairPriorityDaysHelper = repairPriorityDaysHelper;
         }
 
-        public dynamic MapRepairBookingResponse(Repair repair, bool includeDays)
+        public RepairBookingResponse MapRepairBookingResponse(Repair repair, bool includeDays)
         {
             if (includeDays)
             {

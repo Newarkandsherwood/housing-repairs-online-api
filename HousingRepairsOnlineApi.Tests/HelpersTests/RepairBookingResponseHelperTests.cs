@@ -65,7 +65,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             // Assert
             Assert.IsType<RepairBookingResponseWithDays>(result);
             Assert.Equal(result.Id, repair.Id);
-            Assert.Equal(result.DaysForRepair, daysForRepair);
+            Assert.Equal(((RepairBookingResponseWithDays)result).DaysForRepair, daysForRepair);
         }
     }
 }
