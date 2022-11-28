@@ -74,6 +74,24 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         [Fact]
 #pragma warning disable CA1707
+        public void GivenRepairDayPrioritys_WhenCallingGetDaysForRepairForMultipleWithSamePriority_ReturnsFirstCorrectDays()
+#pragma warning restore CA1707
+        {
+            // Arrange
+            var repairPriorityDaysHelper = new RepairPriorityDaysHelper(new RepairPriorityDays[]
+            {
+                new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "2" }, new() { NumberOfDays = 130, Priority = "2" }
+            });
+            repair.Priority = "2";
+
+            // Act
+            var result = repairPriorityDaysHelper.GetDaysForRepair(repair);
+
+            // Assert
+            Assert.Equal(3, result);
+        }
+        [Fact]
+#pragma warning disable CA1707
         public void GivenNoRepairDayPrioritys_WhenCallingGetDaysForRepairForSecondPriorityWithManyResults_Returns0()
 #pragma warning restore CA1707
         {
