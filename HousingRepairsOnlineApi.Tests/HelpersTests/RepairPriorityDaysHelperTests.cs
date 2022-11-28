@@ -15,7 +15,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 
         public RepairPriorityDaysHelperTests()
         {
-            IEnumerable<RepairPriorityDays> RepairPriorityDays = new List<RepairPriorityDays>()
+            IEnumerable<RepairPriorityDays> RepairPriorityDays = new RepairPriorityDays[]
             {
                 new() { NumberOfDays = 3, Priority = "2" },
                 new() { NumberOfDays = 30, Priority = "3" }
@@ -59,7 +59,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>()
+            var repairPriorityDaysHelper = new RepairPriorityDaysHelper(new RepairPriorityDays[]
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });
@@ -78,7 +78,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>());
+            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(Array.Empty<RepairPriorityDays>());
             repair.Priority = "2";
 
             // Act
@@ -94,7 +94,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>()
+            RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new RepairPriorityDays[]
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });
