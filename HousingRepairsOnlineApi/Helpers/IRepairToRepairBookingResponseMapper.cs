@@ -4,8 +4,8 @@ using Microsoft.Azure.Cosmos;
 
 namespace HousingRepairsOnlineApi.Helpers
 {
-    public interface IRepairBookingResponseHelper
+    public interface IRepairToRepairBookingResponseMapper
     {
-        dynamic GetRepairBookingResponse(Repair repair);
+        dynamic GetRepairBookingResponse(Repair repair, bool includeDays);
     }
 }

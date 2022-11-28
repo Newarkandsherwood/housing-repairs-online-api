@@ -7,7 +7,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 {
     public class RepairBookingResponseHelperTests
     {
-        private readonly RepairBookingResponseHelper systemUnderTest;
+        private readonly RepairToRepairBookingResponseMapper systemUnderTest;
         private readonly Repair repair = new();
         private readonly int daysForRepair = 30;
 
@@ -16,7 +16,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             var RepairPriorityDaysHelperMock = new Mock<IRepairPriorityDaysHelper>();
             RepairPriorityDaysHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(daysForRepair);
             repair.Id = "repairId";
-            systemUnderTest = new RepairBookingResponseHelper(RepairPriorityDaysHelperMock.Object);
+            systemUnderTest = new RepairToRepairBookingResponseMapper(RepairPriorityDaysHelperMock.Object);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Tenant;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair, false);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -44,7 +44,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Leasehold;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair, false);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
@@ -60,10 +60,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             repair.RepairType = RepairType.Communal;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair, true);
 
             // Assert
-            Assert.IsType<CommunalRepairBookingResponse>(result);
+            Assert.IsType<RepairBookingResponseWithDays>(result);
             Assert.Equal(result.Id, repair.Id);
             Assert.Equal(result.DaysForRepair, daysForRepair);
         }

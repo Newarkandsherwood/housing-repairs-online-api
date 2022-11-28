@@ -79,7 +79,7 @@ namespace HousingRepairsOnlineApi
             var repairDays = ServiceCollectionExtensions.ParseRepairPriorityToDaysConfigurationJson(repairPriorityToDays);
             services.AddTransient(_ => repairDays);
             services.AddTransient<IRepairPriorityDaysHelper, RepairPriorityDaysHelper>();
-            services.AddTransient<IRepairBookingResponseHelper, RepairBookingResponseHelper>();
+            services.AddTransient<IRepairToRepairBookingResponseMapper, RepairToRepairBookingResponseMapper>();
 
             services.AddTransient<IAllowedAppointmentsFactory, AllowedAppointmentsFactory>();
 

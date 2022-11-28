@@ -1,9 +1,8 @@
 ﻿
 namespace HousingRepairsOnlineApi.Domain
 {
-    public class CommunalRepairBookingResponse
+    public class RepairBookingResponseWithDays: RepairBookingResponse
     {
-        public string Id { get; set; }
         public int DaysForRepair { get; set; }
     }
 }

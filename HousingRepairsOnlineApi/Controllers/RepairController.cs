@@ -18,7 +18,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
-        private readonly IRepairBookingResponseHelper repairBookingResponseHelper;
+        private readonly IRepairToRepairBookingResponseMapper _repairToRepairBookingResponseMapper;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
 
         public RepairController(
@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Controllers
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
-            IRepairBookingResponseHelper repairBookingResponseHelper,
+            IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper,
             IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
@@ -36,7 +36,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
-            this.repairBookingResponseHelper = repairBookingResponseHelper;
+            this._repairToRepairBookingResponseMapper = repairToRepairBookingResponseMapper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
         }
@@ -83,7 +83,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 return StatusCode(500, statusMessage);
             }
 
-            return await SaveRepair(RepairType.Communal, repairRequest);
+            return await SaveRepair(RepairType.Communal, repairRequest, true);
         }
 
         private async Task<bool> UpdateRepairRequestWithCommunalAppointment(RepairRequest repairRequest)
@@ -101,7 +101,8 @@ namespace HousingRepairsOnlineApi.Controllers
             return appointmentFound;
         }
 
-        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest,
+            bool includeDays = false)
         {
             try
             {
@@ -113,7 +114,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
 
-                var repairBookingResponse = repairBookingResponseHelper.GetRepairBookingResponse(result);
+                var repairBookingResponse = _repairToRepairBookingResponseMapper.GetRepairBookingResponse(result, includeDays);
 
                 return Ok(repairBookingResponse);
             }
