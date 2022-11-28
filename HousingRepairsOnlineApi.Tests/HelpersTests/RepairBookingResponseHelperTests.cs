@@ -8,14 +8,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     public class RepairBookingResponseHelperTests
     {
         private readonly RepairBookingResponseHelper systemUnderTest;
-        private readonly Repair _repair = new();
-        private readonly int _daysForRepair = 30;
+        private readonly Repair repair = new();
+        private readonly int daysForRepair = 30;
 
         public RepairBookingResponseHelperTests()
         {
             var RepairPriorityDaysHelperMock = new Mock<IRepairPriorityDaysHelper>();
-            RepairPriorityDaysHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(_daysForRepair);
-            _repair.Id = "repairId";
+            RepairPriorityDaysHelperMock.Setup(_ => _.GetDaysForRepair(It.IsAny<Repair>())).Returns(daysForRepair);
+            repair.Id = "repairId";
             systemUnderTest = new RepairBookingResponseHelper(RepairPriorityDaysHelperMock.Object);
         }
 
@@ -25,14 +25,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            _repair.RepairType = RepairType.Tenant;
+            repair.RepairType = RepairType.Tenant;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id);
+            Assert.Equal(result.Id, repair.Id);
         }
 
         [Fact]
@@ -41,14 +41,14 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            _repair.RepairType = RepairType.Leasehold;
+            repair.RepairType = RepairType.Leasehold;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair);
 
             // Assert
             Assert.IsType<RepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id);
+            Assert.Equal(result.Id, repair.Id);
         }
 
         [Fact]
@@ -57,15 +57,15 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            _repair.RepairType = RepairType.Communal;
+            repair.RepairType = RepairType.Communal;
 
             // Act
-            var result = systemUnderTest.GetRepairBookingResponse(_repair);
+            var result = systemUnderTest.GetRepairBookingResponse(repair);
 
             // Assert
             Assert.IsType<CommunalRepairBookingResponse>(result);
-            Assert.Equal(result.Id, _repair.Id);
-            Assert.Equal(result.DaysForRepair, _daysForRepair);
+            Assert.Equal(result.Id, repair.Id);
+            Assert.Equal(result.DaysForRepair, daysForRepair);
         }
     }
 }

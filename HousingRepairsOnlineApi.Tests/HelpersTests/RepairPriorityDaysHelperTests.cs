@@ -11,7 +11,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     {
         private RepairPriorityDaysHelper systemUnderTest;
 
-        private readonly Repair _repair = new();
+        private readonly Repair repair = new();
 
         public RepairPriorityDaysHelperTests()
         {
@@ -29,10 +29,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            _repair.Priority = "2";
+            repair.Priority = "2";
 
             // Act
-            var result = systemUnderTest.GetDaysForRepair(_repair);
+            var result = systemUnderTest.GetDaysForRepair(repair);
 
             // Assert
             Assert.Equal(3, result);
@@ -44,10 +44,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
 #pragma warning restore CA1707
         {
             // Arrange
-            _repair.Priority = "3";
+            repair.Priority = "3";
 
             // Act
-            var result = systemUnderTest.GetDaysForRepair(_repair);
+            var result = systemUnderTest.GetDaysForRepair(repair);
 
             // Assert
             Assert.Equal(30, result);
@@ -63,10 +63,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });
-            _repair.Priority = "2";
+            repair.Priority = "2";
 
             // Act
-            var result = repairPriorityDaysHelper.GetDaysForRepair(_repair);
+            var result = repairPriorityDaysHelper.GetDaysForRepair(repair);
 
             // Assert
             Assert.Equal(3, result);
@@ -79,10 +79,10 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         {
             // Arrange
             RepairPriorityDaysHelper repairPriorityDaysHelper = new RepairPriorityDaysHelper(new List<RepairPriorityDays>());
-            _repair.Priority = "2";
+            repair.Priority = "2";
 
             // Act
-            var result = repairPriorityDaysHelper.GetDaysForRepair(_repair);
+            var result = repairPriorityDaysHelper.GetDaysForRepair(repair);
 
             // Assert
             Assert.Equal(0, result);
@@ -98,7 +98,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             {
                 new() { NumberOfDays = 3, Priority = "2" }, new() { NumberOfDays = 30, Priority = "3" }, new() { NumberOfDays = 3, Priority = "7" }
             });
-            _repair.Priority = "2";
+            repair.Priority = "2";
 
             // Act
             Action act = () => _ = systemUnderTest.GetDaysForRepair(null);
