@@ -19,6 +19,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
+        private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -27,7 +28,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
-            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper)
+            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
+            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -36,6 +38,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
+            this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
         }
 
         [HttpGet]
@@ -68,7 +71,10 @@ namespace HousingRepairsOnlineApi.Controllers
                 {
                     return NotFound("Repair request not found for postcode and repairId provided.");
                 }
-                return Ok(result);
+
+                var response = repairToFindRepairResponseMapper.Map(result);
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

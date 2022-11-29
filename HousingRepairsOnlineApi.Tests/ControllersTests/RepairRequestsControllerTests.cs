@@ -22,6 +22,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IAppointmentConfirmationSender> appointmentConfirmationSender;
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
         private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
+        private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -48,9 +49,11 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveAvailableCommunalAppointmentUseCaseMock = new Mock<IRetrieveAvailableCommunalAppointmentUseCase>();
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
+            repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
-                retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, appointmentTimeToRepairAvailabilityMapperMock.Object);
+                retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
+                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object);
         }
 
         [Fact]
@@ -136,7 +139,7 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
                 .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
                     repairTypesUsed = repairTypes.ToArray())
-                .ReturnsAsync(new RepairRequestSummary());
+                .ReturnsAsync(new Repair());
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepair(postcode, repairId);
