@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.UseCases
             return await cosmosGateway.SearchByPropertyReference(repairType, propertyReference);
         }
 
-        public async Task<RepairRequestSummary> Execute(IEnumerable<string> repairTypes, string postcode, string repairId)
+        public async Task<Repair> Execute(IEnumerable<string> repairTypes, string postcode, string repairId)
         {
             Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
             Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));

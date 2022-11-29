@@ -8,6 +8,6 @@ namespace HousingRepairsOnlineApi.Gateways
     {
         Task<Repair> AddRepair(Repair repair);
         Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string repairType, string propertyReference);
-        Task<IEnumerable<RepairRequestSummary>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string id, string repairId);
+        Task<IEnumerable<Repair>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string id, string repairId);
     }
 }

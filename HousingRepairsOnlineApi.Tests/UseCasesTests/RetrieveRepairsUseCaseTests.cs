@@ -84,7 +84,7 @@ public class RetrieveRepairsUseCaseTests
         // Arrange
         var repairTypes = new[] { "repairType" };
         repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId))
-            .ReturnsAsync(new[] { new RepairRequestSummary(), new RepairRequestSummary() });
+            .ReturnsAsync(new[] { new Repair(), new Repair() });
 
         // Act
         var actual = await systemUnderTest.Execute(repairTypes, Postcode, RepairId);
@@ -99,7 +99,7 @@ public class RetrieveRepairsUseCaseTests
         // Arrange
         var repairTypes = new[] { "repairType" };
         repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId))
-            .ReturnsAsync(new[] { new RepairRequestSummary(), new RepairRequestSummary() });
+            .ReturnsAsync(new[] { new Repair(), new Repair() });
 
         // Act
         var actual = await systemUnderTest.Execute(repairTypes, Postcode, RepairId);
