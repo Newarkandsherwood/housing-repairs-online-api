@@ -25,7 +25,7 @@ namespace HousingRepairsOnlineApi.Helpers
                 x.Id.ToUpper() == repairId.ToUpper()
                 && x.Postcode.Replace(" ", "").ToUpper() == postcode.Replace(" ", "").ToUpper()
                 && repairTypesUppercase.Contains(x.RepairType.ToUpper())
-                && x.Time.StartDateTime.Date > DateTime.Today.Date
+                && x.Time.StartDateTime > DateTime.Today.Date
             );
 
             var result = query.ToFeedIterator();
