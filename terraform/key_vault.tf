@@ -184,9 +184,9 @@ resource "azurerm_key_vault_secret" "storage-container-name-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "repair-days-mapping-staging" {
-  name         = "repair-days-mapping-staging"
-  value        = var.repair_days_mapping_staging
+resource "azurerm_key_vault_secret" "repair-priority-to-days-staging" {
+  name         = "repair-priority-to-days-staging"
+  value        = var.repair_priority_to_days_staging
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
@@ -277,8 +277,8 @@ resource "azurerm_key_vault_secret" "storage-container-name-production" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
-resource "azurerm_key_vault_secret" "repair-days-mapping-production" {
-  name         = "repair-days-mapping-production"
-  value        = var.repair_days_mapping_production
+resource "azurerm_key_vault_secret" "repair-priority-to-days-production" {
+  name         = "repair-priority-to-days-production"
+  value        = var.repair_priority_to_days_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }

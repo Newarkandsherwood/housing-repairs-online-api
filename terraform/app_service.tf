@@ -55,7 +55,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     SOR_CONFIGURATION_LEASEHOLD                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-leasehold-production.id})"
     ALLOWED_APPOINTMENT_SLOTS                       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-production.id})"
     STORAGE_CONTAINER_NAME                          = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-production.id})"
-    REPAIR_DAYS_MAPPING                             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-days-mapping-production.id})"
+    REPAIR_PRIORITY_TO_DAYS                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-priority-to-days-production.id})"
   }
 
   auth_settings {
@@ -108,7 +108,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     SOR_CONFIGURATION_LEASEHOLD                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-leasehold-staging.id})"
     ALLOWED_APPOINTMENT_SLOTS                       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-staging.id})"
     STORAGE_CONTAINER_NAME                          = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-staging.id})"
-    REPAIR_DAYS_MAPPING                             = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-days-mapping-staging.id})"
+    REPAIR_PRIORITY_TO_DAYS                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-priority-to-days-staging.id})"
   }
 
   auth_settings {
