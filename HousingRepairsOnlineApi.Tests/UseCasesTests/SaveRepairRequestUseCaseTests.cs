@@ -84,7 +84,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
             mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
-            mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Priority == Priority && p.Description.PhotoUrl == ImgUrl)), Times.Once);
+            mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.SOR == RepairCode && p.Priority == Priority && p.Description.PhotoUrl == ImgUrl && p.Status == RepairStatus.Scheduled)), Times.Once);
         }
 
         [Fact]

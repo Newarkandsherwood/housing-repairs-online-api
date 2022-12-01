@@ -48,6 +48,7 @@ namespace HousingRepairsOnlineApi.UseCases
                 },
                 SOR = repairTriageDetails.ScheduleOfRateCode,
                 Priority = repairTriageDetails.Priority,
+                Status = RepairStatus.Scheduled
             };
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))
