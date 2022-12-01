@@ -14,7 +14,7 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
-        public FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference)
+        public FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReference)
         {
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>().Where(x =>
                 x.RepairType.ToUpper() == repairType.ToUpper()
