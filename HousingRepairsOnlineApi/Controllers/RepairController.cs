@@ -20,6 +20,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
         private readonly IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
+        private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -29,7 +30,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
             IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper,
-            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper)
+            IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
+            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -39,6 +41,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.repairToRepairBookingResponseMapper = repairToRepairBookingResponseMapper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
+            this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
         }
 
         [HttpGet]
@@ -49,6 +52,32 @@ namespace HousingRepairsOnlineApi.Controllers
             {
                 var result = await retrieveRepairsUseCase.Execute(RepairType.Communal, propertyReference);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("TenantOrLeaseholdPropertyRepair")]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepair([FromQuery] string postcode, [FromQuery] string repairId)
+        {
+            try
+            {
+                var result = await retrieveRepairsUseCase.Execute(
+                    new[] { RepairType.Tenant, RepairType.Leasehold },
+                    postcode, repairId);
+
+                if (result == null)
+                {
+                    return NotFound("Repair request not found for postcode and repairId provided.");
+                }
+
+                var response = repairToFindRepairResponseMapper.Map(result);
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

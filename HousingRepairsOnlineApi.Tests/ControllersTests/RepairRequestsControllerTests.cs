@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Controllers;
@@ -21,6 +23,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
         private Mock<IRepairToRepairBookingResponseMapper> repairBookingResponseHelper;
         private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
+        private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -48,7 +51,12 @@ namespace HousingRepairsOnlineApi.Tests
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             repairBookingResponseHelper = new Mock<IRepairToRepairBookingResponseMapper>();
             appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
-            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object, appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object, retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object, repairBookingResponseHelper.Object, appointmentTimeToRepairAvailabilityMapperMock.Object);
+            repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
+            systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
+                appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
+                retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
+                repairBookingResponseHelper.Object,
+                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object);
         }
 
         [Fact]
@@ -120,6 +128,46 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(RepairType.Communal, repairRequest), Times.Once);
             retrieveAvailableCommunalAppointmentUseCaseMock.Verify(x => x.Execute(repairRequest.Location.Value,
                 repairRequest.Problem.Value, repairRequest.Issue.Value, repairRequest.Address.LocationId));
+        }
+
+        [Fact]
+        public async Task TestTenantOrLeaseholdPropertyRepairEndpoint()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            string[] repairTypesUsed = null;
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
+                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+                    repairTypesUsed = repairTypes.ToArray())
+                .ReturnsAsync(new Repair());
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepair(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            repairTypesUsed.Should().NotBeNull();
+            repairTypesUsed.Should().BeEquivalentTo(new[] { RepairType.Leasehold, RepairType.Tenant });
+            retrieveRepairsUseCaseMock.Verify(x => x.Execute(repairTypesUsed, postcode, repairId));
+        }
+
+        [Fact]
+        public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepair_ThenStatusIs404()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId));
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepair(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(404);
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()

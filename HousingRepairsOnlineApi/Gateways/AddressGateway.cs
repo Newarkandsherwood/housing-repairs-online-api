@@ -11,7 +11,7 @@ namespace HousingRepairsOnlineApi.Gateways
     public class AddressGateway : IAddressGateway
     {
         private readonly HttpClient httpClient;
-        private string authenticationIdentifier;
+        private readonly string authenticationIdentifier;
 
         public AddressGateway(HttpClient httpClient, string authenticationIdentifier)
         {

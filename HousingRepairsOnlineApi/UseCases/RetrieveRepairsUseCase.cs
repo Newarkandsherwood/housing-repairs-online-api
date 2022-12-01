@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 using HousingRepairsOnlineApi.Helpers;
@@ -24,6 +26,23 @@ namespace HousingRepairsOnlineApi.UseCases
                 throw new ArgumentNullException(nameof(propertyReference));
 
             return await cosmosGateway.SearchByPropertyReference(repairType, propertyReference);
+        }
+
+        public async Task<Repair> Execute(IEnumerable<string> repairTypes, string postcode, string repairId)
+        {
+            Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
+            Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));
+            Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
+
+            var searchTask = cosmosGateway.SearchByPostcodeAndId(repairTypes, postcode, repairId);
+
+            var result = await searchTask.ContinueWith(x =>
+            {
+                var repairRequestSummaries = x.Result.ToArray();
+                return repairRequestSummaries.Length == 1 ? repairRequestSummaries[0] : null;
+            });
+
+            return result;
         }
     }
 }

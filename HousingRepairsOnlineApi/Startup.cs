@@ -88,6 +88,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IBookAppointmentUseCase, BookAppointmentUseCase>();
             services.AddTransient<IRetrieveAvailableCommunalAppointmentUseCase, RetrieveAvailableCommunalAppointmentUseCase>();
             services.AddTransient<IAppointmentTimeToRepairAvailabilityMapper, AppointmentTimeToRepairAvailabilityMapper>();
+            services.AddTransient<IRepairToFindRepairResponseMapper, RepairToFindRepairResponseMapper>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
 
@@ -148,6 +149,10 @@ namespace HousingRepairsOnlineApi
                 var notifyGateway = s.GetService<INotifyGateway>();
                 return new SendInternalEmailUseCase(notifyGateway, internalEmail);
             });
+            services.AddTransient<IRepairRequestToRepairMapper, RepairRequestToRepairMapper>();
+            services
+                .AddTransient<IRepairDescriptionRequestToRepairDescriptionMapper,
+                    RepairDescriptionRequestToRepairDescriptionMapper>();
 
             services.AddHousingRepairsOnlineAuthentication(HousingRepairsOnlineApiIssuerId);
             services.AddTransient<ISaveRepairRequestUseCase, SaveRepairRequestUseCase>();

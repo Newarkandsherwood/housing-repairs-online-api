@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using HACT.Dtos;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
@@ -11,7 +13,7 @@ namespace HousingRepairsOnlineApi.Gateways
 {
     public class CosmosGateway : IRepairStorageGateway
     {
-        private Container cosmosContainer;
+        private readonly Container cosmosContainer;
         private readonly IIdGenerator idGenerator;
         private readonly IRepairQueryHelper repairQueryHelper;
 
@@ -28,14 +30,13 @@ namespace HousingRepairsOnlineApi.Gateways
         public async Task<Repair> AddRepair(Repair repair)
         {
             repair.Id = idGenerator.Generate();
-
             try
             {
                 ItemResponse<Repair> itemResponse = await cosmosContainer.CreateItemAsync(repair);
 
                 return itemResponse.Resource;
             }
-            catch (CosmosException ex)
+            catch (CosmosException)
             {
                 var newRepair = await AddRepair(repair);
                 return newRepair;
@@ -67,5 +68,22 @@ namespace HousingRepairsOnlineApi.Gateways
             return repairs;
         }
 
+        public async Task<IEnumerable<Repair>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string postcode, string repairId)
+        {
+            Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
+            Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));
+            Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
+
+            using var queryResultSetIterator = repairQueryHelper.GetRepairSearchIterator(repairTypes, postcode, repairId);
+            IEnumerable<Repair> repairs = Array.Empty<Repair>();
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                var currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                repairs = currentResultSet.Select(repair => repair);
+            }
+
+            return repairs;
+        }
     }
 }

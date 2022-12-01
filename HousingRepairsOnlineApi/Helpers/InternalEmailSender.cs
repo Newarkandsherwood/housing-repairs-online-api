@@ -7,9 +7,9 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public class InternalEmailSender : IInternalEmailSender
     {
-        private IRetrieveImageLinkUseCase retrieveImageLinkUseCase;
-        private ISendInternalEmailUseCase sendInternalEmailUseCase;
-        private INotificationConfigurationResolver notificationConfigurationResolver;
+        private readonly IRetrieveImageLinkUseCase retrieveImageLinkUseCase;
+        private readonly ISendInternalEmailUseCase sendInternalEmailUseCase;
+        private readonly INotificationConfigurationResolver notificationConfigurationResolver;
 
         public InternalEmailSender(IRetrieveImageLinkUseCase retrieveImageLinkUseCase, ISendInternalEmailUseCase sendInternalEmailUseCase, INotificationConfigurationResolver notificationConfigurationResolver)
         {
