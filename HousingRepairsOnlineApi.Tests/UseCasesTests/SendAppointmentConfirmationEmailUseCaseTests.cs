@@ -13,10 +13,10 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
     {
         private readonly Mock<INotifyGateway> govNotifyGatewayMock;
         private readonly SendAppointmentConfirmationEmailUseCase systemUnderTest;
-        private Dictionary<string, dynamic> personalisation = new()
+        private readonly Dictionary<string, dynamic> personalisation = new()
         {
-            {"repair_ref", "2"},
-            {"appointment_time", ""}
+            { "repair_ref", "2" },
+            { "appointment_time", "" }
         };
         private readonly string templateId = "456";
 

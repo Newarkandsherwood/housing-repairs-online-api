@@ -10,8 +10,8 @@ namespace HousingRepairsOnlineApi.Tests
 {
     public class AddressesControllerTests : ControllerTests
     {
-        private AddressesController systemUnderTest;
-        private Mock<IRetrieveAddressesUseCase> retrieveAddressesUseCaseMock;
+        private readonly AddressesController systemUnderTest;
+        private readonly Mock<IRetrieveAddressesUseCase> retrieveAddressesUseCaseMock;
         private const string Postcode = "M3 0W";
 
         public AddressesControllerTests()

@@ -46,7 +46,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                dummyRepair,
                null,
                null,
-               default(CancellationToken)
+               default
                )).ReturnsAsync(responseMock.Object);
 
             var actual = await azureStorageGateway.AddRepair(dummyRepair);
@@ -72,7 +72,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 dummyRepair,
                 null,
                 null,
-                default(CancellationToken)
+                default
             )).Callback(() =>
                 {
                     if (dummyRepair.Id == conflictId)

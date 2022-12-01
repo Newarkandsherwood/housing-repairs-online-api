@@ -11,13 +11,13 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
     {
         private readonly Mock<ISendAppointmentConfirmationEmailUseCase> sendAppointmentConfirmationEmailUseCaseMock;
         private readonly Mock<ISendAppointmentConfirmationSmsUseCase> sendAppointmentConfirmationSmsUseCaseMock;
-        private Mock<INotificationConfigurationResolver> notificationConfigurationResolver;
-        private Mock<INotificationConfigurationProvider> notificationConfigurationProvider;
+        private readonly Mock<INotificationConfigurationResolver> notificationConfigurationResolver;
+        private readonly Mock<INotificationConfigurationProvider> notificationConfigurationProvider;
         private readonly AppointmentConfirmationSender systemUnderTest;
         private readonly Dictionary<string, dynamic> personalisation = new()
         {
-            {"repair_ref", "2"},
-            {"appointment_time", ""}
+            { "repair_ref", "2" },
+            { "appointment_time", "" }
         };
         private readonly string emailTemplateId = "123";
         private readonly string smsTemplateId = "456";
