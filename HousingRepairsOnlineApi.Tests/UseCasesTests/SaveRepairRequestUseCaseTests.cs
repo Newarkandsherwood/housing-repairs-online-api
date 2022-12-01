@@ -34,7 +34,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenARepairRequestWithImageARepairIsSaved()
+        public async void GivenARepairRequestWithImageARepairIsSavedWithScheduledStatus()
         {
             const string Location = "kitchen";
             const string Problem = "cupboards";
@@ -75,11 +75,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
             mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue), Times.Once);
-            mockCosmosGateway.Verify(x => x.AddRepair(It.IsAny<Repair>()), Times.Once);
+            mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
         }
 
         [Fact]
-        public async void GivenARepairRequestWithoutAnImageARepairIsSaved()
+        public async void GivenARepairRequestWithoutAnImageARepairIsSavedWithScheduledStatus()
         {
             const string Location = "kitchen";
             const string Problem = "cupboards";
@@ -124,7 +124,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
 
             mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue), Times.Once);
-            mockCosmosGateway.Verify(x => x.AddRepair(It.IsAny<Repair>()), Times.Once);
+            mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
         }
 
