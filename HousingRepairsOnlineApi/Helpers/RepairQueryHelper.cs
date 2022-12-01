@@ -19,6 +19,7 @@ namespace HousingRepairsOnlineApi.Helpers
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>().Where(x =>
                 x.RepairType.ToUpper() == repairType.ToUpper()
                 && x.Address.LocationId == propertyReference
+                && x.Time.StartDateTime > DateTime.Today.Date
             );
 
             var result = query.ToFeedIterator();
