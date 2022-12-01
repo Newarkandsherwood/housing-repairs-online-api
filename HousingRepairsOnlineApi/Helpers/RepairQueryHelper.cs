@@ -14,8 +14,17 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
-        public FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference) =>
-            cosmosContainer.Container.GetItemQueryIterator<Repair>(GetQueryDefinition(repairType, propertyReference));
+        public FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference)
+        {
+            var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>().Where(x =>
+                x.RepairType.ToUpper() == repairType.ToUpper()
+                && x.Address.LocationId == propertyReference
+            );
+
+            var result = query.ToFeedIterator();
+
+            return result;
+        }
 
         public FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId)
         {
@@ -31,15 +40,6 @@ namespace HousingRepairsOnlineApi.Helpers
             var result = query.ToFeedIterator();
 
             return result;
-        }
-
-        private static QueryDefinition GetQueryDefinition(string repairType, string propertyReference)
-        {
-            var query =
-                "SELECT * FROM c WHERE UPPER(c.RepairType) = UPPER(@repairType) AND c.Address.LocationId = @propertyReference ORDER BY c.Time.StartDateTime ASC";
-            return new QueryDefinition(query)
-                .WithParameter("@repairType", repairType)
-                .WithParameter("@propertyReference", propertyReference);
         }
     }
 }
