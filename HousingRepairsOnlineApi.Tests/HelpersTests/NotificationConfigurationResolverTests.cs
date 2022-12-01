@@ -19,7 +19,7 @@ public class NotificationConfigurationResolverTests
     {
         tenantNotificationConfigurationProvider = new Mock<TenantNotificationConfigurationProvider>("", "", "");
 
-        Dictionary<string, INotificationConfigurationProvider> notificationConfigurationProviders =
+        var notificationConfigurationProviders =
             new Dictionary<string, INotificationConfigurationProvider>();
         notificationConfigurationProviders.Add("TENANT", tenantNotificationConfigurationProvider.Object);
 

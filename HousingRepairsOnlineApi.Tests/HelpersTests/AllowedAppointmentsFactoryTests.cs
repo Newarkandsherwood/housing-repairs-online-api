@@ -12,13 +12,13 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests;
 public class AllowedAppointmentsFactoryTests
 {
     private AllowedAppointmentsFactory systemUnderTest;
-    private AppointmentSlotTimeSpan[] allAllowedAppointmentSlots;
-    private Dictionary<string, IAppointmentSlotsFilter> appointmentSlotsFilterByRepairType;
+    private readonly AppointmentSlotTimeSpan[] allAllowedAppointmentSlots;
+    private readonly Dictionary<string, IAppointmentSlotsFilter> appointmentSlotsFilterByRepairType;
 
-    private AppointmentSlotTimeSpan firstAppointmentSlotTimeSpan =
+    private readonly AppointmentSlotTimeSpan firstAppointmentSlotTimeSpan =
         new() { StartTime = new TimeSpan(8, 0, 0), EndTime = new TimeSpan(12, 0, 0) };
 
-    private AppointmentSlotTimeSpan secondAppointmentSlotTimeSpan =
+    private readonly AppointmentSlotTimeSpan secondAppointmentSlotTimeSpan =
         new() { StartTime = new TimeSpan(12, 0, 0), EndTime = new TimeSpan(16, 0, 0) };
 
     public AllowedAppointmentsFactoryTests()

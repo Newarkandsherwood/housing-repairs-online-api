@@ -13,7 +13,7 @@ namespace HousingRepairsOnlineApi.Gateways
 {
     public class CosmosGateway : IRepairStorageGateway
     {
-        private Container cosmosContainer;
+        private readonly Container cosmosContainer;
         private readonly IIdGenerator idGenerator;
         private readonly IRepairQueryHelper repairQueryHelper;
 
@@ -30,14 +30,13 @@ namespace HousingRepairsOnlineApi.Gateways
         public async Task<Repair> AddRepair(Repair repair)
         {
             repair.Id = idGenerator.Generate();
-
             try
             {
                 ItemResponse<Repair> itemResponse = await cosmosContainer.CreateItemAsync(repair);
 
                 return itemResponse.Resource;
             }
-            catch (CosmosException ex)
+            catch (CosmosException)
             {
                 var newRepair = await AddRepair(repair);
                 return newRepair;

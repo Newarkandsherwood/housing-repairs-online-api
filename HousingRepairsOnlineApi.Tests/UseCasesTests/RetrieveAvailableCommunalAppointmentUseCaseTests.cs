@@ -15,10 +15,10 @@ public class RetrieveAvailableCommunalAppointmentUseCaseTests
 {
     private readonly RetrieveAvailableCommunalAppointmentUseCase systemUnderTest;
     private readonly Mock<IRetrieveAvailableAppointmentsUseCase> retrieveAvailableAppointmentsUseCaseMock;
-    const string repairLocation = "kitchen";
-    const string repairProblem = "cupboards";
-    const string repairIssue = "doorHangingOff";
-    const string locationId = "locationId";
+    private const string repairLocation = "kitchen";
+    private const string repairProblem = "cupboards";
+    private const string repairIssue = "doorHangingOff";
+    private const string locationId = "locationId";
 
     public RetrieveAvailableCommunalAppointmentUseCaseTests()
     {

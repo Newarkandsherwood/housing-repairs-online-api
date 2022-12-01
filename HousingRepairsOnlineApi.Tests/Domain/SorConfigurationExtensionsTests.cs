@@ -38,7 +38,7 @@ namespace HousingRepairsOnlineApi.Tests.Domain
         public static TheoryData<SorConfiguration> ValidSorConfigurationsWithEitherSorCodeOrOptions() =>
             new()
             {
-                new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue, Priority = PriorityValue},
+                new SorConfiguration { Display = DisplayValue, Value = ValueValue, SorCode = SorCodeValue, Priority = PriorityValue },
                 new SorConfiguration
                 {
                     Display = DisplayValue,
