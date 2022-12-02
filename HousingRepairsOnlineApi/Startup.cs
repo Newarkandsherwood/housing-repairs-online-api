@@ -84,6 +84,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IRepairToFindRepairResponseMapper, RepairToFindRepairResponseMapper>();
             services.AddTransient<IRetrieveJourneyTriageOptionsUseCase, RetrieveJourneyTriageOptionsUseCase>();
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
+            services.AddTransient<ICancelAppointmentUseCase, CancelAppointmentUseCase>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");

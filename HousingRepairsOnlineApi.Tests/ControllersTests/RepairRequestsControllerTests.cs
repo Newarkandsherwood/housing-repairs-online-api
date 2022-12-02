@@ -7,6 +7,7 @@ using HousingRepairsOnlineApi.Controllers;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 
@@ -23,6 +24,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
         private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
         private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
+        private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCase;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -50,10 +52,11 @@ namespace HousingRepairsOnlineApi.Tests
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
             repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
+            cancelAppointmentUseCase = new Mock<ICancelAppointmentUseCase>();
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
                 retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
-                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object);
+                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object, cancelAppointmentUseCase.Object);
         }
 
         [Fact]
@@ -151,6 +154,8 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock.Verify(x => x.Execute(repairTypesUsed, postcode, repairId));
         }
 
+
+
         [Fact]
         public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepair_ThenStatusIs404()
         {
@@ -162,6 +167,47 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepair(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(404);
+        }
+
+        [Fact]
+        public async Task Given_A_Repair_WhenTenantOrLeaseholdPropertyRepairCancelCalled_ReturnOK()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            string[] repairTypesUsed = null;
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
+                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+                    repairTypesUsed = repairTypes.ToArray())
+                .ReturnsAsync(new Repair(){Status = RepairStatus.Cancelled});
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            (result as OkObjectResult).Value.Should().Be("The repair has already been cancelled in Housing Repairs Online");
+            repairTypesUsed.Should().NotBeNull();
+            repairTypesUsed.Should().BeEquivalentTo(new[] { RepairType.Leasehold, RepairType.Tenant });
+            retrieveRepairsUseCaseMock.Verify(x => x.Execute(repairTypesUsed, postcode, repairId));
+        }
+
+        [Fact]
+        public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairCancel_ThenStatusIs404()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId));
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
 
             // Assert
             GetStatusCode(result).Should().Be(404);

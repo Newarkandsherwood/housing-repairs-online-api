@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using HACT.Dtos;
 using HousingRepairsOnline.Authentication.Helpers;
 using HousingRepairsOnlineApi.Domain;
+using HousingRepairsOnlineApi.Helpers;
 using Newtonsoft.Json;
 
 namespace HousingRepairsOnlineApi.Gateways
@@ -61,6 +62,28 @@ namespace HousingRepairsOnlineApi.Gateways
 
             await httpClient.SendAsync(request);
 
+        }
+
+        public async Task<CancelAppointmentStatus> CancelAppointment(string bookingReference)
+        {
+             // returns appropriate status code - 200, 404 or 500
+             var request = new HttpRequestMessage(HttpMethod.Post,
+                 $"/Appointments/CancelAppointment?bookingReference={bookingReference}");
+             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
+
+             var response = await httpClient.SendAsync(request);
+
+             switch (response.StatusCode)
+             {
+                 case HttpStatusCode.OK:
+                     return CancelAppointmentStatus.Found;
+                 case HttpStatusCode.NotFound:
+                     return CancelAppointmentStatus.NotFound;
+                 case HttpStatusCode.InternalServerError:
+                     return CancelAppointmentStatus.Error;
+                 default:
+                     return CancelAppointmentStatus.Error;
+             }
         }
     }
 }
