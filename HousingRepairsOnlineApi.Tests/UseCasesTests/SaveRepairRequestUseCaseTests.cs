@@ -34,7 +34,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenARepairRequestWithImageARepairIsSavedWithScheduledStatus()
+        public async void GivenARepairRequestWithImageARepairIsSaved()
         {
             const string Location = "kitchen";
             const string Problem = "cupboards";
@@ -79,7 +79,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenARepairRequestWithoutAnImageARepairIsSavedWithScheduledStatus()
+        public async void GivenARepairRequestWithoutAnImageARepairIsSaved()
         {
             const string Location = "kitchen";
             const string Problem = "cupboards";
@@ -128,6 +128,53 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
         }
 
+            [Fact]
+        public async void GivenARepairRequestARepairIsSavedWithScheduledStatus()
+        {
+            const string Location = "kitchen";
+            const string Problem = "cupboards";
+            const string Issue = "doorHangingOff";
+            const string RepairCode = "N373049";
+            const string Priority = "priority";
+            var repairTriageDetails = new RepairTriageDetails { ScheduleOfRateCode = RepairCode, Priority = Priority };
+
+            var repairRequest = new RepairRequest()
+            {
+                Location = new RepairLocation()
+                {
+                    Value = Location
+                },
+                Problem = new RepairProblem()
+                {
+                    Value = Problem,
+                },
+                Issue = new RepairIssue()
+                {
+                    Value = Issue
+                },
+                Description = new RepairDescriptionRequest()
+                {
+                    Text = "Lorem ipsum"
+                }
+
+            };
+            var repair = new Repair
+            {
+                Location = new RepairLocation { Value = Location },
+                Problem = new RepairProblem { Value = Problem },
+                Issue = new RepairIssue { Value = Issue },
+                Description = new RepairDescription { Text = "Lorem ipsum" }
+            };
+
+            mockRepairRequestToRepairMapper.Setup(x => x.Map(repairRequest, RepairTypeParameterValue)).Returns(repair);
+
+            mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
+                .ReturnsAsync((Repair r) => r);
+
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
+
+            mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
+        }
         [Theory]
         [MemberData(nameof(Helpers.RepairTypeTestData.InvalidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
 #pragma warning disable xUnit1026

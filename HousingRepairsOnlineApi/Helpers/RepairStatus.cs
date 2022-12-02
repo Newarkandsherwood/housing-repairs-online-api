@@ -7,5 +7,4 @@ namespace HousingRepairsOnlineApi.Helpers;
 public static class RepairStatus
 {
     public const string Scheduled = "SCHEDULED";
-    public const string Cancelled = "CANCELLED";
 }
