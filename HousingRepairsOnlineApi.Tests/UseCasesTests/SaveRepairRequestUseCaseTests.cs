@@ -128,7 +128,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
         }
 
-            [Fact]
+        [Fact]
         public async void GivenARepairRequestARepairIsSavedWithScheduledStatus()
         {
             const string Location = "kitchen";
