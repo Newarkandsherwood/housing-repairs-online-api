@@ -24,7 +24,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IRetrieveAvailableCommunalAppointmentUseCase> retrieveAvailableCommunalAppointmentUseCaseMock;
         private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
         private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
-        private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCase;
+        private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCaseMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -52,11 +52,11 @@ namespace HousingRepairsOnlineApi.Tests
             sendNotificationResolver = new Mock<INotificationConfigurationResolver>();
             appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
             repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
-            cancelAppointmentUseCase = new Mock<ICancelAppointmentUseCase>();
+            cancelAppointmentUseCaseMock = new Mock<ICancelAppointmentUseCase>();
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
                 retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
-                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object, cancelAppointmentUseCase.Object);
+                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object, cancelAppointmentUseCaseMock.Object);
         }
 
         [Fact]
@@ -154,8 +154,6 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock.Verify(x => x.Execute(repairTypesUsed, postcode, repairId));
         }
 
-
-
         [Fact]
         public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepair_ThenStatusIs404()
         {
@@ -173,7 +171,7 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task Given_A_Repair_WhenTenantOrLeaseholdPropertyRepairCancelCalled_ReturnOK()
+        public async Task GivenACancelledRepair_WhenTenantOrLeaseholdPropertyRepairCancelCalled_ReturnOK()
         {
             // Arrange
             var repairId = "repairId";
@@ -211,6 +209,56 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Assert
             GetStatusCode(result).Should().Be(404);
+            (result as NotFoundObjectResult)?.Value.Should()
+                .Be("Repair request not found for postcode and repairId provided");
+        }
+
+        [Fact]
+        public async Task GivenAScheduledRepairWhenRepairNotFoundInHMS_WhenCallingTenantOrLeaseholdPropertyRepairCancel_ThenErrorReturned()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+            string[] repairTypesUsed = null;
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
+                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+                    repairTypesUsed = repairTypes.ToArray())
+                .ReturnsAsync(new Repair(){Status = RepairStatus.Scheduled});
+
+            cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
+                .ReturnsAsync(CancelAppointmentStatus.NotFound);
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(500);
+            (result as ObjectResult)?.Value.Should()
+                .Be("Error updating the appointment");
+        }
+
+        [Fact]
+        public async Task GivenAScheduledRepairWhenErrorReturnedFromScheduler_WhenCallingTenantOrLeaseholdPropertyRepairCancel_ThenErrorReturned()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+            string[] repairTypesUsed = null;
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
+                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+                    repairTypesUsed = repairTypes.ToArray())
+                .ReturnsAsync(new Repair(){Status = RepairStatus.Scheduled});
+
+            cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
+                .ReturnsAsync(CancelAppointmentStatus.Error);
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(500);
+            (result as ObjectResult)?.Value.Should()
+                .Be("Error updating the appointment");
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()

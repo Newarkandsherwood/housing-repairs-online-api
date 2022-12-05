@@ -98,7 +98,7 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 if (repair == null)
                 {
-                    return NotFound("Repair request not found for postcode and repairId provided.");
+                    return NotFound("Repair request not found for postcode and repairId provided");
                 }
 
                 if (repair.Status == RepairStatus.Cancelled)
@@ -116,13 +116,12 @@ namespace HousingRepairsOnlineApi.Controllers
                             break;
                         case CancelAppointmentStatus.Error:
                         case CancelAppointmentStatus.NotFound:
-                             return StatusCode(500, "error updating the appointment");
+                             return StatusCode(500, "Error updating the appointment");
                     }
                     return Ok("The repair has successfully been cancelled");
                 }
                 catch (Exception ex)
                 {
-                    // Set DRS Status back to previous value saved in DRSStatus
                     SentrySdk.CaptureException(ex);
                     throw;
                 }
