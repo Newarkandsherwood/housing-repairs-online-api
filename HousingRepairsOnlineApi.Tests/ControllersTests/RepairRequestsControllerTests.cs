@@ -25,6 +25,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IAppointmentTimeToRepairAvailabilityMapper> appointmentTimeToRepairAvailabilityMapperMock;
         private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
         private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCaseMock;
+        private Mock<ICancelRepairRequestUseCase> cancelRepairRequestUseCaseMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -53,10 +54,12 @@ namespace HousingRepairsOnlineApi.Tests
             appointmentTimeToRepairAvailabilityMapperMock = new Mock<IAppointmentTimeToRepairAvailabilityMapper>();
             repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
             cancelAppointmentUseCaseMock = new Mock<ICancelAppointmentUseCase>();
+            cancelRepairRequestUseCaseMock = new Mock<ICancelRepairRequestUseCase>();
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
                 retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
-                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object, cancelAppointmentUseCaseMock.Object);
+                appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object,
+                cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object);
         }
 
         [Fact]
@@ -189,7 +192,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Assert
             GetStatusCode(result).Should().Be(200);
-            (result as OkObjectResult).Value.Should().Be("The repair has already been cancelled in Housing Repairs Online");
+            (result as OkObjectResult)?.Value.Should().Be("The repair has already been cancelled in Housing Repairs Online");
             repairTypesUsed.Should().NotBeNull();
             repairTypesUsed.Should().BeEquivalentTo(new[] { RepairType.Leasehold, RepairType.Tenant });
             retrieveRepairsUseCaseMock.Verify(x => x.Execute(repairTypesUsed, postcode, repairId));
@@ -259,6 +262,30 @@ namespace HousingRepairsOnlineApi.Tests
             GetStatusCode(result).Should().Be(500);
             (result as ObjectResult)?.Value.Should()
                 .Be("Error updating the appointment");
+        }
+
+        [Fact]
+        public async Task GivenAScheduledRepair_WhenCallingTenantOrLeaseholdPropertyRepairCancel_ThenCancelRepairRequestUseCaseCalled()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
+                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+                {
+                })
+                .ReturnsAsync(new Repair(){Status = RepairStatus.Scheduled});
+
+            cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
+                .ReturnsAsync(CancelAppointmentStatus.Found);
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            cancelRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>()), Times.Once);
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()

@@ -21,6 +21,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
         private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
+        private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -31,7 +32,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
             IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
             IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper,
-            ICancelAppointmentUseCase cancelAppointmentUseCase)
+            ICancelAppointmentUseCase cancelAppointmentUseCase,
+            ICancelRepairRequestUseCase cancelRepairRequestUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -42,6 +44,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
             this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
             this.cancelAppointmentUseCase = cancelAppointmentUseCase;
+            this.cancelRepairRequestUseCase = cancelRepairRequestUseCase;
         }
 
         [HttpGet]
@@ -112,7 +115,7 @@ namespace HousingRepairsOnlineApi.Controllers
                     switch (cancelAppointmentStatus)
                     {
                         case CancelAppointmentStatus.Found:
-                            // SET HRO Repair Request to Cancelled
+                            await cancelRepairRequestUseCase.Execute(repairId);
                             break;
                         case CancelAppointmentStatus.Error:
                         case CancelAppointmentStatus.NotFound:

@@ -217,5 +217,32 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             var actualRepairRequestSummary = repairRequestSummaries.Single();
             actualRepairRequestSummary.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public async void GivenARepair_WhenCancellingRepair_RepairCancelled()
+        {
+            // Arrange
+            var repairId = "ABCD1234";
+            var dummyRepair = new Repair();
+            var mockItemResponse = new Mock<ItemResponse<Repair>>();
+            mockCosmosContainer.Setup(_ => _.PatchItemAsync<Repair>(
+                repairId,
+                It.IsAny<PartitionKey>(),
+                It.IsAny<IReadOnlyList<PatchOperation>>(),
+                null,//It.IsAny<PatchItemRequestOptions>(),
+                It.IsAny<CancellationToken>()
+
+            )).ReturnsAsync(mockItemResponse.Object);
+
+            // Act
+            await azureStorageGateway.CancelRepair(repairId);
+
+            // Assert
+            mockCosmosContainer.Verify(_ => _.PatchItemAsync<Repair>(repairId,
+                It.IsAny<PartitionKey>(),
+                It.IsAny<IReadOnlyList<PatchOperation>>(),
+                null,
+                It.IsAny<CancellationToken>()), Times.Exactly(1));
+        }
     }
 }
