@@ -223,13 +223,12 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         {
             // Arrange
             var repairId = "ABCD1234";
-            var dummyRepair = new Repair();
             var mockItemResponse = new Mock<ItemResponse<Repair>>();
             mockCosmosContainer.Setup(_ => _.PatchItemAsync<Repair>(
                 repairId,
                 It.IsAny<PartitionKey>(),
                 It.IsAny<IReadOnlyList<PatchOperation>>(),
-                null,//It.IsAny<PatchItemRequestOptions>(),
+                null,
                 It.IsAny<CancellationToken>()
 
             )).ReturnsAsync(mockItemResponse.Object);
