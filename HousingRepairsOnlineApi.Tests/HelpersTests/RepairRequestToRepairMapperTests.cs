@@ -42,19 +42,19 @@ public class RepairRequestToRepairMapperTests
             Location = new RepairLocation { Value = Location },
             Problem = new RepairProblem { Value = Problem },
             Issue = new RepairIssue { Value = Issue },
-            Description = new RepairDescriptionRequest { Text = "Text", LocationDescription = "Location" }
+            Description = new RepairDescriptionRequest { Text = "Text", LocationText = "LocationText" }
         };
 
         mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
             .Returns(repairTriageDetails);
         mockRepairDescriptionRequestToRepairDescriptionMapper.Setup(x =>
-            x.Map(It.IsAny<RepairDescriptionRequest>(), It.IsAny<string>())).Returns(new RepairDescription() { Text = "Location Text" });
+            x.Map(It.IsAny<RepairDescriptionRequest>(), It.IsAny<string>())).Returns(new RepairDescription() { Text = "LocationText Text" });
 
         var repair = systemUnderTest.Map(repairRequest, repairType);
 
         mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
 
-        Assert.Equal("Location Text", repair.Description.Text);
+        Assert.Equal("LocationText Text", repair.Description.Text);
         Assert.Equal(Location, repair.Location.Value);
         Assert.Equal(Problem, repair.Problem.Value);
         Assert.Equal(Issue, repair.Issue.Value);

@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.Domain
         public string Base64Img { get; set; }
         public string FileExtension { get; set; }
         public string Text { get; set; }
-        public string LocationDescription { get; set; }
+        public string LocationText { get; set; }
     }
 }
