@@ -66,8 +66,7 @@ namespace HousingRepairsOnlineApi.Gateways
 
         public async Task<CancelAppointmentStatus> CancelAppointment(string bookingReference)
         {
-             // returns appropriate status code - 200, 404 or 500
-             var request = new HttpRequestMessage(HttpMethod.Post,
+            var request = new HttpRequestMessage(HttpMethod.Post,
                  $"/Appointments/CancelAppointment?bookingReference={bookingReference}");
              request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 
@@ -80,7 +79,6 @@ namespace HousingRepairsOnlineApi.Gateways
                  case HttpStatusCode.NotFound:
                      return CancelAppointmentStatus.NotFound;
                  case HttpStatusCode.InternalServerError:
-                     return CancelAppointmentStatus.Error;
                  default:
                      return CancelAppointmentStatus.Error;
              }

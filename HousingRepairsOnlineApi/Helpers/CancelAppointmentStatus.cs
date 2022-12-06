@@ -2,6 +2,7 @@
 
 public enum CancelAppointmentStatus
 {
+    Unknown,
     Found,
     NotFound,
     Error
