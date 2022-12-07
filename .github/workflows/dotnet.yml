@@ -138,6 +138,7 @@ jobs:
           echo "service_plan_name=\"${{secrets.SERVICE_PLAN_NAME}}\"" >> env.tfvars
           echo "repair_priority_to_days_production=\"${{secrets.REPAIR_PRIORITY_TO_DAYS_PRODUCTION}}\"" >> env.tfvars
           echo "repair_priority_to_days_staging=\"${{secrets.REPAIR_PRIORITY_TO_DAYS_STAGING}}\"" >> env.tfvars
+          
       - name: Terraform Validate
         run: terraform validate -no-color
       - name: Terraform Plan
