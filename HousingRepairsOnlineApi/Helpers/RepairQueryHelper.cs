@@ -23,7 +23,8 @@ namespace HousingRepairsOnlineApi.Helpers
                 .Where(x =>
                     x.RepairType.ToUpper() == repairType.ToUpper()
                     && x.Address.LocationId == propertyReference)
-                .Where(isFutureRepair);
+                .Where(isFutureRepair)
+                .OrderBy(x => x.Time.StartDateTime);
 
             var result = query.ToFeedIterator();
 
@@ -38,7 +39,8 @@ namespace HousingRepairsOnlineApi.Helpers
                     x.Id.ToUpper() == repairId.ToUpper()
                     && x.Postcode.Replace(" ", "").ToUpper() == postcode.Replace(" ", "").ToUpper()
                     && repairTypesUppercase.Contains(x.RepairType.ToUpper()))
-                .Where(isFutureRepair);
+                .Where(isFutureRepair)
+                .OrderBy(x => x.Time.StartDateTime);
 
             var result = query.ToFeedIterator();
 
