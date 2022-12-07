@@ -25,7 +25,7 @@ public class RepairDescriptionRequestToRepairDescriptionMapperTests
 
         var repair = systemUnderTest.Map(repairRequest, repairType);
 
-        Assert.Equal("LocationText" + Environment.NewLine + "Text", repair.Text);
+        Assert.Equal("LocationText" + " " + "Text", repair.Text);
 
     }
 
