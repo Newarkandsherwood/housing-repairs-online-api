@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
     public interface ICancelRepairRequestUseCase
     {
-        public Task Execute(string repairId);
+        public Task Execute(Repair repair);
     }
 }

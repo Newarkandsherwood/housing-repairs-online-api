@@ -224,22 +224,26 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             // Arrange
             var repairId = "ABCD1234";
             var mockItemResponse = new Mock<ItemResponse<Repair>>();
-            mockCosmosContainer.Setup(_ => _.PatchItemAsync<Repair>(
+            mockCosmosContainer.Setup(_ => _.ReplaceItemAsync(
+                It.IsAny<Repair>(),
                 repairId,
                 It.IsAny<PartitionKey>(),
-                It.IsAny<IReadOnlyList<PatchOperation>>(),
-                null,
+                It.IsAny<ItemRequestOptions>(),
                 It.IsAny<CancellationToken>()
-
             )).ReturnsAsync(mockItemResponse.Object);
 
+            var repair = new Repair{
+                Id = repairId,
+                Status = RepairStatus.Scheduled
+            };
+
             // Act
-            await azureStorageGateway.CancelRepair(repairId);
+            await azureStorageGateway.CancelRepair(repair);
 
             // Assert
-            mockCosmosContainer.Verify(_ => _.PatchItemAsync<Repair>(repairId,
-                It.IsAny<PartitionKey>(),
-                It.IsAny<IReadOnlyList<PatchOperation>>(),
+            mockCosmosContainer.Verify(_ => _.ReplaceItemAsync<Repair>(It.Is<Repair>(r => r.Status == RepairStatus.Cancelled),
+                repairId,
+                null,
                 null,
                 It.IsAny<CancellationToken>()), Times.Exactly(1));
         }

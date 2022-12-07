@@ -86,14 +86,12 @@ namespace HousingRepairsOnlineApi.Gateways
             return repairs;
         }
 
-        public async Task CancelRepair(string repairId)
+        public async Task CancelRepair(Repair repair)
         {
-            Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
-            var itemResponse = await cosmosContainer.PatchItemAsync<Repair>(
-                id: repairId,
-                partitionKey: new PartitionKey("RepairID"),
-                patchOperations: new[] { PatchOperation.Replace("/status", RepairStatus.Cancelled) }
-            );
+            Guard.Against.Null(repair, nameof(repair));
+
+            repair.Status = RepairStatus.Cancelled;
+            await cosmosContainer.ReplaceItemAsync(repair, repair.Id);
         }
     }
 }

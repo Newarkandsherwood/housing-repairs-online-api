@@ -285,7 +285,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Assert
             GetStatusCode(result).Should().Be(200);
-            cancelRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>()), Times.Once);
+            cancelRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<Repair>()), Times.Once);
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()

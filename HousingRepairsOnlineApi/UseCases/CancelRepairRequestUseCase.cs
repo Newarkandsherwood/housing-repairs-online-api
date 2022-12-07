@@ -1,22 +1,23 @@
 ﻿using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
     public class CancelRepairRequestUseCase : ICancelRepairRequestUseCase
     {
-        private readonly IRepairStorageGateway cosmosGateway;
+        private readonly IRepairStorageGateway repairStorageGateway;
 
-        public CancelRepairRequestUseCase(IRepairStorageGateway cosmosGateway)
+        public CancelRepairRequestUseCase(IRepairStorageGateway repairStorageGateway)
         {
-            this.cosmosGateway = cosmosGateway;
+            this.repairStorageGateway = repairStorageGateway;
         }
 
-        public async Task Execute(string repairId)
+        public async Task Execute(Repair repair)
         {
-            Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
-            await cosmosGateway.CancelRepair(repairId);
+            Guard.Against.Null(repair, nameof(repair));
+            await repairStorageGateway.CancelRepair(repair);
         }
     }
 }

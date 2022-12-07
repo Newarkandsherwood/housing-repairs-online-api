@@ -115,7 +115,7 @@ namespace HousingRepairsOnlineApi.Controllers
                     switch (cancelAppointmentStatus)
                     {
                         case CancelAppointmentStatus.Found:
-                            await cancelRepairRequestUseCase.Execute(repairId);
+                            await cancelRepairRequestUseCase.Execute(repair);
                             break;
                         case CancelAppointmentStatus.Error:
                         case CancelAppointmentStatus.NotFound:
@@ -186,11 +186,11 @@ namespace HousingRepairsOnlineApi.Controllers
             {
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
 
-                await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
-                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
-
-                appointmentConfirmationSender.Execute(result);
-                await internalEmailSender.Execute(result);
+                // await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
+                //     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.Text);
+                //
+                // appointmentConfirmationSender.Execute(result);
+                // await internalEmailSender.Execute(result);
                 return Ok(result.Id);
             }
             catch (Exception ex)
