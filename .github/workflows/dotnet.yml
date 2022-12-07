@@ -136,7 +136,8 @@ jobs:
           echo "allowed_appointment_slots_production=\"${{secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION}}\"" >> env.tfvars
           echo "allowed_appointment_slots_staging=\"${{secrets.ALLOWED_APPOINTMENT_SLOTS_STAGING}}\"" >> env.tfvars
           echo "service_plan_name=\"${{secrets.SERVICE_PLAN_NAME}}\"" >> env.tfvars
-
+          echo "repair_priority_to_days_production=\"${{secrets.REPAIR_PRIORITY_TO_DAYS_PRODUCTION}}\"" >> env.tfvars
+          echo "repair_priority_to_days_staging=\"${{secrets.REPAIR_PRIORITY_TO_DAYS_STAGING}}\"" >> env.tfvars
       - name: Terraform Validate
         run: terraform validate -no-color
       - name: Terraform Plan
@@ -185,6 +186,7 @@ jobs:
           echo "::add-mask::${{ secrets.SOR_CONFIG_LEASEHOLD_STAGING }}"
           echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_STAGING }}"
           echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_STAGING }}"
+          echo "::add-mask::${{ secrets.REPAIR_PRIORITY_TO_DAYS_STAGING }}"
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -236,6 +238,7 @@ jobs:
           echo "::add-mask::${{ secrets.SOR_CONFIG_LEASEHOLD_PRODUCTION }}"
           echo "::add-mask::${{ secrets.ALLOWED_APPOINTMENT_SLOTS_PRODUCTION }}"
           echo "::add-mask::${{ secrets.STORAGE_CONTAINER_NAME_PRODUCTION }}"
+          echo "::add-mask::${{ secrets.REPAIR_PRIORITY_TO_DAYS_PRODUCTION }}"
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
