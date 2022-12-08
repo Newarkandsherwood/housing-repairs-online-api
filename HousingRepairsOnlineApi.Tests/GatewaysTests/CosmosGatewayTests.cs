@@ -232,7 +232,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(mockItemResponse.Object);
 
-            var repair = new Repair{
+            var repair = new Repair
+            {
                 Id = repairId,
                 Status = RepairStatus.Scheduled
             };

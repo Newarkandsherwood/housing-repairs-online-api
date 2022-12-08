@@ -122,7 +122,7 @@ namespace HousingRepairsOnlineApi.Controllers
                             break;
                         case CancelAppointmentStatus.Error:
                         case CancelAppointmentStatus.NotFound:
-                             return StatusCode(500, "Error updating the appointment");
+                            return StatusCode(500, "Error updating the appointment");
                     }
                     return Ok("The repair has successfully been cancelled");
                 }

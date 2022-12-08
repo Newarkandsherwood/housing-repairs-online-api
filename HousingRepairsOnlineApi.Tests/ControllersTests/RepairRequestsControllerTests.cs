@@ -62,7 +62,7 @@ namespace HousingRepairsOnlineApi.Tests
                 retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
                 repairBookingResponseHelper.Object,
                 appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object,
-                cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object);            
+                cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object);
         }
 
         [Fact]
@@ -188,7 +188,7 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
                 .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
                     repairTypesUsed = repairTypes.ToArray())
-                .ReturnsAsync(new Repair(){Status = RepairStatus.Cancelled});
+                .ReturnsAsync(new Repair() { Status = RepairStatus.Cancelled });
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
@@ -278,7 +278,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
                 {
                 })
-                .ReturnsAsync(new Repair(){Status = RepairStatus.Scheduled});
+                .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
                 .ReturnsAsync(CancelAppointmentStatus.Found);

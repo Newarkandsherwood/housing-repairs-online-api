@@ -68,20 +68,20 @@ namespace HousingRepairsOnlineApi.Gateways
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                  $"/Appointments/CancelAppointment?bookingReference={bookingReference}");
-             request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
+            request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
 
-             var response = await httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
 
-             switch (response.StatusCode)
-             {
-                 case HttpStatusCode.OK:
-                     return CancelAppointmentStatus.Found;
-                 case HttpStatusCode.NotFound:
-                     return CancelAppointmentStatus.NotFound;
-                 case HttpStatusCode.InternalServerError:
-                 default:
-                     return CancelAppointmentStatus.Error;
-             }
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return CancelAppointmentStatus.Found;
+                case HttpStatusCode.NotFound:
+                    return CancelAppointmentStatus.NotFound;
+                case HttpStatusCode.InternalServerError:
+                default:
+                    return CancelAppointmentStatus.Error;
+            }
         }
     }
 }
