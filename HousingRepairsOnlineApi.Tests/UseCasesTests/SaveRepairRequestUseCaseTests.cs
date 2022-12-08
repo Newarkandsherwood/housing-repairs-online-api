@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
@@ -43,7 +42,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             const string Base64Img = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpaJVB4uIOGSoThZERRy1CkWoEGqFVh1MXvojNGlIUlwcBdeCgz+LVQcXZ10dXAVB8AfE0clJ0UVKvC8ptIjxwuN9nHfP4b37AKFWYprVNgZoum2mEnExk10RQ68IIIQe9KNLZpYxK0lJ+NbXPXVT3cV4ln/fn9Wt5iwGBETiGWaYNvE68dSmbXDeJ46woqwSnxOPmnRB4keuKx6/cS64LPDMiJlOzRFHiMVCCystzIqmRjxJHFU1nfKFjMcq5y3OWqnCGvfkLwzn9OUlrtMaQgILWIQEEQoq2EAJNmK066RYSNF53Mc/6Polcink2gAjxzzK0CC7fvA/+D1bKz8x7iWF40D7i+N8DAOhXaBedZzvY8epnwDBZ+BKb/rLNWD6k/RqU4seAb3bwMV1U1P2gMsdYODJkE3ZlYK0hHweeD+jb8oCfbdA56o3t8Y5Th+ANM0qeQMcHAIjBcpe83l3R+vc/u1pzO8H+I9yds6VEEcAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfmAQcOFjXsyx/IAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAAxJREFUCNdj0HiTBAACtgF3wqeo5gAAAABJRU5ErkJggg==";
             const string FileExtension = "png";
             const string ImgUrl = "http://img.png";
-            const string DescriptionLocation = "Location";
+            const string LocationText = "LocationText";
             const string Description = "Description";
 
             var repairRequest = new RepairRequest
@@ -51,7 +50,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 Location = new RepairLocation { Value = Location },
                 Problem = new RepairProblem { Value = Problem },
                 Issue = new RepairIssue { Value = Issue },
-                Description = new RepairDescriptionRequest { Base64Img = Base64Img, FileExtension = FileExtension, LocationDescription = DescriptionLocation, Text = Description }
+                Description = new RepairDescriptionRequest { Base64Img = Base64Img, FileExtension = FileExtension, LocationText = LocationText, Text = Description }
             };
 
             var repair = new Repair
@@ -61,7 +60,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 Problem = new RepairProblem { Value = Problem },
                 Issue = new RepairIssue { Value = Issue },
                 SOR = RepairCode,
-                Description = new RepairDescription { Base64Image = Base64Img, Text = DescriptionLocation + " " + Location }
+                Description = new RepairDescription { Base64Image = Base64Img, Text = LocationText + " " + Location }
             };
             mockRepairRequestToRepairMapper.Setup(x => x.Map(It.IsAny<RepairRequest>(), It.IsAny<string>())).Returns(repair);
 

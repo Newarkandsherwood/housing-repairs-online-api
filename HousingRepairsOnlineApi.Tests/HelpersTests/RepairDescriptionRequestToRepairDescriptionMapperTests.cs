@@ -21,11 +21,11 @@ public class RepairDescriptionRequestToRepairDescriptionMapperTests
     {
         const string repairType = "COMMUNAL";
 
-        var repairRequest = new RepairDescriptionRequest { Text = "Text", LocationDescription = "Location" };
+        var repairRequest = new RepairDescriptionRequest { Text = "Text", LocationText = "LocationText" };
 
         var repair = systemUnderTest.Map(repairRequest, repairType);
 
-        Assert.Equal("Location" + Environment.NewLine + "Text", repair.Text);
+        Assert.Equal("LocationText" + " " + "Text", repair.Text);
 
     }
 

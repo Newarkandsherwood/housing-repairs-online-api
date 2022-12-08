@@ -13,7 +13,7 @@ public class RepairDescriptionRequestToRepairDescriptionMapper : IRepairDescript
         {
             case RepairType.Communal:
                 {
-                    repairDescription.Text = repairRequest.LocationDescription + Environment.NewLine + repairDescription.Text;
+                    repairDescription.Text = repairRequest.LocationText + " " + repairDescription.Text;
                     break;
                 }
         }
