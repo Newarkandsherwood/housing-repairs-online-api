@@ -31,14 +31,15 @@ namespace HousingRepairsOnlineApi.Helpers
             return result;
         }
 
-        public FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId)
+        public FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId, bool includeCancelled = false)
         {
             var repairTypesUppercase = repairTypes.Select(x => x.ToUpperInvariant());
 
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>().Where(x =>
                     x.Id.ToUpper() == repairId.ToUpper()
                     && x.Postcode.Replace(" ", "").ToUpper() == postcode.Replace(" ", "").ToUpper()
-                    && repairTypesUppercase.Contains(x.RepairType.ToUpper()))
+                    && repairTypesUppercase.Contains(x.RepairType.ToUpper())
+                    && (includeCancelled || (x.Status.ToUpper() != RepairStatus.Cancelled.ToUpper())))
                 .Where(isFutureRepair)
                 .OrderBy(x => x.Time.StartDateTime);
 

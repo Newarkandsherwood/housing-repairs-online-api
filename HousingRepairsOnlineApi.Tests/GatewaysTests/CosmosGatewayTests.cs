@@ -155,8 +155,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             // Act
@@ -195,8 +195,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             var expected = new RepairRequestSummary

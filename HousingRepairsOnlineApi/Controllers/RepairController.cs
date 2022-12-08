@@ -100,7 +100,7 @@ namespace HousingRepairsOnlineApi.Controllers
             {
                 var repair = await retrieveRepairsUseCase.Execute(
                     new[] { RepairType.Tenant, RepairType.Leasehold },
-                    postcode, repairId);
+                    postcode, repairId, true);
 
                 if (repair == null)
                 {
