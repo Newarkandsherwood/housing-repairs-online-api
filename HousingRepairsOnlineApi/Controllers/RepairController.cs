@@ -21,6 +21,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
+        private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -31,7 +32,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
             IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper,
             IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
-            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper)
+            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper,
+            ICancelAppointmentUseCase cancelAppointmentUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -42,6 +44,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
             this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
+            this.cancelAppointmentUseCase = cancelAppointmentUseCase;
         }
 
         [HttpGet]
@@ -78,6 +81,53 @@ namespace HousingRepairsOnlineApi.Controllers
                 var response = repairToFindRepairResponseMapper.Map(result);
 
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("TenantOrLeaseholdPropertyRepairCancel")]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairCancel([FromQuery] string postcode, [FromQuery] string repairId)
+        {
+            try
+            {
+                var repair = await retrieveRepairsUseCase.Execute(
+                    new[] { RepairType.Tenant, RepairType.Leasehold },
+                    postcode, repairId);
+
+                if (repair == null)
+                {
+                    return NotFound("Repair request not found for postcode and repairId provided");
+                }
+
+                if (repair.Status == RepairStatus.Cancelled)
+                {
+                    return Ok("The repair has already been cancelled in Housing Repairs Online");
+                }
+
+                try
+                {
+                    var cancelAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
+                    switch (cancelAppointmentStatus)
+                    {
+                        case CancelAppointmentStatus.Found:
+                            // SET HRO Repair Request to Cancelled
+                            break;
+                        case CancelAppointmentStatus.Error:
+                        case CancelAppointmentStatus.NotFound:
+                            return StatusCode(500, "Error updating the appointment");
+                    }
+                    return Ok("The repair has successfully been cancelled");
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw;
+                }
             }
             catch (Exception ex)
             {
