@@ -120,6 +120,7 @@ jobs:
           echo "leasehold_confirmation_email_notify_template_id=\"${{secrets.LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "leasehold_confirmation_sms_notify_template_id=\"${{secrets.LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "leasehold_internal_email_notify_template_id=\"${{secrets.LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
+          echo "cancellation_internal_notify_template_id=\"${{secrets.CANCELLATION_INTERNAL_NOTIFY_TEMPLATE_ID}}\"" >> env.tfvars
           echo "days_until_image_expiry_production=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION}}\"" >> env.tfvars
           echo "days_until_image_expiry_staging=\"${{secrets.DAYS_UNTIL_IMAGE_EXPIRY_STAGING}}\"" >> env.tfvars
           echo "scheduling_api_url_production=\"${{secrets.SCHEDULING_API_URL_PRODUCTION}}\"" >> env.tfvars
@@ -176,6 +177,7 @@ jobs:
           echo "::add-mask::${{ secrets.LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
+          echo "::add-mask::${{ secrets.CANCELLATION_INTERNAL_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_STAGING }}"
           echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_STAGING }}"
           echo "::add-mask::${{ secrets.INTERNAL_EMAIL_STAGING }}"
@@ -228,6 +230,7 @@ jobs:
           echo "::add-mask::${{ secrets.LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID }}"
+          echo "::add-mask::${{ secrets.CANCELLATION_INTERNAL_NOTIFY_TEMPLATE_ID }}"
           echo "::add-mask::${{ secrets.DAYS_UNTIL_IMAGE_EXPIRY_PRODUCTION }}"
           echo "::add-mask::${{ secrets.GOV_NOTIFY_KEY_PRODUCTION }}"
           echo "::add-mask::${{ secrets.INTERNAL_EMAIL_PRODUCTION }}"
