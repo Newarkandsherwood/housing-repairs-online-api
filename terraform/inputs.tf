@@ -70,6 +70,9 @@ variable "leasehold_confirmation_sms_notify_template_id" {
 variable "leasehold_internal_email_notify_template_id" {
   type = string
 }
+variable "cancellation_internal_email_notify_template_id" {
+  type = string
+}
 variable "days_until_image_expiry_production" {
   type = string
 }

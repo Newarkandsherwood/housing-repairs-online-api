@@ -23,6 +23,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
         private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
         private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
+        private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -35,7 +36,8 @@ namespace HousingRepairsOnlineApi.Controllers
             IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
             IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper,
             ICancelAppointmentUseCase cancelAppointmentUseCase,
-            ICancelRepairRequestUseCase cancelRepairRequestUseCase)
+            ICancelRepairRequestUseCase cancelRepairRequestUseCase,
+            ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -48,6 +50,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
             this.cancelAppointmentUseCase = cancelAppointmentUseCase;
             this.cancelRepairRequestUseCase = cancelRepairRequestUseCase;
+            this.sendRepairCancelledInternalEmailUseCase = sendRepairCancelledInternalEmailUseCase;
         }
 
         [HttpGet]
@@ -118,7 +121,8 @@ namespace HousingRepairsOnlineApi.Controllers
                     switch (cancelAppointmentStatus)
                     {
                         case CancelAppointmentStatus.Found:
-                            await cancelRepairRequestUseCase.Execute(repair);
+                            var cancelRepairRequestTask = cancelRepairRequestUseCase.Execute(repair);
+                            await cancelRepairRequestTask.ContinueWith(_ => sendRepairCancelledInternalEmailUseCase.Execute(repair));
                             break;
                         case CancelAppointmentStatus.Error:
                         case CancelAppointmentStatus.NotFound:
