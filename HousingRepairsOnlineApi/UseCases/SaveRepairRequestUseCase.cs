@@ -35,8 +35,9 @@ namespace HousingRepairsOnlineApi.UseCases
                     repairRequest.Description.FileExtension
                 ).Result;
                 repair.Description.PhotoUrl = photoUrl;
-
             }
+
+            repair.Status = RepairStatus.Scheduled;
 
             var savedRequest = await cosmosGateway.AddRepair(repair);
 
