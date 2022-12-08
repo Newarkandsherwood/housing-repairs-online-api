@@ -42,8 +42,6 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             await act.Should().ThrowExactlyAsync<T>();
         }
 
-
-
         [Fact]
         public async void GivenARepair_WhenExecuting_ThenRepairStorageGatewayCancelRepairIsCalled()
         {
