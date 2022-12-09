@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
+using HousingRepairsOnlineApi.Helpers;
 using HousingRepairsOnlineApi.UseCases;
 using Moq;
 using Xunit;
@@ -43,17 +44,17 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         }
 
         [Fact]
-        public async void GivenARepair_WhenExecuting_ThenRepairStorageGatewayCancelRepairIsCalled()
+        public async void GivenARepair_WhenExecuting_ThenRepairStorageGatewayModifyRepairIsCalledWithCancelledRepair()
         {
             // Arrange
             var repair = new Repair();
-            repairStorageGatewayMock.Setup(x => x.CancelRepair(It.IsAny<Repair>()));
+            repairStorageGatewayMock.Setup(x => x.ModifyRepair(It.IsAny<Repair>()));
 
             // Act
             await systemUnderTest.Execute(repair);
 
             // Assert
-            repairStorageGatewayMock.Verify(x => x.CancelRepair(It.IsAny<Repair>()), Times.Once);
+            repairStorageGatewayMock.Verify(x => x.ModifyRepair(It.Is<Repair>(x => x.Status == RepairStatus.Cancelled)), Times.Once);
         }
     }
 }

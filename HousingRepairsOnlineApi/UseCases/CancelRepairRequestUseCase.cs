@@ -2,6 +2,7 @@
 using Ardalis.GuardClauses;
 using HousingRepairsOnlineApi.Domain;
 using HousingRepairsOnlineApi.Gateways;
+using HousingRepairsOnlineApi.Helpers;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
@@ -17,7 +18,8 @@ namespace HousingRepairsOnlineApi.UseCases
         public async Task Execute(Repair repair)
         {
             Guard.Against.Null(repair, nameof(repair));
-            await repairStorageGateway.CancelRepair(repair);
+            repair.Status = RepairStatus.Cancelled;
+            await repairStorageGateway.ModifyRepair(repair);
         }
     }
 }

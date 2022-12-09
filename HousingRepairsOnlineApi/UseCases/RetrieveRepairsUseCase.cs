@@ -28,13 +28,13 @@ namespace HousingRepairsOnlineApi.UseCases
             return await cosmosGateway.SearchByPropertyReference(repairType, propertyReference);
         }
 
-        public async Task<Repair> Execute(IEnumerable<string> repairTypes, string postcode, string repairId)
+        public async Task<Repair> Execute(IEnumerable<string> repairTypes, string postcode, string repairId, bool includeCancelled = false)
         {
             Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
             Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));
             Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
 
-            var searchTask = cosmosGateway.SearchByPostcodeAndId(repairTypes, postcode, repairId);
+            var searchTask = cosmosGateway.SearchByPostcodeAndId(repairTypes, postcode, repairId, includeCancelled);
 
             var result = await searchTask.ContinueWith(x =>
             {
