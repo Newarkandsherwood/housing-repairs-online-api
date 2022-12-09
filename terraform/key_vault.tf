@@ -92,6 +92,12 @@ resource "azurerm_key_vault_secret" "leasehold-internal-email-notify-template-id
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "cancellation-internal-email-notify-template-id" {
+  name         = "cancellation-internal-email-notify-template-id"
+  value        = var.cancellation_internal_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 resource "azurerm_key_vault_secret" "sentry-dsn" {
   name         = "sentry-dsn"
   value        = var.sentry_dsn

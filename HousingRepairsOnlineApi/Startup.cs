@@ -66,6 +66,14 @@ namespace HousingRepairsOnlineApi
 
             services.AddTransient<INotificationConfigurationResolver, NotificationConfigurationResolver>();
 
+            var cancellationInternalNotificationTemplateId =
+                EnvironmentVariableHelper.GetEnvironmentVariable("CANCELLATION_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID");
+            services
+                .AddTransient<ICancellationNotificationConfigurationProvider,
+                    CancellationInternalNotificationConfigurationProvider>(_ =>
+                    new CancellationInternalNotificationConfigurationProvider(
+                        cancellationInternalNotificationTemplateId));
+
             var environmentVariable = EnvironmentVariableHelper.GetEnvironmentVariable("ALLOWED_APPOINTMENT_SLOTS");
             var allowedAppointmentSlots = ServiceCollectionExtensions.ParseAppointmentSlotsConfigurationJson(environmentVariable);
             services.AddTransient(_ => allowedAppointmentSlots);
@@ -93,6 +101,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<IEarlyExitRepairTriageOptionMapper, EarlyExitRepairTriageOptionMapper>();
             services.AddTransient<ICancelAppointmentUseCase, CancelAppointmentUseCase>();
             services.AddTransient<ICancelRepairRequestUseCase, CancelRepairRequestUseCase>();
+            services.AddTransient<ISendRepairCancelledInternalEmailUseCase, SendRepairCancelledInternalEmailUseCase>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
