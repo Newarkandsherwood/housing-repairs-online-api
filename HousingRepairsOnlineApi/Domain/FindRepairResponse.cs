@@ -7,4 +7,5 @@ public class FindRepairResponse
     public RepairProblem Problem { get; set; }
     public RepairIssue Issue { get; set; }
     public RepairAvailability AppointmentTime { get; set; }
+    public RepairContactDetails ContactDetails { get; set; }
 }
