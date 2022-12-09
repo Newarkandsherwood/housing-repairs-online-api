@@ -298,8 +298,8 @@ namespace HousingRepairsOnlineApi.Tests
             var repairId = "repairId";
             var postcode = "postcode";
 
-            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId))
-                .Callback<IEnumerable<string>, string, string>((repairTypes, _, _) =>
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, true))
+                .Callback<IEnumerable<string>, string, string, bool>((repairTypes, _, _, _) =>
                 {
                 })
                 .ReturnsAsync(new Repair { Status = RepairStatus.Scheduled });
