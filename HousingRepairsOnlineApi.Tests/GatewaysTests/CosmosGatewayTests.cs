@@ -235,11 +235,11 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             var repair = new Repair
             {
                 Id = repairId,
-                Status = RepairStatus.Scheduled
+                Status = RepairStatus.Cancelled
             };
 
             // Act
-            await azureStorageGateway.CancelRepair(repair);
+            await azureStorageGateway.ModifyRepair(repair);
 
             // Assert
             mockCosmosContainer.Verify(_ => _.ReplaceItemAsync<Repair>(It.Is<Repair>(r => r.Status == RepairStatus.Cancelled),
