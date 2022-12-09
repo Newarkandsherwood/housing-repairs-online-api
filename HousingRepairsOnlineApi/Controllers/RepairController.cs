@@ -144,6 +144,50 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
+        [Route("TenantOrLeaseholdPropertyRepairChange")]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChange([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability )
+        {
+            try
+            {
+                var repair = await retrieveRepairsUseCase.Execute(
+                    new[] { RepairType.Tenant, RepairType.Leasehold },
+                    postcode, repairId);
+
+                if (repair == null)
+                {
+                    return NotFound("Repair request not found for postcode and repairId provided");
+                }
+
+                // Logic here to check if the appointment has already been updated with the same dates
+
+                try
+                {
+                    // var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, repairAvailability);
+                    // switch (changeAppointmentStatus)
+                    // {
+                    //     case ChangeAppointmentStatus.Changed:
+                    //         await changeRepairRequestUseCase.Execute(repair, repairAvailability);
+                    //         break;
+                    //     case ChangeAppointmentStatus.Error:
+                    //     case ChangeAppointmentStatus.NotFound:
+                    //         return StatusCode(500, "Error changing the appointment");
+                    // }
+                    return Ok("The repair has successfully been changed");
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
