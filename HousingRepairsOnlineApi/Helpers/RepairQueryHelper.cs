@@ -17,12 +17,13 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
-        public FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReference)
+        public FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReference, bool includeCancelled = false)
         {
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>()
                 .Where(x =>
                     x.RepairType.ToUpper() == repairType.ToUpper()
-                    && x.Address.LocationId == propertyReference)
+                    && x.Address.LocationId == propertyReference
+                    && (includeCancelled || (x.Status.ToUpper() != RepairStatus.Cancelled.ToUpper())))
                 .Where(isFutureRepair)
                 .OrderBy(x => x.Time.StartDateTime);
 
