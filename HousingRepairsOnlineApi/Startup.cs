@@ -67,7 +67,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<INotificationConfigurationResolver, NotificationConfigurationResolver>();
 
             var cancellationInternalNotificationTemplateId =
-                EnvironmentVariableHelper.GetEnvironmentVariable("CANCELLATION_INTERNAL_NOTIFY_TEMPLATE_ID");
+                EnvironmentVariableHelper.GetEnvironmentVariable("CANCELLATION_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID");
             services
                 .AddTransient<ICancellationNotificationConfigurationProvider,
                     CancellationInternalNotificationConfigurationProvider>(_ =>
