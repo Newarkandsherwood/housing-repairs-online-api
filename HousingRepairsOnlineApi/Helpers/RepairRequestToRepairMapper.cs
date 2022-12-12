@@ -6,13 +6,9 @@ public class RepairRequestToRepairMapper : IRepairRequestToRepairMapper
 {
     private readonly ISorEngineResolver sorEngineResolver;
 
-    private readonly IRepairDescriptionRequestToRepairDescriptionMapper
-        repairDescriptionRequestToRepairDescriptionMapper;
-
-    public RepairRequestToRepairMapper(ISorEngineResolver sorEngineResolver, IRepairDescriptionRequestToRepairDescriptionMapper repairDescriptionRequestToRepairDescriptionMapper)
+    public RepairRequestToRepairMapper(ISorEngineResolver sorEngineResolver)
     {
         this.sorEngineResolver = sorEngineResolver;
-        this.repairDescriptionRequestToRepairDescriptionMapper = repairDescriptionRequestToRepairDescriptionMapper;
     }
     public Repair Map(RepairRequest repairRequest, string repairType)
     {
@@ -33,7 +29,12 @@ public class RepairRequestToRepairMapper : IRepairRequestToRepairMapper
             Issue = repairRequest.Issue,
             ContactPersonNumber = repairRequest.ContactPersonNumber,
             Time = repairRequest.Time,
-            Description = repairDescriptionRequestToRepairDescriptionMapper.Map(repairRequest.Description, repairType),
+            Description = new RepairDescription
+            {
+                LocationText = repairRequest.Description.LocationText,
+                Text = repairRequest.Description.Text,
+                Base64Image = repairRequest.Description.Base64Img,
+            },
             SOR = repairTriageDetails.ScheduleOfRateCode,
             Priority = repairTriageDetails.Priority,
         };

@@ -101,7 +101,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         public static TheoryData<ArgumentException, IEnumerable<string>> InvalidRepairTypesParameter() =>
-            new() {
+            new()
+            {
                 { new ArgumentNullException(), null },
                 { new ArgumentException(), Enumerable.Empty<string>() },
             };
@@ -135,7 +136,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         public static TheoryData<ArgumentException, string> InvalidStringParameter() =>
-            new() {
+            new()
+            {
                 { new ArgumentNullException(), null },
                 { new ArgumentException(), string.Empty },
                 { new ArgumentException(), " " },

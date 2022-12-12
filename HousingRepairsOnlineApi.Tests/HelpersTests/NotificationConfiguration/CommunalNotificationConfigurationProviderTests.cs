@@ -20,7 +20,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         private readonly string internalEmailTemplateId = "internalEmailTemplateId";
         private readonly string imageLink = "imagelink";
 
-        private Repair repair = new()
+        private readonly Repair repair = new()
         {
             Id = "id",
             RepairType = null,
@@ -83,7 +83,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public void GivenAnInvalidBookingRef_WhenGetPersonalisationForEmailTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            this.repair.Id = invalidStr;
+            repair.Id = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForEmailTemplate(repair);
 
@@ -111,8 +111,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             //Arrange
             Dictionary<string, dynamic> personalisation = new()
             {
-                {"repair_ref", repair.Id},
-                {"address", repair.Address.Display}
+                { "repair_ref", repair.Id },
+                { "address", repair.Address.Display }
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForEmailTemplate(repair);
@@ -125,7 +125,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
         public void GivenAnInvalidBookingRef_WhenGetPersonalisationForSMSTemplate_ThenExceptionIsThrown<T>(T exception, string invalidStr) where T : Exception
 #pragma warning restore xUnit1026
         {
-            this.repair.Id = invalidStr;
+            repair.Id = invalidStr;
             //Act
             Action act = () => systemUnderTest.GetPersonalisationForSmsTemplate(repair);
 
@@ -153,8 +153,8 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests
             //Arrange
             Dictionary<string, dynamic> personalisation = new()
             {
-                {"repair_ref", repair.Id},
-                {"address", repair.Address.Display}
+                { "repair_ref", repair.Id },
+                { "address", repair.Address.Display }
             };
             //Act
             var act = systemUnderTest.GetPersonalisationForSmsTemplate(repair);
