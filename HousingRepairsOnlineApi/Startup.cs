@@ -143,9 +143,6 @@ namespace HousingRepairsOnlineApi
                 return new SendInternalEmailUseCase(notifyGateway, internalEmail);
             });
             services.AddTransient<IRepairRequestToRepairMapper, RepairRequestToRepairMapper>();
-            services
-                .AddTransient<IRepairDescriptionRequestToRepairDescriptionMapper,
-                    RepairDescriptionRequestToRepairDescriptionMapper>();
 
             services.AddHousingRepairsOnlineAuthentication(HousingRepairsOnlineApiIssuerId);
             services.AddTransient<ISaveRepairRequestUseCase, SaveRepairRequestUseCase>();
@@ -246,7 +243,7 @@ namespace HousingRepairsOnlineApi
 
             app.UseRouting();
 
-            app.UseSentryTracing();
+            // app.UseSentryTracing();
 
             app.UseAuthentication();
             app.UseAuthorization();

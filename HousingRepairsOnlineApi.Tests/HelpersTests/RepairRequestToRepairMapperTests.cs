@@ -11,18 +11,13 @@ public class RepairRequestToRepairMapperTests
     private readonly Mock<ISorEngineResolver> mockSorEngineResolver;
     private readonly RepairRequestToRepairMapper systemUnderTest;
 
-    private readonly Mock<IRepairDescriptionRequestToRepairDescriptionMapper>
-        mockRepairDescriptionRequestToRepairDescriptionMapper;
-
 
     public RepairRequestToRepairMapperTests()
     {
         mockSorEngine = new Mock<ISoREngine>();
         mockSorEngineResolver = new Mock<ISorEngineResolver>();
         mockSorEngineResolver.Setup(x => x.Resolve(It.IsAny<string>())).Returns(mockSorEngine.Object);
-        mockRepairDescriptionRequestToRepairDescriptionMapper =
-            new Mock<IRepairDescriptionRequestToRepairDescriptionMapper>();
-        systemUnderTest = new RepairRequestToRepairMapper(mockSorEngineResolver.Object, mockRepairDescriptionRequestToRepairDescriptionMapper.Object);
+        systemUnderTest = new RepairRequestToRepairMapper(mockSorEngineResolver.Object);
     }
 
     [Fact]
@@ -47,14 +42,12 @@ public class RepairRequestToRepairMapperTests
 
         mockSorEngine.Setup(x => x.MapToRepairTriageDetails(Location, Problem, Issue))
             .Returns(repairTriageDetails);
-        mockRepairDescriptionRequestToRepairDescriptionMapper.Setup(x =>
-            x.Map(It.IsAny<RepairDescriptionRequest>(), It.IsAny<string>())).Returns(new RepairDescription() { Text = "LocationText Text" });
 
         var repair = systemUnderTest.Map(repairRequest, repairType);
 
         mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
 
-        Assert.Equal("LocationText Text", repair.Description.Text);
+        Assert.Equal("Text", repair.Description.Text);
         Assert.Equal(Location, repair.Location.Value);
         Assert.Equal(Problem, repair.Problem.Value);
         Assert.Equal(Issue, repair.Issue.Value);
@@ -86,7 +79,6 @@ public class RepairRequestToRepairMapperTests
 
         systemUnderTest.Map(repairRequest, repairType);
 
-        mockRepairDescriptionRequestToRepairDescriptionMapper.Verify(x => x.Map(repairRequest.Description, repairType), Times.Once);
         mockSorEngine.Verify(x => x.MapToRepairTriageDetails(Location, Problem, Issue), Times.Once);
 
     }
