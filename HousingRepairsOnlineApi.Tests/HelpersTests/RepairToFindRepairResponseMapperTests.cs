@@ -140,4 +140,26 @@ public class RepairToFindRepairResponseMapperTests
         // Assert
         actual.AppointmentTime.Should().BeEquivalentTo(expected.AppointmentTime);
     }
+
+    [Fact]
+    public void GivenRepairWithContactDetails_WhenMapping_ThenResponseHasContactDetails()
+    {
+        // Arrange
+        var repairContactDetails = new RepairContactDetails { Type = "type", Value = "value" };
+        var repair = new Repair
+        {
+            ContactDetails = repairContactDetails,
+        };
+
+        var expected = new FindRepairResponse
+        {
+            ContactDetails = repairContactDetails,
+        };
+
+        // Act
+        var actual = systemUnderTest.Map(repair);
+
+        // Assert
+        actual.ContactDetails.Should().BeEquivalentTo(expected.ContactDetails);
+    }
 }

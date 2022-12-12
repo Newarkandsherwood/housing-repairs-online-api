@@ -44,6 +44,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-confirmation-email-notify-template-id.id})"
     LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-confirmation-sms-notify-template-id.id})"
     LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-internal-email-notify-template-id.id})"
+    CANCELLATION_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cancellation-internal-email-notify-template-id.id})"
     DAYS_UNTIL_IMAGE_EXPIRY                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.days-until-image-expiry-production.id})"
     GOV_NOTIFY_KEY                                  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.gov-notify-key-production.id})"
     INTERNAL_EMAIL                                  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.internal-email-production.id})"
@@ -55,6 +56,7 @@ resource "azurerm_windows_web_app" "hro-api" {
     SOR_CONFIGURATION_LEASEHOLD                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-leasehold-production.id})"
     ALLOWED_APPOINTMENT_SLOTS                       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-production.id})"
     STORAGE_CONTAINER_NAME                          = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-production.id})"
+    REPAIR_PRIORITY_TO_DAYS                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-priority-to-days-production.id})"
   }
 
   auth_settings {
@@ -96,6 +98,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     LEASEHOLD_CONFIRMATION_EMAIL_NOTIFY_TEMPLATE_ID = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-confirmation-email-notify-template-id.id})"
     LEASEHOLD_CONFIRMATION_SMS_NOTIFY_TEMPLATE_ID   = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-confirmation-sms-notify-template-id.id})"
     LEASEHOLD_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.leasehold-internal-email-notify-template-id.id})"
+    CANCELLATION_INTERNAL_EMAIL_NOTIFY_TEMPLATE_ID  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.cancellation-internal-email-notify-template-id.id})"
     DAYS_UNTIL_IMAGE_EXPIRY                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.days-until-image-expiry-staging.id})"
     GOV_NOTIFY_KEY                                  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.gov-notify-key-staging.id})"
     INTERNAL_EMAIL                                  = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.internal-email-staging.id})"
@@ -107,6 +110,7 @@ resource "azurerm_windows_web_app_slot" "hro-api" {
     SOR_CONFIGURATION_LEASEHOLD                     = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.sor-configuration-leasehold-staging.id})"
     ALLOWED_APPOINTMENT_SLOTS                       = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.allowed-appointment-slots-staging.id})"
     STORAGE_CONTAINER_NAME                          = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.storage-container-name-staging.id})"
+    REPAIR_PRIORITY_TO_DAYS                         = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.repair-priority-to-days-staging.id})"
   }
 
   auth_settings {

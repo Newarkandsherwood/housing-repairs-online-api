@@ -45,7 +45,7 @@ namespace HousingRepairsOnlineApi.Gateways
 
         public async Task<IEnumerable<RepairRequestSummary>> SearchByPropertyReference(string repairType, string propertyReference)
         {
-            using var queryResultSetIterator = repairQueryHelper.GetItemQueryIterator<Repair>(repairType, propertyReference);
+            using var queryResultSetIterator = repairQueryHelper.GetRepairSearchIterator(repairType, propertyReference);
             var repairs = new List<RepairRequestSummary>();
 
             while (queryResultSetIterator.HasMoreResults)
@@ -68,13 +68,13 @@ namespace HousingRepairsOnlineApi.Gateways
             return repairs;
         }
 
-        public async Task<IEnumerable<Repair>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string postcode, string repairId)
+        public async Task<IEnumerable<Repair>> SearchByPostcodeAndId(IEnumerable<string> repairTypes, string postcode, string repairId, bool includeCancelled = false)
         {
             Guard.Against.NullOrEmpty(repairTypes, nameof(repairTypes));
             Guard.Against.NullOrWhiteSpace(postcode, nameof(postcode));
             Guard.Against.NullOrWhiteSpace(repairId, nameof(repairId));
 
-            using var queryResultSetIterator = repairQueryHelper.GetRepairSearchIterator(repairTypes, postcode, repairId);
+            using var queryResultSetIterator = repairQueryHelper.GetRepairSearchIterator(repairTypes, postcode, repairId, includeCancelled);
             IEnumerable<Repair> repairs = Array.Empty<Repair>();
 
             while (queryResultSetIterator.HasMoreResults)
@@ -84,6 +84,12 @@ namespace HousingRepairsOnlineApi.Gateways
             }
 
             return repairs;
+        }
+
+        public async Task ModifyRepair(Repair repair)
+        {
+            Guard.Against.Null(repair, nameof(repair));
+            await cosmosContainer.ReplaceItemAsync(repair, repair.Id);
         }
     }
 }

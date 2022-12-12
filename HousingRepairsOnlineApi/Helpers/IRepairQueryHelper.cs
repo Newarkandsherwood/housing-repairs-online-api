@@ -6,7 +6,7 @@ namespace HousingRepairsOnlineApi.Helpers
 {
     public interface IRepairQueryHelper
     {
-        FeedIterator<Repair> GetItemQueryIterator<T>(string repairType, string propertyReference);
-        FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId);
+        FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReferencem, bool includeCancelled = false);
+        FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId, bool includeCancelled = false);
     }
 }

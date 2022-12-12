@@ -92,6 +92,12 @@ resource "azurerm_key_vault_secret" "leasehold-internal-email-notify-template-id
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "cancellation-internal-email-notify-template-id" {
+  name         = "cancellation-internal-email-notify-template-id"
+  value        = var.cancellation_internal_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 resource "azurerm_key_vault_secret" "sentry-dsn" {
   name         = "sentry-dsn"
   value        = var.sentry_dsn
@@ -184,6 +190,12 @@ resource "azurerm_key_vault_secret" "storage-container-name-staging" {
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "repair-priority-to-days-staging" {
+  name         = "repair-priority-to-days-staging"
+  value        = var.repair_priority_to_days_staging
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 #=================================
 #====== Production Secrets
 
@@ -268,5 +280,11 @@ resource "azurerm_key_vault_secret" "allowed-appointment-slots-production" {
 resource "azurerm_key_vault_secret" "storage-container-name-production" {
   name         = "storage-container-name-production"
   value        = var.storage_container_name_production
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "repair-priority-to-days-production" {
+  name         = "repair-priority-to-days-production"
+  value        = var.repair_priority_to_days_production
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }

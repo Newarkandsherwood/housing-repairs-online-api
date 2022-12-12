@@ -18,5 +18,6 @@ namespace HousingRepairsOnlineApi.Domain
         public RepairDescription Description { get; set; }
         public RepairContactDetails ContactDetails { get; set; }
         public RepairAvailability Time { get; set; }
+        public string Status { get; set; }
     }
 }

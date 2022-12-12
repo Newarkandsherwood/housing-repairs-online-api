@@ -70,6 +70,9 @@ variable "leasehold_confirmation_sms_notify_template_id" {
 variable "leasehold_internal_email_notify_template_id" {
   type = string
 }
+variable "cancellation_internal_email_notify_template_id" {
+  type = string
+}
 variable "days_until_image_expiry_production" {
   type = string
 }
@@ -124,4 +127,10 @@ variable "service_plan_name" {
 variable "azure_ad_tenant_id" {
   type      = string
   sensitive = true
+}
+variable "repair_priority_to_days_staging" {
+  type = string
+}
+variable "repair_priority_to_days_production" {
+  type = string
 }

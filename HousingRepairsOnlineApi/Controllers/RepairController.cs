@@ -18,8 +18,12 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IInternalEmailSender internalEmailSender;
         private readonly IRetrieveRepairsUseCase retrieveRepairsUseCase;
         private readonly IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase;
+        private readonly IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper;
         private readonly IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper;
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
+        private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
+        private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
+        private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -28,17 +32,25 @@ namespace HousingRepairsOnlineApi.Controllers
             IBookAppointmentUseCase bookAppointmentUseCase,
             IRetrieveRepairsUseCase retrieveRepairsUseCase,
             IRetrieveAvailableCommunalAppointmentUseCase retrieveAvailableCommunalAppointmentUseCase,
+            IRepairToRepairBookingResponseMapper repairToRepairBookingResponseMapper,
             IAppointmentTimeToRepairAvailabilityMapper appointmentTimeToRepairAvailabilityMapper,
-            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper)
+            IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper,
+            ICancelAppointmentUseCase cancelAppointmentUseCase,
+            ICancelRepairRequestUseCase cancelRepairRequestUseCase,
+            ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
             this.appointmentConfirmationSender = appointmentConfirmationSender;
             this.bookAppointmentUseCase = bookAppointmentUseCase;
             this.retrieveRepairsUseCase = retrieveRepairsUseCase;
+            this.repairToRepairBookingResponseMapper = repairToRepairBookingResponseMapper;
             this.retrieveAvailableCommunalAppointmentUseCase = retrieveAvailableCommunalAppointmentUseCase;
             this.appointmentTimeToRepairAvailabilityMapper = appointmentTimeToRepairAvailabilityMapper;
             this.repairToFindRepairResponseMapper = repairToFindRepairResponseMapper;
+            this.cancelAppointmentUseCase = cancelAppointmentUseCase;
+            this.cancelRepairRequestUseCase = cancelRepairRequestUseCase;
+            this.sendRepairCancelledInternalEmailUseCase = sendRepairCancelledInternalEmailUseCase;
         }
 
         [HttpGet]
@@ -84,6 +96,54 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
+        [Route("TenantOrLeaseholdPropertyRepairCancel")]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairCancel([FromQuery] string postcode, [FromQuery] string repairId)
+        {
+            try
+            {
+                var repair = await retrieveRepairsUseCase.Execute(
+                    new[] { RepairType.Tenant, RepairType.Leasehold },
+                    postcode, repairId, true);
+
+                if (repair == null)
+                {
+                    return NotFound("Repair request not found for postcode and repairId provided");
+                }
+
+                if (repair.Status == RepairStatus.Cancelled)
+                {
+                    return Ok("The repair has already been cancelled in Housing Repairs Online");
+                }
+
+                try
+                {
+                    var cancelAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
+                    switch (cancelAppointmentStatus)
+                    {
+                        case CancelAppointmentStatus.Found:
+                            var cancelRepairRequestTask = cancelRepairRequestUseCase.Execute(repair);
+                            await cancelRepairRequestTask.ContinueWith(_ => sendRepairCancelledInternalEmailUseCase.Execute(repair));
+                            break;
+                        case CancelAppointmentStatus.Error:
+                        case CancelAppointmentStatus.NotFound:
+                            return StatusCode(500, "Error updating the appointment");
+                    }
+                    return Ok("The repair has successfully been cancelled");
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("TenantRepair")]
         public async Task<IActionResult> TenantRepair([FromBody] RepairRequest repairRequest)
         {
@@ -109,7 +169,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 return StatusCode(500, statusMessage);
             }
 
-            return await SaveRepair(RepairType.Communal, repairRequest);
+            return await SaveRepair(RepairType.Communal, repairRequest, true);
         }
 
         private async Task<bool> UpdateRepairRequestWithCommunalAppointment(RepairRequest repairRequest)
@@ -127,7 +187,8 @@ namespace HousingRepairsOnlineApi.Controllers
             return appointmentFound;
         }
 
-        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest)
+        internal async Task<IActionResult> SaveRepair(string repairType, RepairRequest repairRequest,
+            bool includeDays = false)
         {
             try
             {
@@ -138,7 +199,10 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);
-                return Ok(result.Id);
+
+                var repairBookingResponse = repairToRepairBookingResponseMapper.MapRepairBookingResponse(result, includeDays);
+
+                return Ok(repairBookingResponse);
             }
             catch (Exception ex)
             {

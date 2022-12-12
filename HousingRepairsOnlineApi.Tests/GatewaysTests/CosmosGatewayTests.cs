@@ -157,8 +157,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             // Act
@@ -197,8 +197,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             var expected = new RepairRequestSummary
@@ -218,6 +218,37 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             repairRequestSummaries.Should().HaveCount(1);
             var actualRepairRequestSummary = repairRequestSummaries.Single();
             actualRepairRequestSummary.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public async void GivenARepair_WhenCancellingRepair_RepairCancelled()
+        {
+            // Arrange
+            var repairId = "ABCD1234";
+            var mockItemResponse = new Mock<ItemResponse<Repair>>();
+            mockCosmosContainer.Setup(_ => _.ReplaceItemAsync(
+                It.IsAny<Repair>(),
+                repairId,
+                It.IsAny<PartitionKey>(),
+                It.IsAny<ItemRequestOptions>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(mockItemResponse.Object);
+
+            var repair = new Repair
+            {
+                Id = repairId,
+                Status = RepairStatus.Cancelled
+            };
+
+            // Act
+            await azureStorageGateway.ModifyRepair(repair);
+
+            // Assert
+            mockCosmosContainer.Verify(_ => _.ReplaceItemAsync<Repair>(It.Is<Repair>(r => r.Status == RepairStatus.Cancelled),
+                repairId,
+                null,
+                null,
+                It.IsAny<CancellationToken>()), Times.Exactly(1));
         }
     }
 }
