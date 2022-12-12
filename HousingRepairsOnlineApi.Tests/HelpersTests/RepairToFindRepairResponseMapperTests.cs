@@ -8,7 +8,7 @@ namespace HousingRepairsOnlineApi.Tests.HelpersTests;
 
 public class RepairToFindRepairResponseMapperTests
 {
-    private RepairToFindRepairResponseMapper systemUnderTest = new();
+    private readonly RepairToFindRepairResponseMapper systemUnderTest = new();
 
     [Fact]
     public void GivenRepairWithAddress_WhenMapping_ThenResponseHasAddress()
