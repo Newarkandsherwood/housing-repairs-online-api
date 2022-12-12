@@ -1,6 +1,6 @@
 ﻿namespace HousingRepairsOnlineApi.Helpers;
 
-public enum CancelAppointmentStatus
+public enum ChangeAppointmentStatus
 {
     Unknown,
     Found,

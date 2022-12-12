@@ -15,7 +15,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.appointmentsGateway = appointmentsGateway;
         }
 
-        public async Task<CancelAppointmentStatus> Execute(string bookingReference)
+        public async Task<ChangeAppointmentStatus> Execute(string bookingReference)
         {
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(bookingReference));
 
