@@ -134,7 +134,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
 
                 await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
-                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.AppendLocationDescription());
+                    result.Time.StartDateTime, result.Time.EndDateTime, result.Description.CombinedDescriptionTexts());
 
                 appointmentConfirmationSender.Execute(result);
                 await internalEmailSender.Execute(result);

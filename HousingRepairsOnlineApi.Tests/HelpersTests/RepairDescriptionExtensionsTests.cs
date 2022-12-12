@@ -11,14 +11,14 @@ public class RepairDescriptionExtensionsTests
     public void GivenALocationText_WhenAppendLocationDescription_ThenAppendedTextIsReturned()
     {
         var repairDescription = new RepairDescription { Text = "Text", LocationText = "LocationText" };
-        var result = repairDescription.AppendLocationDescription();
+        var result = repairDescription.CombinedDescriptionTexts();
         result.Should().Be("LocationText Text");
     }
     [Fact]
     public void GivenNoLocationText_WhenAppendLocationDescription_ThenTextIsReturned()
     {
         var repairDescription = new RepairDescription { Text = "Text"};
-        var result = repairDescription.AppendLocationDescription();
+        var result = repairDescription.CombinedDescriptionTexts();
         result.Should().Be("Text");
     }
 }
