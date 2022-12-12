@@ -243,7 +243,7 @@ namespace HousingRepairsOnlineApi
 
             app.UseRouting();
 
-            // app.UseSentryTracing();
+            app.UseSentryTracing();
 
             app.UseAuthentication();
             app.UseAuthorization();
