@@ -101,7 +101,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         public static TheoryData<ArgumentException, IEnumerable<string>> InvalidRepairTypesParameter() =>
-            new() {
+            new()
+            {
                 { new ArgumentNullException(), null },
                 { new ArgumentException(), Enumerable.Empty<string>() },
             };
@@ -135,7 +136,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
         }
 
         public static TheoryData<ArgumentException, string> InvalidStringParameter() =>
-            new() {
+            new()
+            {
                 { new ArgumentNullException(), null },
                 { new ArgumentException(), string.Empty },
                 { new ArgumentException(), " " },
@@ -155,8 +157,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             // Act
@@ -195,8 +197,8 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
                 .ReturnsAsync(feedResponseRepairMock.Object);
 
             var repairTypes = new[] { "test" };
-            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId))
-                .Returns<IEnumerable<string>, string, string>((_, _, _) =>
+            repairQueryHelper.Setup(x => x.GetRepairSearchIterator(repairTypes, Postcode, RepairId, false))
+                .Returns<IEnumerable<string>, string, string, bool>((_, _, _, _) =>
                     feedIteratorRepairMock.Object);
 
             var expected = new RepairRequestSummary
@@ -235,11 +237,11 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             var repair = new Repair
             {
                 Id = repairId,
-                Status = RepairStatus.Scheduled
+                Status = RepairStatus.Cancelled
             };
 
             // Act
-            await azureStorageGateway.CancelRepair(repair);
+            await azureStorageGateway.ModifyRepair(repair);
 
             // Assert
             mockCosmosContainer.Verify(_ => _.ReplaceItemAsync<Repair>(It.Is<Repair>(r => r.Status == RepairStatus.Cancelled),

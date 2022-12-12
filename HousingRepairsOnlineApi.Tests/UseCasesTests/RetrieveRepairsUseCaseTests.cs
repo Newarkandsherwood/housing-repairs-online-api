@@ -38,7 +38,8 @@ public class RetrieveRepairsUseCaseTests
     }
 
     public static TheoryData<ArgumentException, IEnumerable<string>> InvalidRepairTypesParameter() =>
-        new() {
+        new()
+        {
             { new ArgumentNullException(), null },
             { new ArgumentException(), Enumerable.Empty<string>() },
         };
@@ -72,7 +73,8 @@ public class RetrieveRepairsUseCaseTests
     }
 
     public static TheoryData<ArgumentException, string> InvalidStringParameter() =>
-        new() {
+        new()
+        {
             { new ArgumentNullException(), null },
             { new ArgumentException(), string.Empty },
             { new ArgumentException(), " " },
@@ -83,7 +85,7 @@ public class RetrieveRepairsUseCaseTests
     {
         // Arrange
         var repairTypes = new[] { "repairType" };
-        repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId))
+        repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId, false))
             .ReturnsAsync(new[] { new Repair(), new Repair() });
 
         // Act
@@ -98,7 +100,7 @@ public class RetrieveRepairsUseCaseTests
     {
         // Arrange
         var repairTypes = new[] { "repairType" };
-        repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId))
+        repairStorageGatewayMock.Setup(x => x.SearchByPostcodeAndId(repairTypes, Postcode, RepairId, false))
             .ReturnsAsync(new[] { new Repair(), new Repair() });
 
         // Act

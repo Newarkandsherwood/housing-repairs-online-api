@@ -17,12 +17,13 @@ namespace HousingRepairsOnlineApi.Helpers
 
         public RepairQueryHelper(ContainerResponse container) => cosmosContainer = container;
 
-        public FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReference)
+        public FeedIterator<Repair> GetRepairSearchIterator(string repairType, string propertyReference, bool includeCancelled = false)
         {
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>()
                 .Where(x =>
                     x.RepairType.ToUpper() == repairType.ToUpper()
-                    && x.Address.LocationId == propertyReference)
+                    && x.Address.LocationId == propertyReference
+                    && (includeCancelled || (x.Status.ToUpper() != RepairStatus.Cancelled.ToUpper())))
                 .Where(isFutureRepair)
                 .OrderBy(x => x.Time.StartDateTime);
 
@@ -31,14 +32,15 @@ namespace HousingRepairsOnlineApi.Helpers
             return result;
         }
 
-        public FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId)
+        public FeedIterator<Repair> GetRepairSearchIterator(IEnumerable<string> repairTypes, string postcode, string repairId, bool includeCancelled = false)
         {
             var repairTypesUppercase = repairTypes.Select(x => x.ToUpperInvariant());
 
             var query = cosmosContainer.Container.GetItemLinqQueryable<Repair>().Where(x =>
                     x.Id.ToUpper() == repairId.ToUpper()
                     && x.Postcode.Replace(" ", "").ToUpper() == postcode.Replace(" ", "").ToUpper()
-                    && repairTypesUppercase.Contains(x.RepairType.ToUpper()))
+                    && repairTypesUppercase.Contains(x.RepairType.ToUpper())
+                    && (includeCancelled || (x.Status.ToUpper() != RepairStatus.Cancelled.ToUpper())))
                 .Where(isFutureRepair)
                 .OrderBy(x => x.Time.StartDateTime);
 
