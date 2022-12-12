@@ -64,7 +64,7 @@ namespace HousingRepairsOnlineApi.Gateways
 
         }
 
-        public async Task<CancelAppointmentStatus> CancelAppointment(string bookingReference)
+        public async Task<ChangeAppointmentStatus> CancelAppointment(string bookingReference)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                  $"/Appointments/CancelAppointment?bookingReference={bookingReference}");
@@ -75,12 +75,32 @@ namespace HousingRepairsOnlineApi.Gateways
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return CancelAppointmentStatus.Found;
+                    return ChangeAppointmentStatus.Found;
                 case HttpStatusCode.NotFound:
-                    return CancelAppointmentStatus.NotFound;
+                    return ChangeAppointmentStatus.NotFound;
                 case HttpStatusCode.InternalServerError:
                 default:
-                    return CancelAppointmentStatus.Error;
+                    return ChangeAppointmentStatus.Error;
+            }
+        }
+
+        public async Task<ChangeAppointmentStatus> ChangeAppointment(string bookingReference, DateTime startDateTime, DateTime endDateTime)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post,
+                $"/Appointments/UpdateAppointmentSlot?bookingReference={bookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}");
+            request.SetupJwtAuthentication(httpClient, authenticationIdentifier);
+
+            var response = await httpClient.SendAsync(request);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return ChangeAppointmentStatus.Found;
+                case HttpStatusCode.NotFound:
+                    return ChangeAppointmentStatus.NotFound;
+                case HttpStatusCode.InternalServerError:
+                default:
+                    return ChangeAppointmentStatus.Error;
             }
         }
     }

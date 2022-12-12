@@ -23,7 +23,9 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
         private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
         private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
+        private readonly IChangeRepairRequestUseCase changeRepairRequestUseCase;
         private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
+        private readonly IChangeAppointmentUseCase changeAppointmentUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -37,7 +39,9 @@ namespace HousingRepairsOnlineApi.Controllers
             IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper,
             ICancelAppointmentUseCase cancelAppointmentUseCase,
             ICancelRepairRequestUseCase cancelRepairRequestUseCase,
-            ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase)
+            ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase,
+            IChangeAppointmentUseCase changeAppointmentUseCase,
+            IChangeRepairRequestUseCase changeRepairRequestUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -51,6 +55,8 @@ namespace HousingRepairsOnlineApi.Controllers
             this.cancelAppointmentUseCase = cancelAppointmentUseCase;
             this.cancelRepairRequestUseCase = cancelRepairRequestUseCase;
             this.sendRepairCancelledInternalEmailUseCase = sendRepairCancelledInternalEmailUseCase;
+            this.changeAppointmentUseCase = changeAppointmentUseCase;
+            this.changeRepairRequestUseCase = changeRepairRequestUseCase;
         }
 
         [HttpGet]
@@ -117,15 +123,15 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 try
                 {
-                    var cancelAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
-                    switch (cancelAppointmentStatus)
+                    var changeAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
+                    switch (changeAppointmentStatus)
                     {
-                        case CancelAppointmentStatus.Found:
+                        case ChangeAppointmentStatus.Found:
                             var cancelRepairRequestTask = cancelRepairRequestUseCase.Execute(repair);
                             await cancelRepairRequestTask.ContinueWith(_ => sendRepairCancelledInternalEmailUseCase.Execute(repair));
                             break;
-                        case CancelAppointmentStatus.Error:
-                        case CancelAppointmentStatus.NotFound:
+                        case ChangeAppointmentStatus.Error:
+                        case ChangeAppointmentStatus.NotFound:
                             return StatusCode(500, "Error updating the appointment");
                     }
                     return Ok("The repair has successfully been cancelled");
@@ -158,20 +164,24 @@ namespace HousingRepairsOnlineApi.Controllers
                     return NotFound("Repair request not found for postcode and repairId provided");
                 }
 
-                // Logic here to check if the appointment has already been updated with the same dates
+                if (DateTime.Compare(repair.Time.StartDateTime, repairAvailability.StartDateTime) == 0 &&
+                    DateTime.Compare(repair.Time.EndDateTime, repairAvailability.EndDateTime) == 0)
+                {
+                    return Ok("The repair has already been updated with the same start and end times");
+                }
 
                 try
                 {
-                    // var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, repairAvailability);
-                    // switch (changeAppointmentStatus)
-                    // {
-                    //     case ChangeAppointmentStatus.Changed:
-                    //         await changeRepairRequestUseCase.Execute(repair, repairAvailability);
-                    //         break;
-                    //     case ChangeAppointmentStatus.Error:
-                    //     case ChangeAppointmentStatus.NotFound:
-                    //         return StatusCode(500, "Error changing the appointment");
-                    // }
+                    var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
+                    switch (changeAppointmentStatus)
+                    {
+                        case ChangeAppointmentStatus.Found:
+                            await changeRepairRequestUseCase.Execute(repair, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
+                            break;
+                        case ChangeAppointmentStatus.Error:
+                        case ChangeAppointmentStatus.NotFound:
+                            return StatusCode(500, "Error changing the appointment");
+                    }
                     return Ok("The repair has successfully been changed");
                 }
                 catch (Exception ex)

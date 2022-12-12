@@ -27,6 +27,8 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<IRepairToFindRepairResponseMapper> repairToFindRepairResponseMapperMock;
         private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCaseMock;
         private Mock<ICancelRepairRequestUseCase> cancelRepairRequestUseCaseMock;
+        private Mock<IChangeAppointmentUseCase> changeAppointmentUseCaseMock;
+        private Mock<IChangeRepairRequestUseCase> changeRepairRequestUseCaseMock;
         private readonly Mock<ISendRepairCancelledInternalEmailUseCase> sendRepairCancelledInternalEmailUseCaseMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
@@ -58,13 +60,17 @@ namespace HousingRepairsOnlineApi.Tests
             repairToFindRepairResponseMapperMock = new Mock<IRepairToFindRepairResponseMapper>();
             cancelAppointmentUseCaseMock = new Mock<ICancelAppointmentUseCase>();
             cancelRepairRequestUseCaseMock = new Mock<ICancelRepairRequestUseCase>();
+            changeAppointmentUseCaseMock = new Mock<IChangeAppointmentUseCase>();
+            changeRepairRequestUseCaseMock = new Mock<IChangeRepairRequestUseCase>();
             sendRepairCancelledInternalEmailUseCaseMock = new Mock<ISendRepairCancelledInternalEmailUseCase>();
+
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
                 retrieveRepairsUseCaseMock.Object, retrieveAvailableCommunalAppointmentUseCaseMock.Object,
                 repairBookingResponseHelper.Object,
                 appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object,
-                cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object, sendRepairCancelledInternalEmailUseCaseMock.Object);
+                cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object, sendRepairCancelledInternalEmailUseCaseMock.Object,
+                changeAppointmentUseCaseMock.Object, changeRepairRequestUseCaseMock.Object);
         }
 
         [Fact]
@@ -235,7 +241,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(CancelAppointmentStatus.NotFound);
+                .ReturnsAsync(ChangeAppointmentStatus.NotFound);
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
 
@@ -259,7 +265,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(CancelAppointmentStatus.Error);
+                .ReturnsAsync(ChangeAppointmentStatus.Error);
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
 
@@ -281,7 +287,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(CancelAppointmentStatus.Found);
+                .ReturnsAsync(ChangeAppointmentStatus.Found);
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
@@ -305,7 +311,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(CancelAppointmentStatus.Found);
+                .ReturnsAsync(ChangeAppointmentStatus.Found);
             sendRepairCancelledInternalEmailUseCaseMock.Setup(x => x.Execute(It.IsAny<Repair>()));
 
             // Act

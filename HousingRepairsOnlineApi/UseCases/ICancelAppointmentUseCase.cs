@@ -5,6 +5,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface ICancelAppointmentUseCase
     {
-        Task<CancelAppointmentStatus> Execute(string bookingReference);
+        Task<ChangeAppointmentStatus> Execute(string bookingReference);
     }
 }
