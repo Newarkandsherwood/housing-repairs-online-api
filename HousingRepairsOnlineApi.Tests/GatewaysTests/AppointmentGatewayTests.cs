@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using HACT.Dtos;
 using HousingRepairsOnlineApi.Gateways;
+using HousingRepairsOnlineApi.Helpers;
 using Newtonsoft.Json;
 using RichardSzalay.MockHttp;
 using Xunit;
@@ -120,6 +121,86 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             // Assert
             await act.Should().NotThrowAsync<Exception>();
             mockHttp.VerifyNoOutstandingExpectation();
+        }
+
+        [Fact]
+        public async Task GivenValidParameters_WhenChangingAppointment_NoExceptionIsThrown()
+        {
+            // Arrange
+            const string BookingReference = "Booking Reference";
+
+            var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
+            var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
+            mockHttp.Expect(
+                    $"/Appointments/UpdateAppointmentSlot?bookingReference={BookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+                .Respond(HttpStatusCode.OK);
+
+            // Act
+            Func<Task> act = async () =>
+            {
+                await systemUnderTest.ChangeAppointment(BookingReference, startDateTime, endDateTime);
+            };
+
+            // Assert
+            await act.Should().NotThrowAsync<Exception>();
+            mockHttp.VerifyNoOutstandingExpectation();
+        }
+
+        [Fact]
+        public async Task GivenValidParameters_WhenChangingAppointment_AppointmentUpdatedIsReturned()
+        {
+            // Arrange
+            const string BookingReference = "Booking Reference";
+
+            var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
+            var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
+            mockHttp.Expect(
+                    $"/Appointments/UpdateAppointmentSlot?bookingReference={BookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+                .Respond(HttpStatusCode.OK);
+
+            // Act
+            var act = await systemUnderTest.ChangeAppointment(BookingReference, startDateTime, endDateTime);
+
+            // Assert
+            act.Should().Be(UpdateOrCancelAppointmentStatus.AppointmentUpdated);
+        }
+
+        [Fact]
+        public async Task GivenAppointmentNotExists_WhenChangingAppointment_NotFoundIsReturned()
+        {
+            // Arrange
+            const string BookingReference = "Booking Reference";
+
+            var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
+            var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
+            mockHttp.Expect(
+                    $"/Appointments/UpdateAppointmentSlot?bookingReference={BookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+                .Respond(HttpStatusCode.NotFound);
+
+            // Act
+            var act = await systemUnderTest.ChangeAppointment(BookingReference, startDateTime, endDateTime);
+
+            // Assert
+            act.Should().Be(UpdateOrCancelAppointmentStatus.NotFound);
+        }
+
+        [Fact]
+        public async Task GivenInternalServerErrorInSchedulingAPI_WhenChangingAppointment_ErrorIsReturned()
+        {
+            // Arrange
+            const string BookingReference = "Booking Reference";
+
+            var startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
+            var endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
+            mockHttp.Expect(
+                    $"/Appointments/UpdateAppointmentSlot?bookingReference={BookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}")
+                .Respond(HttpStatusCode.InternalServerError);
+
+            // Act
+            var act = await systemUnderTest.ChangeAppointment(BookingReference, startDateTime, endDateTime);
+
+            // Assert
+            act.Should().Be(UpdateOrCancelAppointmentStatus.Error);
         }
 
         public void Dispose()
