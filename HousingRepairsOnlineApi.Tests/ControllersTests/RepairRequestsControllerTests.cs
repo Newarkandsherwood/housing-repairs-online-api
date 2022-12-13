@@ -348,7 +348,8 @@ namespace HousingRepairsOnlineApi.Tests
             var postcode = "postcode";
             var sameRepairAvailability = new RepairAvailability()
             {
-                StartDateTime = new DateTime(2022, 1, 1), EndDateTime = new DateTime(2022, 1, 2),
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
             var repair = new Repair() { Time = sameRepairAvailability };
 
@@ -370,9 +371,10 @@ namespace HousingRepairsOnlineApi.Tests
             var postcode = "postcode";
             var altRepairAvailability = new RepairAvailability()
             {
-                StartDateTime = new DateTime(2022, 1, 1), EndDateTime = new DateTime(2022, 1, 2),
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
-            var repair = new Repair{ Time = repairAvailability };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock
@@ -396,9 +398,10 @@ namespace HousingRepairsOnlineApi.Tests
             var postcode = "postcode";
             var altRepairAvailability = new RepairAvailability()
             {
-                StartDateTime = new DateTime(2022, 1, 1), EndDateTime = new DateTime(2022, 1, 2),
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
-            var repair = new Repair{ Time = repairAvailability };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock
@@ -422,9 +425,10 @@ namespace HousingRepairsOnlineApi.Tests
             var postcode = "postcode";
             var altRepairAvailability = new RepairAvailability()
             {
-                StartDateTime = new DateTime(2022, 1, 1), EndDateTime = new DateTime(2022, 1, 2),
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
-            var repair = new Repair{ Time = repairAvailability };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock

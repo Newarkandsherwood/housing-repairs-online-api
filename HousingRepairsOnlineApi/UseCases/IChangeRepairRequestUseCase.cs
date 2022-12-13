@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IChangeRepairRequestUseCase
     {
-        public Task Execute(Repair repair,  DateTime startDateTime, DateTime endDateTime);
+        public Task Execute(Repair repair, DateTime startDateTime, DateTime endDateTime);
     }
 }
