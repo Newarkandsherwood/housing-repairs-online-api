@@ -323,7 +323,7 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenStatusIs404()
+        public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChangeAppointmentSlot_ThenStatusIs404()
         {
             // Arrange
             var repairId = "repairId";
@@ -364,7 +364,7 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task GivenRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChangeButSchedulerReturnsError_ThenStatusIsError()
+        public async Task GivenRepairMatched_AndSchedulerReturnsError_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenStatusIsError()
         {
             // Arrange
             var repairId = "repairId";
@@ -391,7 +391,7 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task GivenRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChangeButSchedulerReturnsNotFound_ThenStatusIsError()
+        public async Task GivenRepairMatched_AndSchedulerReturnsNotFound_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenStatusIsError()
         {
             // Arrange
             var repairId = "repairId";
@@ -418,7 +418,7 @@ namespace HousingRepairsOnlineApi.Tests
         }
 
         [Fact]
-        public async Task GivenRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChangeSchedulerSuccess_ThenCallsChangeRepairRequestUseCaseExecute()
+        public async Task GivenRepairMatched_AndSchedulerReturnsSuccess_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenCallsChangeRepairRequestUseCaseExecute()
         {
             // Arrange
             var repairId = "repairId";
