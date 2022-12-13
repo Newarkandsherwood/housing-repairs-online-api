@@ -349,7 +349,8 @@ namespace HousingRepairsOnlineApi.Tests
             var startDateTime = new DateTime(2022, 1, 1);
             var endDateTime = new DateTime(2022, 1, 2);
 
-            var repair = new Repair() {
+            var repair = new Repair()
+            {
                 Time = new RepairAvailability()
                 {
                     StartDateTime = startDateTime,
@@ -376,7 +377,8 @@ namespace HousingRepairsOnlineApi.Tests
             var startDateTime = new DateTime(2022, 1, 1);
             var endDateTime = new DateTime(2022, 1, 2);
 
-            var repair = new Repair() {
+            var repair = new Repair()
+            {
                 Time = new RepairAvailability()
                 {
                     StartDateTime = startDateTime.AddDays(1),
@@ -407,7 +409,8 @@ namespace HousingRepairsOnlineApi.Tests
             var startDateTime = new DateTime(2022, 1, 1);
             var endDateTime = new DateTime(2022, 1, 2);
 
-            var repair = new Repair() {
+            var repair = new Repair()
+            {
                 Time = new RepairAvailability()
                 {
                     StartDateTime = startDateTime.AddDays(1),
@@ -438,7 +441,8 @@ namespace HousingRepairsOnlineApi.Tests
             var startDateTime = new DateTime(2022, 1, 1);
             var endDateTime = new DateTime(2022, 1, 2);
 
-            var repair = new Repair() {
+            var repair = new Repair()
+            {
                 Time = new RepairAvailability()
                 {
                     StartDateTime = startDateTime.AddDays(1),
