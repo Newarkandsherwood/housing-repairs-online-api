@@ -126,12 +126,12 @@ namespace HousingRepairsOnlineApi.Controllers
                     var changeAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
                     switch (changeAppointmentStatus)
                     {
-                        case ChangeAppointmentStatus.Found:
+                        case UpdateOrCancelAppointmentStatus.AppointmentCancelled:
                             var cancelRepairRequestTask = cancelRepairRequestUseCase.Execute(repair);
                             await cancelRepairRequestTask.ContinueWith(_ => sendRepairCancelledInternalEmailUseCase.Execute(repair));
                             break;
-                        case ChangeAppointmentStatus.Error:
-                        case ChangeAppointmentStatus.NotFound:
+                        case UpdateOrCancelAppointmentStatus.Error:
+                        case UpdateOrCancelAppointmentStatus.NotFound:
                             return StatusCode(500, "Error updating the appointment");
                     }
                     return Ok("The repair has successfully been cancelled");
@@ -150,8 +150,8 @@ namespace HousingRepairsOnlineApi.Controllers
         }
 
         [HttpPost]
-        [Route("TenantOrLeaseholdPropertyRepairChange")]
-        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChange([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability )
+        [Route(nameof(TenantOrLeaseholdPropertyRepairChangeAppointmentSlot))]
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChangeAppointmentSlot([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability )
         {
             try
             {
@@ -175,11 +175,11 @@ namespace HousingRepairsOnlineApi.Controllers
                     var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
                     switch (changeAppointmentStatus)
                     {
-                        case ChangeAppointmentStatus.Found:
+                        case UpdateOrCancelAppointmentStatus.AppointmentUpdated:
                             await changeRepairRequestUseCase.Execute(repair, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
                             break;
-                        case ChangeAppointmentStatus.Error:
-                        case ChangeAppointmentStatus.NotFound:
+                        case UpdateOrCancelAppointmentStatus.Error:
+                        case UpdateOrCancelAppointmentStatus.NotFound:
                             return StatusCode(500, "Error changing the appointment");
                     }
                     return Ok("The repair has successfully been changed");

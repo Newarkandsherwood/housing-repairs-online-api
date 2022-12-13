@@ -241,7 +241,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(ChangeAppointmentStatus.NotFound);
+                .ReturnsAsync(UpdateOrCancelAppointmentStatus.NotFound);
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
 
@@ -265,7 +265,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(ChangeAppointmentStatus.Error);
+                .ReturnsAsync(UpdateOrCancelAppointmentStatus.Error);
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
 
@@ -287,7 +287,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair() { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(ChangeAppointmentStatus.Found);
+                .ReturnsAsync(UpdateOrCancelAppointmentStatus.AppointmentCancelled);
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairCancel(postcode, repairId);
@@ -311,7 +311,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(new Repair { Status = RepairStatus.Scheduled });
 
             cancelAppointmentUseCaseMock.Setup(x => x.Execute(It.IsAny<string>()))
-                .ReturnsAsync(ChangeAppointmentStatus.Found);
+                .ReturnsAsync(UpdateOrCancelAppointmentStatus.AppointmentCancelled);
             sendRepairCancelledInternalEmailUseCaseMock.Setup(x => x.Execute(It.IsAny<Repair>()));
 
             // Act
@@ -321,6 +321,47 @@ namespace HousingRepairsOnlineApi.Tests
             GetStatusCode(result).Should().Be(200);
             sendRepairCancelledInternalEmailUseCaseMock.Verify(x => x.Execute(It.IsAny<Repair>()), Times.Once);
         }
+
+        [Fact]
+        public async Task GivenNoRepairMatched_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenStatusIs404()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false));
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, new RepairAvailability());
+
+            // Assert
+            GetStatusCode(result).Should().Be(404);
+            (result as NotFoundObjectResult)?.Value.Should()
+                .Be("Repair request not found for postcode and repairId provided");
+        }
+
+        [Fact]
+        public async Task GivenRepairMatchedButHasSameDates_WhenCallingTenantOrLeaseholdPropertyRepairChange_ThenStatusIsOK()
+        {
+            // Arrange
+            var repairId = "repairId";
+            var postcode = "postcode";
+            var sameRepairAvailability = new RepairAvailability()
+            {
+                StartDateTime = new DateTime(2022, 1, 1), EndDateTime = new DateTime(2022, 1, 2),
+            };
+            var repair = new Repair() { Time = sameRepairAvailability };
+
+            retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, sameRepairAvailability);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            (result as OkObjectResult)?.Value.Should().Be("The repair has already been updated with the same start and end times");
+        }
+
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()
         {

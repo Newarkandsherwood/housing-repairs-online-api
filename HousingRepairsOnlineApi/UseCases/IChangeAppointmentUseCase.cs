@@ -6,6 +6,6 @@ namespace HousingRepairsOnlineApi.UseCases
 {
     public interface IChangeAppointmentUseCase
     {
-        Task<ChangeAppointmentStatus> Execute(string bookingReference, DateTime startDateTime, DateTime endDateTime);
+        Task<UpdateOrCancelAppointmentStatus> Execute(string bookingReference, DateTime startDateTime, DateTime endDateTime);
     }
 }

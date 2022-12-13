@@ -13,9 +13,9 @@ namespace HousingRepairsOnlineApi.Gateways
 
         Task BookAppointment(string bookingReference, string sorCode, string priority, string locationId, DateTime startDateTime, DateTime endDateTime, string repairDescriptionText);
 
-        Task<ChangeAppointmentStatus> CancelAppointment(string bookingReference);
+        Task<UpdateOrCancelAppointmentStatus> CancelAppointment(string bookingReference);
 
-        Task<ChangeAppointmentStatus> ChangeAppointment(string bookingReference, DateTime startDateTime,
+        Task<UpdateOrCancelAppointmentStatus> ChangeAppointment(string bookingReference, DateTime startDateTime,
             DateTime endDateTime);
     }
 }

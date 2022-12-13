@@ -72,7 +72,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             var startDateTime = new DateTime(2022, 1, 1);
             var endDateTime = startDateTime.AddDays(1);
             appointmentsGatewayMock.Setup(x => x.ChangeAppointment(BookingReference, startDateTime, endDateTime))
-                .ReturnsAsync(ChangeAppointmentStatus.Found);
+                .ReturnsAsync(UpdateOrCancelAppointmentStatus.AppointmentUpdated);
             // Act
             var act = await systemUnderTest.Execute(
                     BookingReference, startDateTime, endDateTime
