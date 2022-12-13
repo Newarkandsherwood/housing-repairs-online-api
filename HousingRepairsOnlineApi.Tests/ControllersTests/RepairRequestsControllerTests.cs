@@ -436,6 +436,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(UpdateOrCancelAppointmentStatus.AppointmentUpdated);
             changeRepairRequestUseCaseMock.Setup(x =>
                 x.Execute(It.IsAny<Repair>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()));
+
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, altRepairAvailability);
 

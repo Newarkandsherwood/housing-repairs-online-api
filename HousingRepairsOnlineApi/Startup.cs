@@ -102,6 +102,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<ICancelAppointmentUseCase, CancelAppointmentUseCase>();
             services.AddTransient<ICancelRepairRequestUseCase, CancelRepairRequestUseCase>();
             services.AddTransient<IChangeAppointmentUseCase, ChangeAppointmentUseCase>();
+            services.AddTransient<IChangeRepairRequestUseCase, ChangeRepairRequestUseCase>();
             services.AddTransient<ISendRepairCancelledInternalEmailUseCase, SendRepairCancelledInternalEmailUseCase>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
