@@ -16,7 +16,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.repairStorageGateway = repairStorageGateway;
         }
 
-        public async Task Execute(Repair repair,  DateTime startDateTime, DateTime endDateTime)
+        public async Task Execute(Repair repair, DateTime startDateTime, DateTime endDateTime)
         {
             Guard.Against.Null(repair, nameof(repair));
             repair.Time.StartDateTime = startDateTime;

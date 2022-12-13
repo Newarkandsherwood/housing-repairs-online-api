@@ -151,7 +151,7 @@ namespace HousingRepairsOnlineApi.Controllers
 
         [HttpPost]
         [Route(nameof(TenantOrLeaseholdPropertyRepairChangeAppointmentSlot))]
-        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChangeAppointmentSlot([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability )
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChangeAppointmentSlot([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability)
         {
             try
             {
