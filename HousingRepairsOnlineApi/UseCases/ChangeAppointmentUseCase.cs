@@ -15,7 +15,7 @@ namespace HousingRepairsOnlineApi.UseCases
             this.appointmentsGateway = appointmentsGateway;
         }
 
-        public async Task<ChangeAppointmentStatus> Execute(string bookingReference, DateTime startDateTime, DateTime endDateTime)
+        public async Task<UpdateOrCancelAppointmentStatus> Execute(string bookingReference, DateTime startDateTime, DateTime endDateTime)
         {
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(bookingReference));
             Guard.Against.OutOfRange(endDateTime, nameof(endDateTime), startDateTime, DateTime.MaxValue);

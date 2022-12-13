@@ -64,7 +64,7 @@ namespace HousingRepairsOnlineApi.Gateways
 
         }
 
-        public async Task<ChangeAppointmentStatus> CancelAppointment(string bookingReference)
+        public async Task<UpdateOrCancelAppointmentStatus> CancelAppointment(string bookingReference)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                  $"/Appointments/CancelAppointment?bookingReference={bookingReference}");
@@ -75,16 +75,16 @@ namespace HousingRepairsOnlineApi.Gateways
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return ChangeAppointmentStatus.Found;
+                    return UpdateOrCancelAppointmentStatus.AppointmentCancelled;
                 case HttpStatusCode.NotFound:
-                    return ChangeAppointmentStatus.NotFound;
+                    return UpdateOrCancelAppointmentStatus.NotFound;
                 case HttpStatusCode.InternalServerError:
                 default:
-                    return ChangeAppointmentStatus.Error;
+                    return UpdateOrCancelAppointmentStatus.Error;
             }
         }
 
-        public async Task<ChangeAppointmentStatus> ChangeAppointment(string bookingReference, DateTime startDateTime, DateTime endDateTime)
+        public async Task<UpdateOrCancelAppointmentStatus> ChangeAppointment(string bookingReference, DateTime startDateTime, DateTime endDateTime)
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                 $"/Appointments/UpdateAppointmentSlot?bookingReference={bookingReference}&startDateTime={startDateTime}&endDateTime={endDateTime}");
@@ -95,12 +95,12 @@ namespace HousingRepairsOnlineApi.Gateways
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return ChangeAppointmentStatus.Found;
+                    return UpdateOrCancelAppointmentStatus.AppointmentUpdated;
                 case HttpStatusCode.NotFound:
-                    return ChangeAppointmentStatus.NotFound;
+                    return UpdateOrCancelAppointmentStatus.NotFound;
                 case HttpStatusCode.InternalServerError:
                 default:
-                    return ChangeAppointmentStatus.Error;
+                    return UpdateOrCancelAppointmentStatus.Error;
             }
         }
     }
