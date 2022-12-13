@@ -123,8 +123,8 @@ namespace HousingRepairsOnlineApi.Controllers
 
                 try
                 {
-                    var changeAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
-                    switch (changeAppointmentStatus)
+                    var cancelAppointmentStatus = await cancelAppointmentUseCase.Execute(repairId);
+                    switch (cancelAppointmentStatus)
                     {
                         case UpdateOrCancelAppointmentStatus.AppointmentCancelled:
                             var cancelRepairRequestTask = cancelRepairRequestUseCase.Execute(repair);
@@ -167,7 +167,7 @@ namespace HousingRepairsOnlineApi.Controllers
                 if (DateTime.Compare(repair.Time.StartDateTime, repairAvailability.StartDateTime) == 0 &&
                     DateTime.Compare(repair.Time.EndDateTime, repairAvailability.EndDateTime) == 0)
                 {
-                    return Ok("The repair has already been updated with the same start and end times");
+                    return Ok("The repair already has the same start and end times as those provided");
                 }
 
                 try

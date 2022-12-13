@@ -20,7 +20,6 @@ namespace HousingRepairsOnlineApi.UseCases
             Guard.Against.NullOrWhiteSpace(bookingReference, nameof(bookingReference));
             Guard.Against.OutOfRange(endDateTime, nameof(endDateTime), startDateTime, DateTime.MaxValue);
 
-
             return await appointmentsGateway.ChangeAppointment(bookingReference, startDateTime, endDateTime);
         }
     }
