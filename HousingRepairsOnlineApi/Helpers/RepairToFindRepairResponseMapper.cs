@@ -13,5 +13,6 @@ public class RepairToFindRepairResponseMapper : IRepairToFindRepairResponseMappe
             Issue = result.Issue,
             AppointmentTime = result.Time,
             ContactDetails = result.ContactDetails,
+            RepairType = result.RepairType
         };
 }
