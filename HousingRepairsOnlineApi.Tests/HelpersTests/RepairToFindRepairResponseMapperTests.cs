@@ -181,6 +181,6 @@ public class RepairToFindRepairResponseMapperTests
         var actual = systemUnderTest.Map(repair);
 
         // Assert
-        actual.ContactDetails.Should().BeEquivalentTo(expected.ContactDetails);
+        actual.RepairType.Should().BeEquivalentTo(expected.RepairType);
     }
 }
