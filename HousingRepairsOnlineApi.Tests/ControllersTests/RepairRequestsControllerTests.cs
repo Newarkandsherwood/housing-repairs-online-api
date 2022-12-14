@@ -332,7 +332,7 @@ namespace HousingRepairsOnlineApi.Tests
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false));
 
             // Act
-            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, DateTime.Now, DateTime.Now);
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, new RepairAvailability());
 
             // Assert
             GetStatusCode(result).Should().Be(404);
@@ -346,26 +346,21 @@ namespace HousingRepairsOnlineApi.Tests
             // Arrange
             var repairId = "repairId";
             var postcode = "postcode";
-            var startDateTime = new DateTime(2022, 1, 1);
-            var endDateTime = new DateTime(2022, 1, 2);
-
-            var repair = new Repair()
+            var sameRepairAvailability = new RepairAvailability()
             {
-                Time = new RepairAvailability()
-                {
-                    StartDateTime = startDateTime,
-                    EndDateTime = endDateTime
-                }
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
+            var repair = new Repair() { Time = sameRepairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
 
             // Act
-            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, startDateTime, endDateTime);
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, sameRepairAvailability);
 
             // Assert
             GetStatusCode(result).Should().Be(200);
-            (result as OkObjectResult)?.Value.Should().Be("The repair already has the same start and end times as those provided");
+            (result as OkObjectResult)?.Value.Should().Be("The repair has already been updated with the same start and end times");
         }
 
         [Fact]
@@ -374,17 +369,12 @@ namespace HousingRepairsOnlineApi.Tests
             // Arrange
             var repairId = "repairId";
             var postcode = "postcode";
-            var startDateTime = new DateTime(2022, 1, 1);
-            var endDateTime = new DateTime(2022, 1, 2);
-
-            var repair = new Repair()
+            var altRepairAvailability = new RepairAvailability()
             {
-                Time = new RepairAvailability()
-                {
-                    StartDateTime = startDateTime.AddDays(1),
-                    EndDateTime = endDateTime.AddDays(1)
-                }
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock
@@ -392,7 +382,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(UpdateOrCancelAppointmentStatus.Error);
 
             // Act
-            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, startDateTime, endDateTime);
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, altRepairAvailability);
 
             // Assert
             GetStatusCode(result).Should().Be(500);
@@ -406,17 +396,12 @@ namespace HousingRepairsOnlineApi.Tests
             // Arrange
             var repairId = "repairId";
             var postcode = "postcode";
-            var startDateTime = new DateTime(2022, 1, 1);
-            var endDateTime = new DateTime(2022, 1, 2);
-
-            var repair = new Repair()
+            var altRepairAvailability = new RepairAvailability()
             {
-                Time = new RepairAvailability()
-                {
-                    StartDateTime = startDateTime.AddDays(1),
-                    EndDateTime = endDateTime.AddDays(1)
-                }
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock
@@ -424,7 +409,7 @@ namespace HousingRepairsOnlineApi.Tests
                 .ReturnsAsync(UpdateOrCancelAppointmentStatus.NotFound);
 
             // Act
-            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, startDateTime, endDateTime);
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, altRepairAvailability);
 
             // Assert
             GetStatusCode(result).Should().Be(500);
@@ -438,17 +423,12 @@ namespace HousingRepairsOnlineApi.Tests
             // Arrange
             var repairId = "repairId";
             var postcode = "postcode";
-            var startDateTime = new DateTime(2022, 1, 1);
-            var endDateTime = new DateTime(2022, 1, 2);
-
-            var repair = new Repair()
+            var altRepairAvailability = new RepairAvailability()
             {
-                Time = new RepairAvailability()
-                {
-                    StartDateTime = startDateTime.AddDays(1),
-                    EndDateTime = endDateTime.AddDays(1)
-                }
+                StartDateTime = new DateTime(2022, 1, 1),
+                EndDateTime = new DateTime(2022, 1, 2),
             };
+            var repair = new Repair { Time = repairAvailability };
 
             retrieveRepairsUseCaseMock.Setup(x => x.Execute(It.IsAny<IEnumerable<string>>(), postcode, repairId, false)).ReturnsAsync(repair);
             changeAppointmentUseCaseMock
@@ -458,10 +438,10 @@ namespace HousingRepairsOnlineApi.Tests
                 x.Execute(It.IsAny<Repair>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()));
 
             // Act
-            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, startDateTime, endDateTime);
+            var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, altRepairAvailability);
 
             // Assert
-            changeRepairRequestUseCaseMock.Verify(x => x.Execute(repair, startDateTime, endDateTime), Times.Once);
+            changeRepairRequestUseCaseMock.Verify(x => x.Execute(repair, altRepairAvailability.StartDateTime, altRepairAvailability.EndDateTime), Times.Once);
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()
