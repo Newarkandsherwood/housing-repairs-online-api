@@ -28,7 +28,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<ICancelAppointmentUseCase> cancelAppointmentUseCaseMock;
         private Mock<ICancelRepairRequestUseCase> cancelRepairRequestUseCaseMock;
         private Mock<IChangeAppointmentUseCase> changeAppointmentUseCaseMock;
-        private Mock<IChangeRepairRequestUseCase> changeRepairRequestUseCaseMock;
+        private Mock<ISaveChangedRepairRequestUseCase> saveChangedRepairRequestUseCaseMock;
         private readonly Mock<ISendRepairCancelledInternalEmailUseCase> sendRepairCancelledInternalEmailUseCaseMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
@@ -61,7 +61,7 @@ namespace HousingRepairsOnlineApi.Tests
             cancelAppointmentUseCaseMock = new Mock<ICancelAppointmentUseCase>();
             cancelRepairRequestUseCaseMock = new Mock<ICancelRepairRequestUseCase>();
             changeAppointmentUseCaseMock = new Mock<IChangeAppointmentUseCase>();
-            changeRepairRequestUseCaseMock = new Mock<IChangeRepairRequestUseCase>();
+            saveChangedRepairRequestUseCaseMock = new Mock<ISaveChangedRepairRequestUseCase>();
             sendRepairCancelledInternalEmailUseCaseMock = new Mock<ISendRepairCancelledInternalEmailUseCase>();
 
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
@@ -70,7 +70,7 @@ namespace HousingRepairsOnlineApi.Tests
                 repairBookingResponseHelper.Object,
                 appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object,
                 cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object, sendRepairCancelledInternalEmailUseCaseMock.Object,
-                changeAppointmentUseCaseMock.Object, changeRepairRequestUseCaseMock.Object);
+                changeAppointmentUseCaseMock.Object, saveChangedRepairRequestUseCaseMock.Object);
         }
 
         [Fact]
@@ -434,14 +434,14 @@ namespace HousingRepairsOnlineApi.Tests
             changeAppointmentUseCaseMock
                 .Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                 .ReturnsAsync(UpdateOrCancelAppointmentStatus.AppointmentUpdated);
-            changeRepairRequestUseCaseMock.Setup(x =>
-                x.Execute(It.IsAny<Repair>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()));
+            saveChangedRepairRequestUseCaseMock.Setup(x =>
+                x.Execute(It.IsAny<Repair>()));
 
             // Act
             var result = await systemUnderTest.TenantOrLeaseholdPropertyRepairChangeAppointmentSlot(postcode, repairId, altRepairAvailability);
 
             // Assert
-            changeRepairRequestUseCaseMock.Verify(x => x.Execute(repair, altRepairAvailability.StartDateTime, altRepairAvailability.EndDateTime), Times.Once);
+            saveChangedRepairRequestUseCaseMock.Verify(x => x.Execute(repair), Times.Once);
         }
 
         private (RepairRequest, Repair) CreateRepairRequestAndRepair()

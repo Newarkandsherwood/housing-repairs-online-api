@@ -23,7 +23,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly IRepairToFindRepairResponseMapper repairToFindRepairResponseMapper;
         private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
         private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
-        private readonly IChangeRepairRequestUseCase changeRepairRequestUseCase;
+        private readonly ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase;
         private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
         private readonly IChangeAppointmentUseCase changeAppointmentUseCase;
 
@@ -41,7 +41,7 @@ namespace HousingRepairsOnlineApi.Controllers
             ICancelRepairRequestUseCase cancelRepairRequestUseCase,
             ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase,
             IChangeAppointmentUseCase changeAppointmentUseCase,
-            IChangeRepairRequestUseCase changeRepairRequestUseCase)
+            ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -56,7 +56,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.cancelRepairRequestUseCase = cancelRepairRequestUseCase;
             this.sendRepairCancelledInternalEmailUseCase = sendRepairCancelledInternalEmailUseCase;
             this.changeAppointmentUseCase = changeAppointmentUseCase;
-            this.changeRepairRequestUseCase = changeRepairRequestUseCase;
+            this.saveChangedRepairRequestUseCase = saveChangedRepairRequestUseCase;
         }
 
         [HttpGet]
@@ -176,7 +176,8 @@ namespace HousingRepairsOnlineApi.Controllers
                     switch (changeAppointmentStatus)
                     {
                         case UpdateOrCancelAppointmentStatus.AppointmentUpdated:
-                            await changeRepairRequestUseCase.Execute(repair, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
+                            repair.Time = repairAvailability;
+                            await saveChangedRepairRequestUseCase.Execute(repair);
                             break;
                         case UpdateOrCancelAppointmentStatus.Error:
                         case UpdateOrCancelAppointmentStatus.NotFound:

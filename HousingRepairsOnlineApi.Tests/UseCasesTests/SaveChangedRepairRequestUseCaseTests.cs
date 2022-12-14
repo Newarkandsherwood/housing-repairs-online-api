@@ -11,17 +11,24 @@ using Xunit;
 
 namespace HousingRepairsOnlineApi.Tests.UseCasesTests
 {
-    public class ChangeRepairRequestUseCaseTests
+    public class SaveChangedRepairRequestUseCaseTests
     {
         private readonly Mock<IRepairStorageGateway> repairStorageGatewayMock;
-        private readonly ChangeRepairRequestUseCase systemUnderTest;
+        private readonly SaveChangedRepairRequestUseCase systemUnderTest;
         private DateTime startDateTime = new DateTime(2022, 01, 01, 8, 0, 0);
         private DateTime endDateTime = new DateTime(2022, 01, 01, 12, 0, 0);
 
-        public ChangeRepairRequestUseCaseTests()
+        private RepairAvailability repairAvailability = new RepairAvailability()
+        {
+            StartDateTime = new DateTime(2022, 01, 01, 8, 0, 0),
+            EndDateTime = new DateTime(2022, 01, 01, 12, 0, 0),
+            Display = "Display Text"
+        };
+
+        public SaveChangedRepairRequestUseCaseTests()
         {
             repairStorageGatewayMock = new Mock<IRepairStorageGateway>();
-            systemUnderTest = new ChangeRepairRequestUseCase(repairStorageGatewayMock.Object);
+            systemUnderTest = new SaveChangedRepairRequestUseCase(repairStorageGatewayMock.Object);
         }
 
         public static IEnumerable<object[]> InvalidArgumentTestData()
@@ -38,7 +45,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         {
             //Act
             Func<Task> act = async () => await systemUnderTest.Execute(
-                repair, startDateTime, endDateTime
+                repair
             );
 
             //Assert
@@ -49,16 +56,11 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         public async void GivenARepair_WhenExecuting_ThenRepairStorageGatewayModifyRepairIsCalledWithModifiedRepair()
         {
             // Arrange
-            var repairAvailability = new RepairAvailability()
-            {
-                StartDateTime = new DateTime(2022, 1, 1),
-                EndDateTime = new DateTime(2022, 1, 2),
-            };
             var repair = new Repair { Time = repairAvailability };
             repairStorageGatewayMock.Setup(x => x.ModifyRepair(It.IsAny<Repair>()));
 
             // Act
-            await systemUnderTest.Execute(repair, startDateTime, endDateTime);
+            await systemUnderTest.Execute(repair);
 
             // Assert
             repairStorageGatewayMock.Verify(x => x.ModifyRepair(It.Is<Repair>(x =>
