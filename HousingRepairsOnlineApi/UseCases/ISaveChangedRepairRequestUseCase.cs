@@ -4,8 +4,8 @@ using HousingRepairsOnlineApi.Domain;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
-    public interface IChangeRepairRequestUseCase
+    public interface ISaveChangedRepairRequestUseCase
     {
-        public Task Execute(Repair repair, DateTime startDateTime, DateTime endDateTime);
+        public Task Execute(Repair repair);
     }
 }

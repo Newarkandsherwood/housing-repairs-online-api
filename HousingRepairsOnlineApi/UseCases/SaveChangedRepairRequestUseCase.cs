@@ -7,20 +7,18 @@ using HousingRepairsOnlineApi.Helpers;
 
 namespace HousingRepairsOnlineApi.UseCases
 {
-    public class ChangeRepairRequestUseCase : IChangeRepairRequestUseCase
+    public class SaveChangedRepairRequestUseCase : ISaveChangedRepairRequestUseCase
     {
         private readonly IRepairStorageGateway repairStorageGateway;
 
-        public ChangeRepairRequestUseCase(IRepairStorageGateway repairStorageGateway)
+        public SaveChangedRepairRequestUseCase(IRepairStorageGateway repairStorageGateway)
         {
             this.repairStorageGateway = repairStorageGateway;
         }
 
-        public async Task Execute(Repair repair, DateTime startDateTime, DateTime endDateTime)
+        public async Task Execute(Repair repair)
         {
             Guard.Against.Null(repair, nameof(repair));
-            repair.Time.StartDateTime = startDateTime;
-            repair.Time.EndDateTime = endDateTime;
             await repairStorageGateway.ModifyRepair(repair);
         }
     }
