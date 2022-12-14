@@ -169,12 +169,12 @@ public class RepairToFindRepairResponseMapperTests
         // Arrange
         var repair = new Repair
         {
-            RepairType =  RepairType.Communal,
+            RepairType = RepairType.Communal,
         };
 
         var expected = new FindRepairResponse
         {
-            RepairType =  RepairType.Communal,
+            RepairType = RepairType.Communal,
         };
 
         // Act
