@@ -360,7 +360,7 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Assert
             GetStatusCode(result).Should().Be(200);
-            (result as OkObjectResult)?.Value.Should().Be("The repair has already been updated with the same start and end times");
+            (result as OkObjectResult)?.Value.Should().Be("The repair already has the same start and end times as those provided");
         }
 
         [Fact]
