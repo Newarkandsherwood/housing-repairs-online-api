@@ -162,4 +162,25 @@ public class RepairToFindRepairResponseMapperTests
         // Assert
         actual.ContactDetails.Should().BeEquivalentTo(expected.ContactDetails);
     }
+
+    [Fact]
+    public void GivenRepairWithRepairType_WhenMapping_ThenResponseHasRepairType()
+    {
+        // Arrange
+        var repair = new Repair
+        {
+            RepairType =  RepairType.Communal,
+        };
+
+        var expected = new FindRepairResponse
+        {
+            RepairType =  RepairType.Communal,
+        };
+
+        // Act
+        var actual = systemUnderTest.Map(repair);
+
+        // Assert
+        actual.ContactDetails.Should().BeEquivalentTo(expected.ContactDetails);
+    }
 }
