@@ -151,7 +151,7 @@ namespace HousingRepairsOnlineApi.Controllers
 
         [HttpPost]
         [Route(nameof(TenantOrLeaseholdPropertyRepairChangeAppointmentSlot))]
-        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChangeAppointmentSlot([FromQuery] string postcode, [FromQuery] string repairId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        public async Task<IActionResult> TenantOrLeaseholdPropertyRepairChangeAppointmentSlot([FromQuery] string postcode, [FromQuery] string repairId, [FromBody] RepairAvailability repairAvailability)
         {
             try
             {
@@ -164,19 +164,19 @@ namespace HousingRepairsOnlineApi.Controllers
                     return NotFound("Repair request not found for postcode and repairId provided");
                 }
 
-                if (DateTime.Compare(repair.Time.StartDateTime, startDate) == 0 &&
-                    DateTime.Compare(repair.Time.EndDateTime, endDate) == 0)
+                if (DateTime.Compare(repair.Time.StartDateTime, repairAvailability.StartDateTime) == 0 &&
+                    DateTime.Compare(repair.Time.EndDateTime, repairAvailability.EndDateTime) == 0)
                 {
                     return Ok("The repair already has the same start and end times as those provided");
                 }
 
                 try
                 {
-                    var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, startDate, endDate);
+                    var changeAppointmentStatus = await changeAppointmentUseCase.Execute(repairId, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
                     switch (changeAppointmentStatus)
                     {
                         case UpdateOrCancelAppointmentStatus.AppointmentUpdated:
-                            await changeRepairRequestUseCase.Execute(repair, startDate, endDate);
+                            await changeRepairRequestUseCase.Execute(repair, repairAvailability.StartDateTime, repairAvailability.EndDateTime);
                             break;
                         case UpdateOrCancelAppointmentStatus.Error:
                         case UpdateOrCancelAppointmentStatus.NotFound:
