@@ -98,6 +98,18 @@ resource "azurerm_key_vault_secret" "cancellation-internal-email-notify-template
   key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
 }
 
+resource "azurerm_key_vault_secret" "appointment_changed_email_notify_template_id" {
+  name         = "appointment-changed-email-notify-template-id"
+  value        = var.appointment_changed_email_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
+resource "azurerm_key_vault_secret" "appointment_changed_sms_notify_template_id" {
+  name         = "appointment-changed-sms-notify-template-id"
+  value        = var.appointment_changed_sms_notify_template_id
+  key_vault_id = azurerm_key_vault.hro-repairs-api-key-vault.id
+}
+
 resource "azurerm_key_vault_secret" "sentry-dsn" {
   name         = "sentry-dsn"
   value        = var.sentry_dsn

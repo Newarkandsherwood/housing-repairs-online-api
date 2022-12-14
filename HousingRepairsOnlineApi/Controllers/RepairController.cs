@@ -24,6 +24,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly ICancelAppointmentUseCase cancelAppointmentUseCase;
         private readonly ICancelRepairRequestUseCase cancelRepairRequestUseCase;
         private readonly ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase;
+        private readonly ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase;
         private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
         private readonly IChangeAppointmentUseCase changeAppointmentUseCase;
 
@@ -41,7 +42,8 @@ namespace HousingRepairsOnlineApi.Controllers
             ICancelRepairRequestUseCase cancelRepairRequestUseCase,
             ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase,
             IChangeAppointmentUseCase changeAppointmentUseCase,
-            ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase)
+            ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase,
+            ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -57,6 +59,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.sendRepairCancelledInternalEmailUseCase = sendRepairCancelledInternalEmailUseCase;
             this.changeAppointmentUseCase = changeAppointmentUseCase;
             this.saveChangedRepairRequestUseCase = saveChangedRepairRequestUseCase;
+            this.sendRepairAppointmentChangedNotificationUseCase = sendRepairAppointmentChangedNotificationUseCase;
         }
 
         [HttpGet]
@@ -177,7 +180,8 @@ namespace HousingRepairsOnlineApi.Controllers
                     {
                         case UpdateOrCancelAppointmentStatus.AppointmentUpdated:
                             repair.Time = repairAvailability;
-                            await saveChangedRepairRequestUseCase.Execute(repair);
+                            var saveChangedRepairRequestTask = saveChangedRepairRequestUseCase.Execute(repair);
+                            await saveChangedRepairRequestTask.ContinueWith(_ => sendRepairAppointmentChangedNotificationUseCase.Execute(repair));
                             break;
                         case UpdateOrCancelAppointmentStatus.Error:
                         case UpdateOrCancelAppointmentStatus.NotFound:
