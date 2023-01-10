@@ -19,6 +19,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
         private readonly Mock<IRepairStorageGateway> mockCosmosGateway;
         private readonly Mock<IBlobStorageGateway> mockAzureStorageGateway;
         private const string repairType = "Communal";
+        private const string repairId = "RepairId";
 
         public SaveRepairRequestUseCaseTests()
         {
@@ -62,7 +63,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 SOR = RepairCode,
                 Description = new RepairDescription { Base64Image = Base64Img, Text = LocationText + " " + Location }
             };
-            mockRepairRequestToRepairMapper.Setup(x => x.Map(It.IsAny<RepairRequest>(), It.IsAny<string>())).Returns(repair);
+            mockRepairRequestToRepairMapper.Setup(x => x.Map(It.IsAny<RepairRequest>(), It.IsAny<string>(), It.IsAny<string>())).Returns(repair);
 
             mockAzureStorageGateway.Setup(x => x.UploadBlob(Base64Img, FileExtension))
                 .ReturnsAsync(ImgUrl);
@@ -70,10 +71,10 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest, repairId);
 
             mockAzureStorageGateway.Verify(x => x.UploadBlob(Base64Img, FileExtension), Times.Once);
-            mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue), Times.Once);
+            mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue, It.IsAny<string>()), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
         }
 
@@ -115,14 +116,14 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 Description = new RepairDescription { Text = "Lorem ipsum" }
             };
 
-            mockRepairRequestToRepairMapper.Setup(x => x.Map(repairRequest, RepairTypeParameterValue)).Returns(repair);
+            mockRepairRequestToRepairMapper.Setup(x => x.Map(repairRequest, RepairTypeParameterValue, It.IsAny<string>())).Returns(repair);
 
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest, repairId);
 
-            mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue), Times.Once);
+            mockRepairRequestToRepairMapper.Verify(x => x.Map(repairRequest, RepairTypeParameterValue, It.IsAny<string>()), Times.Once);
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
             mockAzureStorageGateway.Verify(x => x.UploadBlob(null, null), Times.Never());
         }
@@ -165,12 +166,12 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
                 Description = new RepairDescription { Text = "Lorem ipsum" }
             };
 
-            mockRepairRequestToRepairMapper.Setup(x => x.Map(repairRequest, RepairTypeParameterValue)).Returns(repair);
+            mockRepairRequestToRepairMapper.Setup(x => x.Map(repairRequest, RepairTypeParameterValue, It.IsAny<string>())).Returns(repair);
 
             mockCosmosGateway.Setup(x => x.AddRepair(It.IsAny<Repair>()))
                 .ReturnsAsync((Repair r) => r);
 
-            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest);
+            var _ = await systemUnderTest.Execute(RepairTypeParameterValue, repairRequest, repairId);
 
             mockCosmosGateway.Verify(x => x.AddRepair(It.Is<Repair>(p => p.Status == RepairStatus.Scheduled)), Times.Once);
         }
@@ -183,7 +184,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             // Arrange
 
             // Act
-            Func<Task> act = async () => await systemUnderTest.Execute(repairTypeParameter, default);
+            Func<Task> act = async () => await systemUnderTest.Execute(repairTypeParameter, default, repairId);
 
             // Assert
             await act.Should().ThrowExactlyAsync<T>();
@@ -196,7 +197,7 @@ namespace HousingRepairsOnlineApi.Tests.UseCasesTests
             // Arrange
 
             // Act
-            Action act = () => _ = systemUnderTest.Execute(repairTypeParameter, default);
+            Action act = () => _ = systemUnderTest.Execute(repairTypeParameter, default, repairId);
 
             // Assert
             act.Should().NotThrow<ArgumentException>();

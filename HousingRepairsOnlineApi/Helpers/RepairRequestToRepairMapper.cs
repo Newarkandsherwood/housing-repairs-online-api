@@ -10,7 +10,7 @@ public class RepairRequestToRepairMapper : IRepairRequestToRepairMapper
     {
         this.sorEngineResolver = sorEngineResolver;
     }
-    public Repair Map(RepairRequest repairRequest, string repairType)
+    public Repair Map(RepairRequest repairRequest, string repairType, string repairId)
     {
         var sorEngine = sorEngineResolver.Resolve(repairType);
         var repairTriageDetails = sorEngine.MapToRepairTriageDetails(
@@ -20,6 +20,7 @@ public class RepairRequestToRepairMapper : IRepairRequestToRepairMapper
 
         var repair = new Repair
         {
+            Id = repairId,
             RepairType = repairType,
             Address = repairRequest.Address,
             Postcode = repairRequest.Postcode,

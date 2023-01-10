@@ -28,18 +28,16 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             mockIdGenerator = new Mock<IIdGenerator>();
             repairQueryHelper = new Mock<IRepairQueryHelper>();
 
-            azureStorageGateway = new CosmosGateway(mockCosmosContainer.Object, mockIdGenerator.Object, repairQueryHelper.Object);
+            azureStorageGateway = new CosmosGateway(mockCosmosContainer.Object, repairQueryHelper.Object);
         }
 
         [Fact]
         public async void AnItemIsAdded()
         {
-            var repairId = "ABCD1234";
             var dummyRepair = new Repair();
 
             var responseMock = new Mock<ItemResponse<Repair>>();
             responseMock.Setup(_ => _.Resource).Returns(dummyRepair);
-            mockIdGenerator.Setup(_ => _.Generate()).Returns(repairId);
 
             // Arrange
             mockCosmosContainer.Setup(_ => _.CreateItemAsync(
@@ -52,38 +50,7 @@ namespace HousingRepairsOnlineApi.Tests.GatewaysTests
             var actual = await azureStorageGateway.AddRepair(dummyRepair);
 
             // Assert
-            Assert.Equal(repairId, actual.Id);
-            mockIdGenerator.Verify(_ => _.Generate(), Times.Once());
-        }
-
-        [Fact]
-        public async void AnIdIsRegenerated()
-        {
-            var conflictId = "ABCD1234";
-            var repairId = "1234ABCD";
-            var dummyRepair = new Repair();
-
-            var responseMock = new Mock<ItemResponse<Repair>>();
-            responseMock.Setup(_ => _.Resource).Returns(dummyRepair);
-            mockIdGenerator.Setup(_ => _.Generate()).Returns(
-                new Queue<string>(new[] { conflictId, repairId }).Dequeue);
-
-            mockCosmosContainer.Setup(_ => _.CreateItemAsync(
-                dummyRepair,
-                null,
-                null,
-                default
-            )).Callback(() =>
-                {
-                    if (dummyRepair.Id == conflictId)
-                        throw new CosmosException("Conflict", HttpStatusCode.Conflict, default, default, default);
-                }).ReturnsAsync(responseMock.Object);
-
-            var actual = await azureStorageGateway.AddRepair(dummyRepair);
-
-            // Assert
-            mockIdGenerator.Verify(_ => _.Generate(), Times.Exactly(2));
-            Assert.Equal(repairId, actual.Id);
+            mockCosmosContainer.VerifyAll();
         }
 
         [Theory]
