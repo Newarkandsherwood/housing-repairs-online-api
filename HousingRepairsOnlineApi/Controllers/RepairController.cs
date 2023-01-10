@@ -27,6 +27,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase;
         private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
         private readonly IChangeAppointmentUseCase changeAppointmentUseCase;
+        private readonly IIdGenerator idGenerator;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -43,7 +44,8 @@ namespace HousingRepairsOnlineApi.Controllers
             ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase,
             IChangeAppointmentUseCase changeAppointmentUseCase,
             ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase,
-            ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase)
+            ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase,
+            IIdGenerator idGenerator)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -60,6 +62,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.changeAppointmentUseCase = changeAppointmentUseCase;
             this.saveChangedRepairRequestUseCase = saveChangedRepairRequestUseCase;
             this.sendRepairAppointmentChangedNotificationUseCase = sendRepairAppointmentChangedNotificationUseCase;
+            this.idGenerator = idGenerator;
         }
 
         [HttpGet]
@@ -251,7 +254,9 @@ namespace HousingRepairsOnlineApi.Controllers
         {
             try
             {
-                var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest);
+                var repairId = idGenerator.Generate();
+
+                var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest, repairId);
 
                 await bookAppointmentUseCase.Execute(result.Id, result.SOR, result.Priority, result.Address.LocationId,
                     result.Time.StartDateTime, result.Time.EndDateTime, result.Description.CombinedDescriptionTexts());

@@ -4,5 +4,5 @@ namespace HousingRepairsOnlineApi.Helpers;
 
 public interface IRepairRequestToRepairMapper
 {
-    public Repair Map(RepairRequest repairRequest, string repairType);
+    public Repair Map(RepairRequest repairRequest, string repairType, string repairId);
 }

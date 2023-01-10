@@ -21,12 +21,12 @@ namespace HousingRepairsOnlineApi.UseCases
             this.repairRequestToRepairMapper = repairRequestToRepairMapper;
         }
 
-        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest)
+        public async Task<Repair> Execute(string repairType, RepairRequest repairRequest, string repairId)
         {
             Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
             Guard.Against.InvalidInput(repairType, nameof(repairType), RepairType.IsValidValue);
 
-            var repair = repairRequestToRepairMapper.Map(repairRequest, repairType);
+            var repair = repairRequestToRepairMapper.Map(repairRequest, repairType, repairId);
 
             if (!string.IsNullOrEmpty(repairRequest.Description.Base64Img))
             {
