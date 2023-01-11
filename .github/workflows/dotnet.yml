@@ -44,7 +44,7 @@ jobs:
         run: dotnet test --logger:"console;verbosity=detailed"
 
   build:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     name: Build Release
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +70,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
   infrastructure:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     name: "Provision Infrastructure"
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
@@ -154,7 +154,7 @@ jobs:
 
   deploy-staging:
     name: "Deploy Staging"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: [format, test, build, infrastructure]
     environment:
