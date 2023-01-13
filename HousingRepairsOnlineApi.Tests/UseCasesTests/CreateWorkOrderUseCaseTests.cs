@@ -202,4 +202,55 @@ public class CreateWorkOrderUseCaseTests
             x => x.CreateWorkOrder(locationId, scheduleOfRateCode, It.Is<string>(x => x.Contains(description))),
             Times.Once);
     }
+
+
+    [Fact]
+    public async void GivenCommunalRepairType_WhenExecuting_ThenDescriptionIsCombined()
+    {
+        // Arrange
+        var locationId = "locationId";
+        var repairlocation = "repairLocation";
+        var repairproblem = "repairProblem";
+        var description = "description";
+        var locationDescription = "location";
+
+        var repairRequest = new RepairRequest
+        {
+            Address= new RepairAddress
+            {
+                LocationId = locationId
+            },
+            Location = new RepairLocation()
+            {
+                Value = repairlocation
+            },
+            Problem = new RepairProblem()
+            {
+                Value = repairproblem
+            },
+            Description = new RepairDescriptionRequest()
+            {
+                Text = description,
+                LocationText = locationDescription,
+            }
+        };
+
+        var scheduleOfRateCode = "sorCode";
+
+        workOrderGatewayMock.Setup(x => x.CreateWorkOrder(locationId, scheduleOfRateCode, description));
+        var sorEngineMock = new Mock<ISoREngine>();
+        sorEngineMock.Setup(x => x.MapToRepairTriageDetails(repairlocation, repairproblem, It.IsAny<string>()))
+            .Returns(new RepairTriageDetails { ScheduleOfRateCode = scheduleOfRateCode });
+        sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
+
+        var communalRepairType = HousingRepairsOnlineApi.Helpers.RepairType.Communal;
+
+        // Act
+        await systemUnderTest.Execute(communalRepairType, repairRequest);
+
+        // Assert
+        workOrderGatewayMock.Verify(
+            x => x.CreateWorkOrder(locationId, scheduleOfRateCode, It.Is<string>(x => x.Contains(description) && x.Contains(locationDescription))),
+            Times.Once);
+    }
 }
