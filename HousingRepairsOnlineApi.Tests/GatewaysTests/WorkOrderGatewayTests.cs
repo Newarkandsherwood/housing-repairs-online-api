@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using HousingRepairsOnlineApi.Gateways;
@@ -75,7 +76,7 @@ public class WorkOrderGatewayTests : IDisposable
         const string Description = "Description text";
         mockHttp.Expect(
                 $"/WorkOrder/CreateWorkOrder?locationId={LocationId}&sorCode={SorCode}").WithContent("{\"description\":\"Description text\"}")
-            .Respond(HttpStatusCode.OK);
+            .Respond(HttpStatusCode.OK, JsonContent.Create("123"));
 
         // Act
         var act = async () =>
