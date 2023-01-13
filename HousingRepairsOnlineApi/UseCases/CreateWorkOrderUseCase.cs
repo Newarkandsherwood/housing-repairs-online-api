@@ -39,7 +39,5 @@ public class CreateWorkOrderUseCase : ICreateWorkOrderUseCase
             repairRequest.Issue?.Value);
 
         return workOrderGateway.CreateWorkOrder(repairRequest.Address.LocationId, repairTriageDetails.ScheduleOfRateCode, repairRequest.Description.CombinedDescriptionTexts());
-
-        return null;
     }
 }

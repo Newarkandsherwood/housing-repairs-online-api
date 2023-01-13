@@ -168,7 +168,7 @@ public class CreateWorkOrderUseCaseTests
 
         var repairRequest = new RepairRequest
         {
-            Address= new RepairAddress
+            Address = new RepairAddress
             {
                 LocationId = locationId
             },
@@ -205,6 +205,51 @@ public class CreateWorkOrderUseCaseTests
 
 
     [Fact]
+    public async void GivenValidArguments_WhenExecuting_ThenWorkOrderIdIsReturned()
+    {
+        // Arrange
+        var locationId = "locationId";
+        var repairlocation = "repairLocation";
+        var repairproblem = "repairProblem";
+        var description = "description";
+
+        var repairRequest = new RepairRequest
+        {
+            Address = new RepairAddress
+            {
+                LocationId = locationId
+            },
+            Location = new RepairLocation()
+            {
+                Value = repairlocation
+            },
+            Problem = new RepairProblem()
+            {
+                Value = repairproblem
+            },
+            Description = new RepairDescriptionRequest()
+            {
+                Text = description
+            }
+        };
+
+        var scheduleOfRateCode = "sorCode";
+        const string workorderid = "WorkOrderID";
+
+        workOrderGatewayMock.Setup(x => x.CreateWorkOrder(locationId, scheduleOfRateCode, description)).ReturnsAsync(workorderid);
+        var sorEngineMock = new Mock<ISoREngine>();
+        sorEngineMock.Setup(x => x.MapToRepairTriageDetails(repairlocation, repairproblem, It.IsAny<string>()))
+            .Returns(new RepairTriageDetails { ScheduleOfRateCode = scheduleOfRateCode });
+        sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
+
+        // Act
+        var actual = await systemUnderTest.Execute(RepairType, repairRequest);
+
+        // Assert
+        actual.Should().Be(workorderid);
+    }
+
+    [Fact]
     public async void GivenCommunalRepairType_WhenExecuting_ThenDescriptionIsCombined()
     {
         // Arrange
@@ -216,7 +261,7 @@ public class CreateWorkOrderUseCaseTests
 
         var repairRequest = new RepairRequest
         {
-            Address= new RepairAddress
+            Address = new RepairAddress
             {
                 LocationId = locationId
             },
