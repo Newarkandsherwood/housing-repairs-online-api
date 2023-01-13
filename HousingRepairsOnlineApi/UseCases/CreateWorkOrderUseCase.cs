@@ -38,7 +38,9 @@ public class CreateWorkOrderUseCase : ICreateWorkOrderUseCase
         var repairTriageDetails = sorEngine.MapToRepairTriageDetails(repairRequest.Location.Value, repairRequest.Problem.Value,
             repairRequest.Issue?.Value);
 
-        return workOrderGateway.CreateWorkOrder(repairRequest.Address.LocationId, repairTriageDetails.ScheduleOfRateCode, repairRequest.Description.Text);
+        var combinedDescriptions = repairRequest.Description.LocationText + " " + repairRequest.Description.Text;
+
+        return workOrderGateway.CreateWorkOrder(repairRequest.Address.LocationId, repairTriageDetails.ScheduleOfRateCode, combinedDescriptions);
 
         return null;
     }
