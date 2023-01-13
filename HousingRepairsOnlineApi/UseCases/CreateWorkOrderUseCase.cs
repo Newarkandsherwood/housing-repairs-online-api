@@ -17,14 +17,6 @@ public class CreateWorkOrderUseCase : ICreateWorkOrderUseCase
         this.sorEngineResolver = sorEngineResolver;
     }
 
-    public Task<string> Execute(string locationId, string sorCode, string description)
-    {
-        Guard.Against.NullOrWhiteSpace(locationId, nameof(locationId));
-        Guard.Against.NullOrWhiteSpace(sorCode, nameof(sorCode));
-        Guard.Against.NullOrWhiteSpace(description, nameof(description));
-
-        return workOrderGateway.CreateWorkOrder(locationId, sorCode, description);
-    }
     public Task<string> Execute(string repairType, RepairRequest repairRequest)
     {
         Guard.Against.NullOrWhiteSpace(repairType, nameof(repairType));
