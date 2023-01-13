@@ -25,11 +25,10 @@ public class WorkOrderGateway : IWorkOrderGateway
     public async Task<string> CreateWorkOrder(string locationId, string sorCode, string description)
     {
 
-        var request = new HttpRequestMessage(HttpMethod.Get,
+        var request = new HttpRequestMessage(HttpMethod.Post,
             $"/WorkOrder/CreateWorkOrder?locationId={locationId}&sorCode={sorCode}");
 
-        var json = JsonConvert.SerializeObject(new { description });
-        var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+        var stringContent = new StringContent($"\"{description}\"", Encoding.UTF8, "application/json");
 
         request.Content = stringContent;
 
@@ -37,7 +36,7 @@ public class WorkOrderGateway : IWorkOrderGateway
 
         var response = await httpClient.SendAsync(request);
 
-        var data = response.Content.ReadFromJsonAsync<string>();
+        var data = response.Content.ReadAsStringAsync();
 
         return await data;
     }

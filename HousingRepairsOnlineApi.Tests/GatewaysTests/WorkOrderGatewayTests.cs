@@ -36,7 +36,7 @@ public class WorkOrderGatewayTests : IDisposable
         const string Description = "Description text";
 
         mockHttp.Expect($"/WorkOrder/CreateWorkOrder?locationId={LocationId}&sorCode={SorCode}")
-            .Respond("application/json", JsonConvert.SerializeObject(""));
+            .Respond("application/json", "");
 
         // Act
         var data = await systemUnderTest.CreateWorkOrder(LocationId, SorCode, Description);
@@ -57,7 +57,7 @@ public class WorkOrderGatewayTests : IDisposable
         var expected = "XXX";
 
         mockHttp.Expect($"/WorkOrder/CreateWorkOrder?locationId={LocationId}&sorCode={SorCode}")
-            .Respond($"application/json", JsonConvert.SerializeObject(expected));
+            .Respond($"application/json", expected);
 
         // Act
         var data = await systemUnderTest.CreateWorkOrder(LocationId, SorCode, Description);
@@ -75,7 +75,7 @@ public class WorkOrderGatewayTests : IDisposable
         const string LocationId = "Location ID";
         const string Description = "Description text";
         mockHttp.Expect(
-                $"/WorkOrder/CreateWorkOrder?locationId={LocationId}&sorCode={SorCode}").WithContent("{\"description\":\"Description text\"}")
+                $"/WorkOrder/CreateWorkOrder?locationId={LocationId}&sorCode={SorCode}").WithContent("\"Description text\"")
             .Respond(HttpStatusCode.OK, JsonContent.Create("123"));
 
         // Act
