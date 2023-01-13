@@ -27,7 +27,7 @@ namespace HousingRepairsOnlineApi.Controllers
         private readonly ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase;
         private readonly ISendRepairCancelledInternalEmailUseCase sendRepairCancelledInternalEmailUseCase;
         private readonly IChangeAppointmentUseCase changeAppointmentUseCase;
-        private readonly IIdGenerator idGenerator;
+        private readonly ICreateWorkOrderUseCase createWorkOrderUseCase;
 
         public RepairController(
             ISaveRepairRequestUseCase saveRepairRequestUseCase,
@@ -45,7 +45,7 @@ namespace HousingRepairsOnlineApi.Controllers
             IChangeAppointmentUseCase changeAppointmentUseCase,
             ISaveChangedRepairRequestUseCase saveChangedRepairRequestUseCase,
             ISendRepairAppointmentChangedNotificationUseCase sendRepairAppointmentChangedNotificationUseCase,
-            IIdGenerator idGenerator)
+            ICreateWorkOrderUseCase createWorkOrderUseCase)
         {
             this.saveRepairRequestUseCase = saveRepairRequestUseCase;
             this.internalEmailSender = internalEmailSender;
@@ -62,7 +62,7 @@ namespace HousingRepairsOnlineApi.Controllers
             this.changeAppointmentUseCase = changeAppointmentUseCase;
             this.saveChangedRepairRequestUseCase = saveChangedRepairRequestUseCase;
             this.sendRepairAppointmentChangedNotificationUseCase = sendRepairAppointmentChangedNotificationUseCase;
-            this.idGenerator = idGenerator;
+            this.createWorkOrderUseCase = createWorkOrderUseCase;
         }
 
         [HttpGet]
@@ -254,7 +254,7 @@ namespace HousingRepairsOnlineApi.Controllers
         {
             try
             {
-                var repairId = idGenerator.Generate();
+                var repairId = await createWorkOrderUseCase.Execute(repairType, repairRequest);
 
                 var result = await saveRepairRequestUseCase.Execute(repairType, repairRequest, repairId);
 
