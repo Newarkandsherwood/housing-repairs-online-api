@@ -32,7 +32,7 @@ namespace HousingRepairsOnlineApi.Tests
         private Mock<ISaveChangedRepairRequestUseCase> saveChangedRepairRequestUseCaseMock;
         private readonly Mock<ISendRepairCancelledInternalEmailUseCase> sendRepairCancelledInternalEmailUseCaseMock;
         private readonly Mock<ISendRepairAppointmentChangedNotificationUseCase> sendRepairAppointmentChangedNotificationsUseCaseMock;
-        private readonly Mock<IIdGenerator> idGeneratorMock;
+        private readonly Mock<ICreateWorkOrderUseCase> createWorkOrderUseCaseMock;
 
         private Mock<INotificationConfigurationResolver> sendNotificationResolver;
         private readonly string repairTypeArgument = RepairType.Tenant;
@@ -67,7 +67,7 @@ namespace HousingRepairsOnlineApi.Tests
             saveChangedRepairRequestUseCaseMock = new Mock<ISaveChangedRepairRequestUseCase>();
             sendRepairCancelledInternalEmailUseCaseMock = new Mock<ISendRepairCancelledInternalEmailUseCase>();
             sendRepairAppointmentChangedNotificationsUseCaseMock = new Mock<ISendRepairAppointmentChangedNotificationUseCase>();
-            idGeneratorMock = new Mock<IIdGenerator>();
+            createWorkOrderUseCaseMock = new();
 
             systemUnderTest = new RepairController(saveRepairRequestUseCaseMock.Object, internalEmailSenderMock.Object,
                 appointmentConfirmationSender.Object, bookAppointmentUseCaseMock.Object,
@@ -76,7 +76,7 @@ namespace HousingRepairsOnlineApi.Tests
                 appointmentTimeToRepairAvailabilityMapperMock.Object, repairToFindRepairResponseMapperMock.Object,
                 cancelAppointmentUseCaseMock.Object, cancelRepairRequestUseCaseMock.Object, sendRepairCancelledInternalEmailUseCaseMock.Object,
                 changeAppointmentUseCaseMock.Object, saveChangedRepairRequestUseCaseMock.Object, sendRepairAppointmentChangedNotificationsUseCaseMock.Object,
-                idGeneratorMock.Object);
+                createWorkOrderUseCaseMock.Object);
         }
 
         [Fact]
@@ -518,21 +518,6 @@ namespace HousingRepairsOnlineApi.Tests
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest, It.IsAny<string>()), Times.Once);
         }
 
-        [Theory]
-        [MemberData(nameof(RepairTypeTestData.ValidRepairTypeArgumentTestData), MemberType = typeof(RepairTypeTestData))]
-        public async Task GivenAnyRepairType_WhenSavingRepairRequest_ThenRepairIdIsGenerated(string repairType)
-        {
-            // Arrange
-            idGeneratorMock.Setup(x => x.Generate()).Returns("RepairID");
-            var repairRequest = new RepairRequest();
-
-            // Act
-            _ = await systemUnderTest.SaveRepair(repairType, repairRequest);
-
-            // Assert
-            idGeneratorMock.Verify(x => x.Generate(), Times.Once);
-        }
-
         [Fact]
         public async Task GivenEmailContact_WhenRepair_ThenSendAppointmentConfirmationEmailUseCaseIsCalled()
         {
@@ -644,6 +629,43 @@ namespace HousingRepairsOnlineApi.Tests
 
             // Assert
             saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GivenWorkOrderIsCreated_WhenRequestingRepair_ThenRepairIsSavedWithWorkOrderId()
+        {
+            // Arrange
+            var (repairRequest, repair) = CreateRepairRequestAndRepair();
+
+            const string WorkOrderId = "WorkOrderID";
+            createWorkOrderUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>()))
+                .ReturnsAsync(WorkOrderId);
+
+            saveRepairRequestUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>(), It.IsAny<string>())).ReturnsAsync(repair);
+
+            // Act
+            var result = await systemUnderTest.SaveRepair(repairTypeArgument, repairRequest);
+
+            // Assert
+            GetStatusCode(result).Should().Be(200);
+            saveRepairRequestUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), repairRequest, WorkOrderId), Times.Once);
+        }
+
+        [Theory]
+        [MemberData(nameof(RepairTypeTestData.ValidRepairTypeArgumentTestData), MemberType = typeof(RepairTypeTestData))]
+        public async Task GivenAnyRepairType_WhenSavingRepairRequest_ThenCreateWorkOrderUseCaseIsExecuted(string repairType)
+        {
+            // Arrange
+            const string WorkOrderId = "WorkOrderID";
+            createWorkOrderUseCaseMock.Setup(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>()))
+                .ReturnsAsync(WorkOrderId);
+            var repairRequest = new RepairRequest();
+
+            // Act
+            _ = await systemUnderTest.SaveRepair(repairType, repairRequest);
+
+            // Assert
+            createWorkOrderUseCaseMock.Verify(x => x.Execute(It.IsAny<string>(), It.IsAny<RepairRequest>()), Times.Once);
         }
     }
 }
