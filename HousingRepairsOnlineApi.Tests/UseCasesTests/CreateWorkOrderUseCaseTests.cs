@@ -22,7 +22,7 @@ public class CreateWorkOrderUseCaseTests
     {
         workOrderGatewayMock = new Mock<IWorkOrderGateway>();
         sorEngineResolverMock = new Mock<ISorEngineResolver>();
-        systemUnderTest = new CreateWorkOrderUseCase(workOrderGatewayMock.Object);
+        systemUnderTest = new CreateWorkOrderUseCase(workOrderGatewayMock.Object, sorEngineResolverMock.Object);
     }
 
     public static IEnumerable<object[]> InvalidArgumentTestData()
@@ -78,6 +78,7 @@ public class CreateWorkOrderUseCaseTests
         //Assert
         await act.Should().ThrowExactlyAsync<T>();
     }
+
     [Theory]
     [MemberData(nameof(InvalidArgumentTestData))]
 #pragma warning disable xUnit1026
@@ -139,6 +140,7 @@ public class CreateWorkOrderUseCaseTests
         //Assert
         await act.Should().ThrowExactlyAsync<T>();
     }
+
     [Theory]
     [MemberData(nameof(Helpers.RepairTypeTestData.InvalidRepairTypeArgumentTestData), MemberType = typeof(Helpers.RepairTypeTestData))]
 #pragma warning disable xUnit1026
@@ -155,42 +157,49 @@ public class CreateWorkOrderUseCaseTests
         await act.Should().ThrowExactlyAsync<T>();
     }
 
-    // [Fact]
-    // public async void GivenValidRepair_WhenExecuting_ThenWorkOrderGatewayIsCalledWithCorrectParameters()
-    // {
-    //     // Arrange
-    //     var locationId = "locationId";
-    //     var repairlocation = "repairLocation";
-    //     var repairproblem = "repairProblem";
-    //     var description = "description";
-    //
-    //     var repairRequest = new RepairRequest
-    //     {
-    //         Address= new RepairAddress
-    //         {
-    //             LocationId = locationId
-    //         },
-    //         Location = new RepairLocation()
-    //         {
-    //             Value = repairlocation
-    //         },
-    //         Problem = new RepairProblem()
-    //         {
-    //             Value = repairproblem
-    //         },
-    //         Description = new RepairDescriptionRequest()
-    //         {
-    //             Text = description
-    //         }
-    //     };
-    //
-    //     workOrderGatewayMock.Setup(x => x.CreateWorkOrder(locationId, "sorCode", description));
-    //     sorEngineResolverMock.Setup(x => x.Resolve());
-    //
-    //     // Act
-    //     await systemUnderTest.Execute(repairRequest);
-    //
-    //     // Assert
-    //     workOrderGatewayMock.Verify(x => x.CreateWorkOrder(locationId, "sorCode", It.Is<string>(x=>x.Contains(description))), Times.Once);
-    // }
+    [Fact]
+    public async void GivenValidArguments_WhenExecuting_ThenWorkOrderGatewayIsCalledWithCorrectParameters()
+    {
+        // Arrange
+        var locationId = "locationId";
+        var repairlocation = "repairLocation";
+        var repairproblem = "repairProblem";
+        var description = "description";
+
+        var repairRequest = new RepairRequest
+        {
+            Address= new RepairAddress
+            {
+                LocationId = locationId
+            },
+            Location = new RepairLocation()
+            {
+                Value = repairlocation
+            },
+            Problem = new RepairProblem()
+            {
+                Value = repairproblem
+            },
+            Description = new RepairDescriptionRequest()
+            {
+                Text = description
+            }
+        };
+
+        var scheduleOfRateCode = "sorCode";
+
+        workOrderGatewayMock.Setup(x => x.CreateWorkOrder(locationId, scheduleOfRateCode, description));
+        var sorEngineMock = new Mock<ISoREngine>();
+        sorEngineMock.Setup(x => x.MapToRepairTriageDetails(repairlocation, repairproblem, It.IsAny<string>()))
+            .Returns(new RepairTriageDetails { ScheduleOfRateCode = scheduleOfRateCode });
+        sorEngineResolverMock.Setup(x => x.Resolve(It.IsAny<string>())).Returns(sorEngineMock.Object);
+
+        // Act
+        await systemUnderTest.Execute(RepairType, repairRequest);
+
+        // Assert
+        workOrderGatewayMock.Verify(
+            x => x.CreateWorkOrder(locationId, scheduleOfRateCode, It.Is<string>(x => x.Contains(description))),
+            Times.Once);
+    }
 }
