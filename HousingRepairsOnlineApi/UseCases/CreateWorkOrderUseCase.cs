@@ -9,11 +9,12 @@ namespace HousingRepairsOnlineApi.UseCases;
 public class CreateWorkOrderUseCase : ICreateWorkOrderUseCase
 {
     private readonly IWorkOrderGateway workOrderGateway;
+    private readonly ISorEngineResolver sorEngineResolver;
 
-    public CreateWorkOrderUseCase(IWorkOrderGateway workOrderGateway)
+    public CreateWorkOrderUseCase(IWorkOrderGateway workOrderGateway, ISorEngineResolver sorEngineResolver)
     {
         this.workOrderGateway = workOrderGateway;
-        // this.sorEngineResolver = sorEngineResolver;
+        this.sorEngineResolver = sorEngineResolver;
     }
 
     public Task<string> Execute(string locationId, string sorCode, string description)
@@ -33,10 +34,12 @@ public class CreateWorkOrderUseCase : ICreateWorkOrderUseCase
         Guard.Against.NullOrWhiteSpace(repairRequest.Problem.Value, nameof(repairRequest.Problem.Value));
         Guard.Against.NullOrWhiteSpace(repairRequest.Description.Text, nameof(repairRequest.Description.Text));
 
-        return workOrderGateway.CreateWorkOrder(repairRequest.Address.LocationId, "sorCode", repairRequest.Description.Text);
+        var sorEngine = sorEngineResolver.Resolve(repairType);
+        var repairTriageDetails = sorEngine.MapToRepairTriageDetails(repairRequest.Location.Value, repairRequest.Problem.Value,
+            repairRequest.Issue?.Value);
 
+        return workOrderGateway.CreateWorkOrder(repairRequest.Address.LocationId, repairTriageDetails.ScheduleOfRateCode, repairRequest.Description.Text);
 
         return null;
     }
-
 }
