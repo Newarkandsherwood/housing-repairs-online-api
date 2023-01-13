@@ -16,7 +16,7 @@ public class CreateWorkOrderUseCaseTests
     private readonly Mock<IWorkOrderGateway> workOrderGatewayMock;
     private readonly Mock<ISorEngineResolver> sorEngineResolverMock;
     private readonly CreateWorkOrderUseCase systemUnderTest;
-    private const string RepairType = "repairType";
+    private const string RepairType = HousingRepairsOnlineApi.Helpers.RepairType.Tenant;
 
     public CreateWorkOrderUseCaseTests()
     {
