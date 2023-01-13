@@ -115,6 +115,7 @@ namespace HousingRepairsOnlineApi
             services.AddTransient<ISaveChangedRepairRequestUseCase, SaveChangedRepairRequestUseCase>();
             services.AddTransient<ISendRepairCancelledInternalEmailUseCase, SendRepairCancelledInternalEmailUseCase>();
             services.AddTransient<ISendRepairAppointmentChangedNotificationUseCase, SendRepairAppointmentChangedNotificationUseCase>();
+            services.AddTransient<ICreateWorkOrderUseCase, CreateWorkOrderUseCase>();
 
             var addressesApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("ADDRESSES_API_URL");
             var schedulingApiUrl = EnvironmentVariableHelper.GetEnvironmentVariable("SCHEDULING_API_URL");
@@ -126,6 +127,12 @@ namespace HousingRepairsOnlineApi
                 var httpClient = s.GetService<HttpClient>();
                 httpClient.BaseAddress = new Uri(addressesApiUrl);
                 return new AddressGateway(httpClient, authenticationIdentifier);
+            });
+            services.AddTransient<IWorkOrderGateway, WorkOrderGateway>(s =>
+            {
+                var httpClient = s.GetService<HttpClient>();
+                httpClient.BaseAddress = new Uri(addressesApiUrl);
+                return new WorkOrderGateway(httpClient, authenticationIdentifier);
             });
 
             services.AddTransient<IAppointmentsGateway, AppointmentsGateway>(s =>
